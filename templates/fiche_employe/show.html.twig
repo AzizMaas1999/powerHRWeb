@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}FicheEmploye{% endblock %}
+
+{% block body %}
+    <h1>FicheEmploye</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ fiche_employe.id }}</td>
+            </tr>
+            <tr>
+                <th>Cin</th>
+                <td>{{ fiche_employe.cin }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ fiche_employe.nom }}</td>
+            </tr>
+            <tr>
+                <th>Prenom</th>
+                <td>{{ fiche_employe.prenom }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ fiche_employe.email }}</td>
+            </tr>
+            <tr>
+                <th>Adresse</th>
+                <td>{{ fiche_employe.adresse }}</td>
+            </tr>
+            <tr>
+                <th>City</th>
+                <td>{{ fiche_employe.city }}</td>
+            </tr>
+            <tr>
+                <th>Zip</th>
+                <td>{{ fiche_employe.zip }}</td>
+            </tr>
+            <tr>
+                <th>NumTel</th>
+                <td>{{ fiche_employe.numTel }}</td>
+            </tr>
+            <tr>
+                <th>CvPdfUrl</th>
+                <td>{{ fiche_employe.cvPdfUrl }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_fiche_employe_index') }}">back to list</a>
+
+    <a href="{{ path('app_fiche_employe_edit', {'id': fiche_employe.id}) }}">edit</a>
+
+    {{ include('fiche_employe/_delete_form.html.twig') }}
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Paie{% endblock %}
+
+{% block body %}
+    <h1>Create new Paie</h1>
+
+    {{ include('paie/_form.html.twig') }}
+
+    <a href="{{ path('app_paie_index') }}">back to list</a>
+{% endblock %}

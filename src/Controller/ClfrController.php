@@ -1,0 +1,81 @@
+<?php
+
+namespace App\Controller;
+
+use App\Entity\Clfr;
+use App\Form\ClfrType;
+use App\Repository\ClfrRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+
+#[Route('/clfr')]
+final class ClfrController extends AbstractController
+{
+    #[Route(name: 'app_clfr_index', methods: ['GET'])]
+    public function index(ClfrRepository $clfrRepository): Response
+    {
+        return $this->render('clfr/index.html.twig', [
+            'clfrs' => $clfrRepository->findAll(),
+        ]);
+    }
+
+    #[Route('/new', name: 'app_clfr_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $clfr = new Clfr();
+        $form = $this->createForm(ClfrType::class, $clfr);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($clfr);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_clfr_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('clfr/new.html.twig', [
+            'clfr' => $clfr,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'app_clfr_show', methods: ['GET'])]
+    public function show(Clfr $clfr): Response
+    {
+        return $this->render('clfr/show.html.twig', [
+            'clfr' => $clfr,
+        ]);
+    }
+
+    #[Route('/{id}/edit', name: 'app_clfr_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Clfr $clfr, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(ClfrType::class, $clfr);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_clfr_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('clfr/edit.html.twig', [
+            'clfr' => $clfr,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'app_clfr_delete', methods: ['POST'])]
+    public function delete(Request $request, Clfr $clfr, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$clfr->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($clfr);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_clfr_index', [], Response::HTTP_SEE_OTHER);
+    }
+}

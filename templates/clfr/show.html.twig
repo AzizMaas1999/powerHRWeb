@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Clfr{% endblock %}
+
+{% block body %}
+    <h1>Clfr</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ clfr.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ clfr.nom }}</td>
+            </tr>
+            <tr>
+                <th>Matricule_fiscale</th>
+                <td>{{ clfr.matriculeFiscale }}</td>
+            </tr>
+            <tr>
+                <th>Adresse</th>
+                <td>{{ clfr.adresse }}</td>
+            </tr>
+            <tr>
+                <th>NumTel</th>
+                <td>{{ clfr.numTel }}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{{ clfr.type }}</td>
+            </tr>
+            <tr>
+                <th>PhotoPath</th>
+                <td>{{ clfr.photoPath }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_clfr_index') }}">back to list</a>
+
+    <a href="{{ path('app_clfr_edit', {'id': clfr.id}) }}">edit</a>
+
+    {{ include('clfr/_delete_form.html.twig') }}
+{% endblock %}

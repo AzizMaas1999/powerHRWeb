@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paie index{% endblock %}
+
+{% block body %}
+    <h1>Paie index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>NbJour</th>
+                <th>Montant</th>
+                <th>Mois</th>
+                <th>Annee</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for paie in paies %}
+            <tr>
+                <td>{{ paie.id }}</td>
+                <td>{{ paie.nbJour }}</td>
+                <td>{{ paie.montant }}</td>
+                <td>{{ paie.mois }}</td>
+                <td>{{ paie.annee }}</td>
+                <td>
+                    <a href="{{ path('app_paie_show', {'id': paie.id}) }}">show</a>
+                    <a href="{{ path('app_paie_edit', {'id': paie.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_paie_new') }}">Create new</a>
+{% endblock %}

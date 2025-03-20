@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Clfr index{% endblock %}
+
+{% block body %}
+    <h1>Clfr index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Matricule_fiscale</th>
+                <th>Adresse</th>
+                <th>NumTel</th>
+                <th>Type</th>
+                <th>PhotoPath</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for clfr in clfrs %}
+            <tr>
+                <td>{{ clfr.id }}</td>
+                <td>{{ clfr.nom }}</td>
+                <td>{{ clfr.matriculeFiscale }}</td>
+                <td>{{ clfr.adresse }}</td>
+                <td>{{ clfr.numTel }}</td>
+                <td>{{ clfr.type }}</td>
+                <td>{{ clfr.photoPath }}</td>
+                <td>
+                    <a href="{{ path('app_clfr_show', {'id': clfr.id}) }}">show</a>
+                    <a href="{{ path('app_clfr_edit', {'id': clfr.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_clfr_new') }}">Create new</a>
+{% endblock %}

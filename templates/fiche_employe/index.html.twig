@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}FicheEmploye index{% endblock %}
+
+{% block body %}
+    <h1>FicheEmploye index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Cin</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>Email</th>
+                <th>Adresse</th>
+                <th>City</th>
+                <th>Zip</th>
+                <th>NumTel</th>
+                <th>CvPdfUrl</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for fiche_employe in fiche_employes %}
+            <tr>
+                <td>{{ fiche_employe.id }}</td>
+                <td>{{ fiche_employe.cin }}</td>
+                <td>{{ fiche_employe.nom }}</td>
+                <td>{{ fiche_employe.prenom }}</td>
+                <td>{{ fiche_employe.email }}</td>
+                <td>{{ fiche_employe.adresse }}</td>
+                <td>{{ fiche_employe.city }}</td>
+                <td>{{ fiche_employe.zip }}</td>
+                <td>{{ fiche_employe.numTel }}</td>
+                <td>{{ fiche_employe.cvPdfUrl }}</td>
+                <td>
+                    <a href="{{ path('app_fiche_employe_show', {'id': fiche_employe.id}) }}">show</a>
+                    <a href="{{ path('app_fiche_employe_edit', {'id': fiche_employe.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="11">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_fiche_employe_new') }}">Create new</a>
+{% endblock %}
