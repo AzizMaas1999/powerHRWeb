@@ -126,7 +126,7 @@ class FicheEmploye
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(name: 'numTel', type: 'string', nullable: true)]
     private ?string $numTel = null;
 
     public function getNumTel(): ?string
@@ -140,7 +140,7 @@ class FicheEmploye
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(name: 'cvPdfUrl', type: 'string', nullable: true)]
     private ?string $cvPdfUrl = null;
 
     public function getCvPdfUrl(): ?string

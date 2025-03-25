@@ -43,29 +43,29 @@ class Pointage
         return $this;
     }
 
-    #[ORM\Column(type: 'time', nullable: false)]
-    private ?string $heureEntree = null;
+    #[ORM\Column(name: 'heureEntree', type: 'time', nullable: false)]
+    private ?\DateTimeInterface $heureEntree = null;
 
-    public function getHeureEntree(): ?string
+    public function getHeureEntree(): ?\DateTimeInterface
     {
         return $this->heureEntree;
     }
 
-    public function setHeureEntree(string $heureEntree): self
+    public function setHeureEntree(\DateTimeInterface $heureEntree): self
     {
         $this->heureEntree = $heureEntree;
         return $this;
     }
 
-    #[ORM\Column(type: 'time', nullable: false)]
-    private ?string $heureSortie = null;
+    #[ORM\Column(name: 'heureSortie', type: 'time', nullable: false)]
+    private ?\DateTimeInterface $heureSortie = null;
 
-    public function getHeureSortie(): ?string
+    public function getHeureSortie(): ?\DateTimeInterface
     {
         return $this->heureSortie;
     }
 
-    public function setHeureSortie(string $heureSortie): self
+    public function setHeureSortie(\DateTimeInterface $heureSortie): self
     {
         $this->heureSortie = $heureSortie;
         return $this;

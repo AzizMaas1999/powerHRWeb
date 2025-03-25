@@ -98,7 +98,7 @@ class Employe
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(name: 'codeSociale', type: 'string', nullable: true)]
     private ?string $codeSociale = null;
 
     public function getCodeSociale(): ?string

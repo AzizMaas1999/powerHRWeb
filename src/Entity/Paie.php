@@ -28,7 +28,7 @@ class Paie
         return $this;
     }
 
-    #[ORM\Column(type: 'integer', nullable: true)]
+    #[ORM\Column(name: 'nbJour', type: 'integer', nullable: true)]
     private ?int $nbJour = null;
 
     public function getNbJour(): ?int
