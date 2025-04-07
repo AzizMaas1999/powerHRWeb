@@ -1,39 +1,42 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Pointage index{% endblock %}
+{% block title %}Pointage Index{% endblock %}
 
 {% block body %}
-    <h1>Pointage index</h1>
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 text-white">Liste des pointages</h1>
+        <a href="{{ path('app_pointage_new') }}" class="btn btn-success">+ Nouveau pointage</a>
+    </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Date</th>
-                <th>HeureEntree</th>
-                <th>HeureSortie</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for pointage in pointages %}
-            <tr>
-                <td>{{ pointage.id }}</td>
-                <td>{{ pointage.date ? pointage.date|date('Y-m-d') : '' }}</td>
-                <td>{{ pointage.heureEntree ? pointage.heureEntree|date('H:i:s') : '' }}</td>
-                <td>{{ pointage.heureSortie ? pointage.heureSortie|date('H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_pointage_show', {'id': pointage.id}) }}">show</a>
-                    <a href="{{ path('app_pointage_edit', {'id': pointage.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_pointage_new') }}">Create new</a>
+    <div class="table-responsive">
+        <table class="table table-dark table-hover table-bordered align-middle shadow-sm">
+            <thead class="thead-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Heure d'entrée</th>
+                    <th>Heure de sortie</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pointage in pointages %}
+                    <tr>
+                        <td>{{ pointage.date ? pointage.date|date('Y-m-d') : '' }}</td>
+                        <td>{{ pointage.heureEntree ? pointage.heureEntree|date('H:i:s') : '' }}</td>
+                        <td>{{ pointage.heureSortie ? pointage.heureSortie|date('H:i:s') : '' }}</td>
+                        <td>
+                            <a href="{{ path('app_pointage_show', {'id': pointage.id}) }}" class="btn btn-sm btn-outline-light me-1">Afficher</a>
+                            <a href="{{ path('app_pointage_edit', {'id': pointage.id}) }}" class="btn btn-sm btn-outline-warning">Modifier</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center text-secondary">Aucun enregistrement trouvé</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

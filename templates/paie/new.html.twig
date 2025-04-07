@@ -1,11 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Paie{% endblock %}
+{% block title %}Nouvelle Paie{% endblock %}
 
 {% block body %}
-    <h1>Create new Paie</h1>
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-white">Créer une nouvelle paie</h1>
+        <a href="{{ path('app_paie_index') }}" class="btn btn-outline-light">← Retour à la liste</a>
+    </div>
 
-    {{ include('paie/_form.html.twig') }}
-
-    <a href="{{ path('app_paie_index') }}">back to list</a>
+    {{ include('paie/_form.html.twig', { button_label: 'Enregistrer' }) }}
+</div>
 {% endblock %}
