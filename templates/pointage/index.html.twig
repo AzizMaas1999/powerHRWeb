@@ -6,12 +6,18 @@
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 text-white">Liste des pointages</h1>
-        <a href="{{ path('app_pointage_new') }}" class="btn btn-success">+ Nouveau pointage</a>
+        <a href="{{ path('app_pointage_new') }}" class="btn btn-sm btn-primary">+ Nouveau pointage</a>
+    </div>
+    <div class="input-group">
+        <input type="text" class="form-control" placeholder="Date D'affectation" aria-label="Recipient's username" aria-describedby="basic-addon2">
+        <div class="input-group-append">
+            <button class="btn btn-sm btn-primary" type="button">Rechercher</button>
+        </div>
     </div>
 
     <div class="table-responsive">
-        <table class="table table-dark table-hover table-bordered align-middle shadow-sm">
-            <thead class="thead-light">
+        <table class="table table-striped">
+            <thead>
                 <tr>
                     <th>Date</th>
                     <th>Heure d'entrée</th>

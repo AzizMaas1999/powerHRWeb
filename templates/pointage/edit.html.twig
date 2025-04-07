@@ -6,38 +6,13 @@
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="text-white">Modifier le pointage</h1>
-        <a href="{{ path('app_pointage_index') }}" class="btn btn-outline-light">← Retour à la liste</a>
+        <a href="{{ path('app_pointage_index') }}" class="btn btn-sm btn-primary">← Retour à la liste</a>
     </div>
 
-    <div class="card shadow-lg bg-dark text-white">
-        <div class="card-body">
-            {{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
+    {{ include('pointage/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
 
-            <div class="row g-3">
-                {% for field in form %}
-                    {% if field.vars.name != '_token' %}
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                {{ form_label(field, null, {'label_attr': {'class': 'form-label'}}) }}
-                                {{ form_widget(field, {'attr': {'class': 'form-control bg-secondary text-white'}}) }}
-                                {{ form_errors(field) }}
-                            </div>
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            </div>
-
-            <div class="d-grid gap-3 mt-4 d-flex justify-content-center button-group-center">
-                <button type="submit" class="btn btn-success">
-                    Mettre à jour
-                </button>
-
-                {{ include('pointage/_delete_form.html.twig') }}
-            </div>
-
-
-            {{ form_end(form) }}
-        </div>
+    <div class="mt-4 d-flex justify-content-center gap-3">
+        {{ include('pointage/_delete_form.html.twig') }}
     </div>
 </div>
 {% endblock %}
