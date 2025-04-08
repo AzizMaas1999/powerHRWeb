@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
 use App\Repository\FactureRepository;
+use Symfony\Component\Validator\Constraints as Assert; // 🔸 Ajout ici
 
 #[ORM\Entity(repositoryClass: FactureRepository::class)]
 #[ORM\Table(name: 'facture')]
@@ -43,7 +44,7 @@ class Facture
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(name: 'typeFact', type: 'string', nullable: true)]
     private ?string $typeFact = null;
 
     public function getTypeFact(): ?string
@@ -58,6 +59,11 @@ class Facture
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "Le numéro est requis.")]
+    #[Assert\Regex(
+        pattern: "/^\d+$/",
+        message: "Le numéro doit contenir uniquement des chiffres."
+    )]
     private ?string $num = null;
 
     public function getNum(): ?string
@@ -71,19 +77,24 @@ class Facture
         return $this;
     }
 
-    #[ORM\Column(type: 'float', nullable: true)]
-    private ?float $total = null;
+    
+#[ORM\Column(type: 'float', nullable: true)]
+#[Assert\Regex(
+    pattern: "/^\d+([.,]\d+)?$/",
+    message: "Le total doit contenir uniquement des chiffres ou des décimales."
+)]
+private ?float $total = null;
 
-    public function getTotal(): ?float
-    {
-        return $this->total;
-    }
+public function getTotal(): ?float
+{
+    return $this->total;
+}
 
-    public function setTotal(?float $total): self
-    {
-        $this->total = $total;
-        return $this;
-    }
+public function setTotal(?float $total): self
+{
+    $this->total = $total;
+    return $this;
+}
 
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $clfr_id = null;
@@ -154,7 +165,6 @@ class Facture
     public function setClfrId(?int $clfr_id): static
     {
         $this->clfr_id = $clfr_id;
-
         return $this;
     }
 
@@ -166,8 +176,6 @@ class Facture
     public function setPaiementId(?int $paiement_id): static
     {
         $this->paiement_id = $paiement_id;
-
         return $this;
     }
-
 }

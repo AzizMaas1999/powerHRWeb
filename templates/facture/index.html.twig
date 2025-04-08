@@ -1,45 +1,50 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Facture index{% endblock %}
+{% block title %}Liste des Factures{% endblock %}
 
 {% block body %}
-    <h1>Facture index</h1>
+<div class="container py-4 text-white">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">📄 Liste des Factures</h1>
+        <a href="{{ path('app_facture_new') }}" class="btn btn-success">
+            ➕ Nouvelle Facture
+        </a>
+    </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Date</th>
-                <th>TypeFact</th>
-                <th>Num</th>
-                <th>Total</th>
-                <th>Clfr_id</th>
-                <th>Paiement_id</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for facture in factures %}
-            <tr>
-                <td>{{ facture.id }}</td>
-                <td>{{ facture.date ? facture.date|date('Y-m-d') : '' }}</td>
-                <td>{{ facture.typeFact }}</td>
-                <td>{{ facture.num }}</td>
-                <td>{{ facture.total }}</td>
-                <td>{{ facture.clfrId }}</td>
-                <td>{{ facture.paiementId }}</td>
-                <td>
-                    <a href="{{ path('app_facture_show', {'id': facture.id}) }}">show</a>
-                    <a href="{{ path('app_facture_edit', {'id': facture.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="8">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_facture_new') }}">Create new</a>
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-dark table-hover align-middle text-center">
+            <thead class="table-secondary text-dark">
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Numéro</th>
+                    <th>Total</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for facture in factures %}
+                <tr>
+                    <td>{{ facture.date ? facture.date|date('Y-m-d') : '' }}</td>
+                    <td>{{ facture.typeFact }}</td>
+                    <td>{{ facture.num }}</td>
+                    <td>{{ facture.total }} €</td>
+                    <td>
+                        <a href="{{ path('app_facture_show', {'id': facture.id}) }}" class="btn btn-outline-light btn-sm me-1">
+                            Voir
+                        </a>
+                        <a href="{{ path('app_facture_edit', {'id': facture.id}) }}" class="btn btn-outline-warning btn-sm">
+                            Modifier
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" class="text-muted">Aucune facture trouvée.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

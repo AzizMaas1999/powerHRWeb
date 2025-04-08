@@ -2,11 +2,9 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-
 use App\Repository\ArticleRepository;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 #[ORM\Table(name: 'article')]
@@ -16,6 +14,30 @@ class Article
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
+
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $description = null;
+
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $quantity = null;
+
+    #[ORM\Column(name: "prixUni", type: 'float', nullable: true)]
+    #[Assert\NotBlank(message: "Le prix unitaire est requis.")]
+    #[Assert\Positive(message: "Le prix unitaire doit être un nombre positif.")]
+    #[Assert\Type(type: 'float', message: "Le prix unitaire doit être un nombre.")]
+    private ?float $prixUni = null;
+
+    #[ORM\Column(type: 'float', nullable: true)]
+    #[Assert\NotBlank(message: "La TVA est requise.")]
+    #[Assert\PositiveOrZero(message: "La TVA doit être un nombre positif ou zéro.")]
+    #[Assert\Type(type: 'float', message: "La TVA doit être un nombre.")]
+    private ?float $TVA = null;
+
+    #[ORM\ManyToOne(targetEntity: Facture::class, inversedBy: 'articles')]
+    #[ORM\JoinColumn(name: 'facture_id', referencedColumnName: 'id')]
+    private ?Facture $facture = null;
+
+    // Getters & Setters...
 
     public function getId(): ?int
     {
@@ -28,9 +50,6 @@ class Article
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $description = null;
-
     public function getDescription(): ?string
     {
         return $this->description;
@@ -41,9 +60,6 @@ class Article
         $this->description = $description;
         return $this;
     }
-
-    #[ORM\Column(type: 'integer', nullable: true)]
-    private ?int $quantity = null;
 
     public function getQuantity(): ?int
     {
@@ -56,9 +72,6 @@ class Article
         return $this;
     }
 
-    #[ORM\Column(type: 'float', nullable: true)]
-    private ?float $prixUni = null;
-
     public function getPrixUni(): ?float
     {
         return $this->prixUni;
@@ -69,9 +82,6 @@ class Article
         $this->prixUni = $prixUni;
         return $this;
     }
-
-    #[ORM\Column(type: 'float', nullable: true)]
-    private ?float $TVA = null;
 
     public function getTVA(): ?float
     {
@@ -84,10 +94,6 @@ class Article
         return $this;
     }
 
-    #[ORM\ManyToOne(targetEntity: Facture::class, inversedBy: 'articles')]
-    #[ORM\JoinColumn(name: 'facture_id', referencedColumnName: 'id')]
-    private ?Facture $facture = null;
-
     public function getFacture(): ?Facture
     {
         return $this->facture;
@@ -98,5 +104,4 @@ class Article
         $this->facture = $facture;
         return $this;
     }
-
 }

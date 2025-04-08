@@ -1,13 +1,21 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Paiement{% endblock %}
+{% block title %}Nouveau Paiement{% endblock %}
 
 {% block body %}
-    <h1>Edit Paiement</h1>
+<div class="container mt-5">
+    <div class="card shadow-lg rounded border-0 bg-dark text-white">
+        <div class="card-body">
+            <h1 class="card-title mb-4 text-white">Créer un nouveau Paiement</h1>
 
-    {{ include('paiement/_form.html.twig', {'button_label': 'Update'}) }}
+            <!-- Payment Form -->
+            {{ include('paiement/_form.html.twig') }}
 
-    <a href="{{ path('app_paiement_index') }}">back to list</a>
-
-    {{ include('paiement/_delete_form.html.twig') }}
+            <!-- Back Button -->
+            <a href="{{ path('app_paiement_index') }}" class="btn btn-outline-light mt-3">
+                <i class="fas fa-arrow-left"></i> Retour à la liste
+            </a>
+        </div>
+    </div>
+</div>
 {% endblock %}
