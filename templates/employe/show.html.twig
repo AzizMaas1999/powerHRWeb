@@ -42,5 +42,6 @@
 
     <a href="{{ path('app_employe_edit', {'id': employe.id}) }}">edit</a>
 
-    {{ include('employe/_delete_form.html.twig') }}
+    <a href="{{ path('app_employe_delete', {'id': employe.id}) }}">delete</a>
+    
 {% endblock %}

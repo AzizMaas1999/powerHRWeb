@@ -5,225 +5,76 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-
+use App\Enum\Poste;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use App\Repository\EmployeRepository;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EmployeRepository::class)]
-#[ORM\Table(name: 'employe')]
-class Employe
+#[ORM\Table(name: 'employe')] 
+class Employe implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function setId(int $id): self
-    {
-        $this->id = $id;
-        return $this;
-    }
-
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "Le username est requis.")]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Zà-ÿÀ-ß]+$/",
+        message: "Le username ne peut contenir que des lettres."
+    )]
     private ?string $username = null;
 
-    public function getUsername(): ?string
-    {
-        return $this->username;
-    }
-
-    public function setUsername(string $username): self
-    {
-        $this->username = $username;
-        return $this;
-    }
-
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message:'Le password est requis.')]
     private ?string $password = null;
 
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
-        return $this;
-    }
-
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $poste = null;
-
-    public function getPoste(): ?string
-    {
-        return $this->poste;
-    }
-
-    public function setPoste(string $poste): self
-    {
-        $this->poste = $poste;
-        return $this;
-    }
+    #[ORM\Column(type: 'string', enumType: Poste::class)]
+    #[Assert\NotBlank(message:'Le poste est requis.')]
+    private Poste $poste;
 
     #[ORM\Column(type: 'float', nullable: true)]
+    #[Assert\NotBlank(message:'Le salaire est requis.')]
+    #[Assert\Regex(
+        pattern: "/^[0-9]$/",
+        message: "Le salaire ne peut contenir que des chiffres."
+    )]
     private ?float $salaire = null;
 
-    public function getSalaire(): ?float
-    {
-        return $this->salaire;
-    }
-
-    public function setSalaire(?float $salaire): self
-    {
-        $this->salaire = $salaire;
-        return $this;
-    }
-
     #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\NotBlank(message:'Le rib est requis.')]
+    #[Assert\Regex(
+        pattern: "/^[0-9]{15}$/", 
+        message: "Le rib doit contenir exactement 15 chiffres."
+    )]
     private ?string $rib = null;
 
-    public function getRib(): ?string
-    {
-        return $this->rib;
-    }
-
-    public function setRib(?string $rib): self
-    {
-        $this->rib = $rib;
-        return $this;
-    }
-
     #[ORM\Column(name: 'codeSociale', type: 'string', nullable: true)]
+    #[Assert\NotBlank(message:'Le code sociale est requis.')]
+    #[Assert\Regex(
+        pattern: "/^[0-9]{4}$/", 
+        message: "Le codeSociale doit contenir exactement 4 chiffres."
+    )]
     private ?string $codeSociale = null;
-
-    public function getCodeSociale(): ?string
-    {
-        return $this->codeSociale;
-    }
-
-    public function setCodeSociale(?string $codeSociale): self
-    {
-        $this->codeSociale = $codeSociale;
-        return $this;
-    }
 
     #[ORM\ManyToOne(targetEntity: Departement::class, inversedBy: 'employes')]
     #[ORM\JoinColumn(name: 'departement_id', referencedColumnName: 'id')]
     private ?Departement $departement = null;
 
-    public function getDepartement(): ?Departement
-    {
-        return $this->departement;
-    }
-
-    public function setDepartement(?Departement $departement): self
-    {
-        $this->departement = $departement;
-        return $this;
-    }
-
     #[ORM\OneToMany(targetEntity: Clfr::class, mappedBy: 'employe')]
     private Collection $clfrs;
-
-    /**
-     * @return Collection<int, Clfr>
-     */
-    public function getClfrs(): Collection
-    {
-        if (!$this->clfrs instanceof Collection) {
-            $this->clfrs = new ArrayCollection();
-        }
-        return $this->clfrs;
-    }
-
-    public function addClfr(Clfr $clfr): self
-    {
-        if (!$this->getClfrs()->contains($clfr)) {
-            $this->getClfrs()->add($clfr);
-        }
-        return $this;
-    }
-
-    public function removeClfr(Clfr $clfr): self
-    {
-        $this->getClfrs()->removeElement($clfr);
-        return $this;
-    }
 
     #[ORM\OneToMany(targetEntity: Demande::class, mappedBy: 'employe')]
     private Collection $demandes;
 
-    /**
-     * @return Collection<int, Demande>
-     */
-    public function getDemandes(): Collection
-    {
-        if (!$this->demandes instanceof Collection) {
-            $this->demandes = new ArrayCollection();
-        }
-        return $this->demandes;
-    }
-
-    public function addDemande(Demande $demande): self
-    {
-        if (!$this->getDemandes()->contains($demande)) {
-            $this->getDemandes()->add($demande);
-        }
-        return $this;
-    }
-
-    public function removeDemande(Demande $demande): self
-    {
-        $this->getDemandes()->removeElement($demande);
-        return $this;
-    }
-
     #[ORM\OneToOne(targetEntity: FicheEmploye::class, mappedBy: 'employe')]
     private ?FicheEmploye $ficheEmploye = null;
 
-    public function getFicheEmploye(): ?FicheEmploye
-    {
-        return $this->ficheEmploye;
-    }
-
-    public function setFicheEmploye(?FicheEmploye $ficheEmploye): self
-    {
-        $this->ficheEmploye = $ficheEmploye;
-        return $this;
-    }
-
     #[ORM\OneToMany(targetEntity: Pointage::class, mappedBy: 'employe')]
     private Collection $pointages;
-
-    /**
-     * @return Collection<int, Pointage>
-     */
-    public function getPointages(): Collection
-    {
-        if (!$this->pointages instanceof Collection) {
-            $this->pointages = new ArrayCollection();
-        }
-        return $this->pointages;
-    }
-
-    public function addPointage(Pointage $pointage): self
-    {
-        if (!$this->getPointages()->contains($pointage)) {
-            $this->getPointages()->add($pointage);
-        }
-        return $this;
-    }
-
-    public function removePointage(Pointage $pointage): self
-    {
-        $this->getPointages()->removeElement($pointage);
-        return $this;
-    }
 
     #[ORM\OneToMany(targetEntity: Questionnaire::class, mappedBy: 'employe')]
     private Collection $questionnaires;
@@ -236,29 +87,216 @@ class Employe
         $this->questionnaires = new ArrayCollection();
     }
 
-    /**
-     * @return Collection<int, Questionnaire>
-     */
+    // Getter and Setter for ID
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    // Getter and Setter for Username
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(string $username): self
+    {
+        $this->username = $username;
+        return $this;
+    }
+
+    // Getter and Setter for Password
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+        return $this;
+    }
+
+    // Implement the UserInterface method
+    public function getUserIdentifier(): string
+    {
+        return $this->username; // or email, depending on your login field
+    }
+
+    // Implement the PasswordAuthenticatedUserInterface method
+    public function getRoles(): array
+    {
+        return match($this->poste) {
+            Poste::ADMIN => ['ROLE_ADMIN'],
+            Poste::DIRECTEUR => ['ROLE_DIRECTEUR'],
+            Poste::FACTURATION => ['ROLE_FACTURATION'],
+            Poste::OUVRIER => ['ROLE_OUVRIER'],
+            Poste::CHARGES => ['ROLE_CHARGES'],
+            default => ['ROLE_USER'],
+        };
+    }
+
+    // Implement the eraseCredentials method to handle sensitive data
+    public function eraseCredentials(): void
+    {
+        $this->password = null; // Clearing the password after use
+    }
+
+    // Getter and Setter for Poste
+    public function getPoste(): Poste
+    {
+        return $this->poste;
+    }
+
+    public function setPoste(Poste $poste): self
+    {
+        $this->poste = $poste;
+        return $this;
+    }
+
+    // Getter and Setter for Salaire
+    public function getSalaire(): ?float
+    {
+        return $this->salaire;
+    }
+
+    public function setSalaire(?float $salaire): self
+    {
+        $this->salaire = $salaire;
+        return $this;
+    }
+
+    // Getter and Setter for RIB
+    public function getRib(): ?string
+    {
+        return $this->rib;
+    }
+
+    public function setRib(?string $rib): self
+    {
+        $this->rib = $rib;
+        return $this;
+    }
+
+    // Getter and Setter for Code Sociale
+    public function getCodeSociale(): ?string
+    {
+        return $this->codeSociale;
+    }
+
+    public function setCodeSociale(?string $codeSociale): self
+    {
+        $this->codeSociale = $codeSociale;
+        return $this;
+    }
+
+    // Getter and Setter for Departement
+    public function getDepartement(): ?Departement
+    {
+        return $this->departement;
+    }
+
+    public function setDepartement(?Departement $departement): self
+    {
+        $this->departement = $departement;
+        return $this;
+    }
+
+    // Methods for Clfr
+    public function getClfrs(): Collection
+    {
+        return $this->clfrs;
+    }
+
+    public function addClfr(Clfr $clfr): self
+    {
+        if (!$this->clfrs->contains($clfr)) {
+            $this->clfrs->add($clfr);
+        }
+        return $this;
+    }
+
+    public function removeClfr(Clfr $clfr): self
+    {
+        $this->clfrs->removeElement($clfr);
+        return $this;
+    }
+
+    // Methods for Demande
+    public function getDemandes(): Collection
+    {
+        return $this->demandes;
+    }
+
+    public function addDemande(Demande $demande): self
+    {
+        if (!$this->demandes->contains($demande)) {
+            $this->demandes->add($demande);
+        }
+        return $this;
+    }
+
+    public function removeDemande(Demande $demande): self
+    {
+        $this->demandes->removeElement($demande);
+        return $this;
+    }
+
+    // Getter and Setter for Fiche Employe
+    public function getFicheEmploye(): ?FicheEmploye
+    {
+        return $this->ficheEmploye;
+    }
+
+    public function setFicheEmploye(?FicheEmploye $ficheEmploye): self
+    {
+        $this->ficheEmploye = $ficheEmploye;
+        return $this;
+    }
+
+    // Methods for Pointage
+    public function getPointages(): Collection
+    {
+        return $this->pointages;
+    }
+
+    public function addPointage(Pointage $pointage): self
+    {
+        if (!$this->pointages->contains($pointage)) {
+            $this->pointages->add($pointage);
+        }
+        return $this;
+    }
+
+    public function removePointage(Pointage $pointage): self
+    {
+        $this->pointages->removeElement($pointage);
+        return $this;
+    }
+
+    // Methods for Questionnaire
     public function getQuestionnaires(): Collection
     {
-        if (!$this->questionnaires instanceof Collection) {
-            $this->questionnaires = new ArrayCollection();
-        }
         return $this->questionnaires;
     }
 
     public function addQuestionnaire(Questionnaire $questionnaire): self
     {
-        if (!$this->getQuestionnaires()->contains($questionnaire)) {
-            $this->getQuestionnaires()->add($questionnaire);
+        if (!$this->questionnaires->contains($questionnaire)) {
+            $this->questionnaires->add($questionnaire);
         }
         return $this;
     }
 
     public function removeQuestionnaire(Questionnaire $questionnaire): self
     {
-        $this->getQuestionnaires()->removeElement($questionnaire);
+        $this->questionnaires->removeElement($questionnaire);
         return $this;
     }
-
 }

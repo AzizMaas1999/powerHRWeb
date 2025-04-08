@@ -9,6 +9,8 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use App\Enum\Poste;
 
 class EmployeType extends AbstractType
 {
@@ -17,17 +19,19 @@ class EmployeType extends AbstractType
         $builder
             ->add('username')
             ->add('password')
-            ->add('poste')
+            ->add('poste', ChoiceType::class, [
+                'choices' => Poste::cases(),
+                'choice_label' => fn(Poste $poste) => $poste->value,
+                'choice_value' => fn (?Poste $poste) => $poste?->value,
+                'label' => 'Poste'
+            ])            
             ->add('salaire')
             ->add('rib')
             ->add('codeSociale')
             ->add('departement', EntityType::class, [
                 'class' => Departement::class,
-                'choice_label' => 'id',
-            ])
-            ->add('ficheEmploye', EntityType::class, [
-                'class' => FicheEmploye::class,
-                'choice_label' => 'id',
+                'choice_label' => 'nom', // 👈 show the name instead
+                'label' => 'Département',
             ])
         ;
     }
