@@ -26,12 +26,15 @@ final class RepquestionnaireController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $repquestionnaire = new Repquestionnaire();
+        $repquestionnaire->setDateCreation(new \DateTime());
         $form = $this->createForm(RepquestionnaireType::class, $repquestionnaire);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($repquestionnaire);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Réponse ajoutée avec succès.');
 
             return $this->redirectToRoute('app_repquestionnaire_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -59,6 +62,8 @@ final class RepquestionnaireController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
+            $this->addFlash('info', 'Réponse modifiée avec succès.');
+
             return $this->redirectToRoute('app_repquestionnaire_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -74,6 +79,8 @@ final class RepquestionnaireController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$repquestionnaire->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($repquestionnaire);
             $entityManager->flush();
+
+            $this->addFlash('danger', 'Réponse supprimée avec succès.');
         }
 
         return $this->redirectToRoute('app_repquestionnaire_index', [], Response::HTTP_SEE_OTHER);

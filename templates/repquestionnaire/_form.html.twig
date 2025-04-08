@@ -1,4 +1,19 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+<div class="container mt-4">
+    <div class="card shadow p-4">
+        {{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
+
+        <div class="row justify-content-center">
+            <div class="col-md-8 mb-3">
+                {{ form_label(form.reponse, 'Réponse', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.reponse, {'attr': {'class': 'form-control form-control-lg'}}) }}
+                {{ form_errors(form.reponse) }}
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <button class="btn btn-primary">{{ button_label|default('Valider') }}</button>
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+</div>

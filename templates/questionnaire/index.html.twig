@@ -5,7 +5,11 @@
 {% block body %}
     <h1>Questionnaire index</h1>
 
-    <table class="table">
+    <div class="d-flex justify-content-end mb-3">
+        <a href="{{ path('app_questionnaire_new') }}" class="btn btn-success">➕ Create new</a>
+    </div>
+
+    <table class="table table-dark table-hover table-bordered">
         <thead>
             <tr>
                 <th>Id</th>
@@ -23,17 +27,22 @@
                 <td>{{ questionnaire.objet }}</td>
                 <td>{{ questionnaire.description }}</td>
                 <td>
-                    <a href="{{ path('app_questionnaire_show', {'id': questionnaire.id}) }}">show</a>
-                    <a href="{{ path('app_questionnaire_edit', {'id': questionnaire.id}) }}">edit</a>
+                    <form method="post" action="{{ path('app_questionnaire_delete', {'id': questionnaire.id}) }}" style="display:inline;" onsubmit="return confirm('Supprimer ce questionnaire ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ questionnaire.id) }}">
+                        <button type="submit" style="background: none; border: none;" title="Supprimer">
+                            <i class="bi bi-trash-fill text-danger"></i>
+                        </button>
+                    </form>
+                    <a href="{{ path('app_questionnaire_edit', {'id': questionnaire.id}) }}" class="icon-link edit-icon text-primary" title="Modifier">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">no records found</td>
+                <td colspan="5" class="text-center">No records found</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_questionnaire_new') }}">Create new</a>
 {% endblock %}

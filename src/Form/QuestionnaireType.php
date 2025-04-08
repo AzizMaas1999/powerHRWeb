@@ -14,15 +14,13 @@ class QuestionnaireType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('dateCreation', null, [
-                'widget' => 'single_text',
-            ])
+            
             ->add('objet')
             ->add('description')
-            ->add('employe', EntityType::class, [
-                'class' => Employe::class,
-                'choice_label' => 'id',
-            ])
+           // ->add('employe', EntityType::class, [
+              //  'class' => Employe::class,
+              //  'choice_label' => 'id',
+           // ])
         ;
     }
 

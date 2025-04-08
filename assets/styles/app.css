@@ -1,3 +1,36 @@
 body {
     background-color:#292e30;
+    color:#fff;
 }
+.table{
+    color: #ffffff;
+}
+.icon-link {
+    margin-right: 15px; /* espace entre les icônes */
+    text-decoration: none;
+    font-size: 1.2rem;
+}
+
+.trash-icon {
+    color: red;
+}
+
+.edit-icon {
+    color: #0d6efd; /* bleu Bootstrap */
+}
+.alert-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 150%;
+    max-width: 500px;}
+    
+    .form-select {
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1rem;
+        width: 100%; /* Ajout important pour qu'il prenne tout l'espace */
+        box-sizing: border-box;
+    }
+    

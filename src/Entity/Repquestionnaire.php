@@ -29,7 +29,7 @@ class Repquestionnaire
         return $this;
     }
 
-    #[ORM\Column(type: 'date', nullable: false)]
+    #[ORM\Column(name: "dateCreation",type: 'date', nullable: false)]
     private ?\DateTimeInterface $dateCreation = null;
 
     public function getDateCreation(): ?\DateTimeInterface

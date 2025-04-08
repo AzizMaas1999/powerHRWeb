@@ -26,12 +26,17 @@ final class DemandeController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $demande = new Demande();
+        $demande->setDateCreation(new \DateTime());
+        $demande->setstatus('En Attente');
+
         $form = $this->createForm(DemandeType::class, $demande);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($demande);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Demande ajoutée avec succès.');
 
             return $this->redirectToRoute('app_demande_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -59,6 +64,8 @@ final class DemandeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
+            $this->addFlash('info', 'Demande modifiée avec succès.');
+
             return $this->redirectToRoute('app_demande_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -74,6 +81,8 @@ final class DemandeController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$demande->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($demande);
             $entityManager->flush();
+
+            $this->addFlash('danger', 'Demande supprimée avec succès.');
         }
 
         return $this->redirectToRoute('app_demande_index', [], Response::HTTP_SEE_OTHER);

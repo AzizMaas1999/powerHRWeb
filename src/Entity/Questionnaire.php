@@ -4,10 +4,8 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-
 use App\Repository\QuestionnaireRepository;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: QuestionnaireRepository::class)]
 #[ORM\Table(name: 'questionnaire')]
@@ -29,7 +27,7 @@ class Questionnaire
         return $this;
     }
 
-    #[ORM\Column(type: 'date', nullable: false)]
+    #[ORM\Column(name: "dateCreation", type: 'date', nullable: false)]
     private ?\DateTimeInterface $dateCreation = null;
 
     public function getDateCreation(): ?\DateTimeInterface
@@ -44,6 +42,14 @@ class Questionnaire
     }
 
     #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\Length(
+        min: 10,
+        minMessage: "L'objet doit contenir au moins {{ 10 }} caractères."
+    )]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-ZÀ-ÿ\s]+$/u',
+        message: "L'objet ne doit contenir que des lettres et des espaces."
+    )]
     private ?string $objet = null;
 
     public function getObjet(): ?string
@@ -58,6 +64,14 @@ class Questionnaire
     }
 
     #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\Length(
+        min: 10,
+        minMessage: "La description doit contenir au moins {{ 10}} caractères."
+    )]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-ZÀ-ÿ\s]+$/u',
+        message: "La description ne doit contenir que des lettres et des espaces."
+    )]
     private ?string $description = null;
 
     public function getDescription(): ?string
@@ -85,5 +99,4 @@ class Questionnaire
         $this->employe = $employe;
         return $this;
     }
-
 }

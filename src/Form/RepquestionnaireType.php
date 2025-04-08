@@ -12,12 +12,12 @@ class RepquestionnaireType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('dateCreation', null, [
-                'widget' => 'single_text',
-            ])
+           // ->add('dateCreation', null, [
+             //   'widget' => 'single_text',
+          //  ])
             ->add('reponse')
-            ->add('questionnaire_id')
-            ->add('employe_id')
+           // ->add('questionnaire_id')
+            //->add('employe_id')
         ;
     }
 
