@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau Pointage{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-white">Ajouter un Fichier CSV</h1>
+        <a href="{{ path('app_pointage_index') }}" class="btn btn-sm btn-primary">← Retour à la liste</a>
+    </div>
+
+    {{ include('pointage/_form.html.twig', { button_label: 'Enregistrer' }) }}
+</div>
+{% endblock %}
