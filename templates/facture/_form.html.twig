@@ -1,4 +1,18 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    <div class="row">
+        {% for field in form %}
+            {% if field.vars.name != '_token' %}
+                <div class="mb-3 col-md-6">
+                    <label class="form-label text-white">{{ field.vars.label|default(field.vars.name|capitalize) }}</label>
+                    {{ form_widget(field, { 'attr': {'class': 'form-control bg-dark text-white border-secondary'} }) }}
+                    {{ form_errors(field) }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <!-- Center the button using flexbox or text-center -->
+    <div class="d-flex justify-content-center mt-4">
+        <button type="submit" class="btn btn-info rounded-pill px-4 py-2">💾 Enregistrer</button>
+    </div>
 {{ form_end(form) }}

@@ -1,41 +1,44 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Paie index{% endblock %}
+{% block title %}Liste des Paies{% endblock %}
 
 {% block body %}
-    <h1>Paie index</h1>
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-white">Liste des paies</h1>
+        <a href="{{ path('app_paie_new') }}" class="btn btn-success">+ Nouvelle paie</a>
+    </div>
 
-    <table class="table table-dark">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>NbJour</th>
-                <th>Montant</th>
-                <th>Mois</th>
-                <th>Annee</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for paie in paies %}
-            <tr>
-                <td>{{ paie.id }}</td>
-                <td>{{ paie.nbJour }}</td>
-                <td>{{ paie.montant }}</td>
-                <td>{{ paie.mois }}</td>
-                <td>{{ paie.annee }}</td>
-                <td>
-                    <a href="{{ path('app_paie_show', {'id': paie.id}) }}">show</a>
-                    <a href="{{ path('app_paie_edit', {'id': paie.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_paie_new') }}">Create new</a>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead >
+                <tr>
+                    <th>Nombre de jours</th>
+                    <th>Montant</th>
+                    <th>Mois</th>
+                    <th>Année</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for paie in paies %}
+                    <tr>
+                        <td>{{ paie.nbJour }}</td>
+                        <td>{{ paie.montant }}</td>
+                        <td>{{ paie.mois }}</td>
+                        <td>{{ paie.annee }}</td>
+                        <td class="text-center">
+                            <a href="{{ path('app_paie_show', {'id': paie.id}) }}" class="btn btn-sm btn-outline-primary me-1">Afficher</a>
+                            <a href="{{ path('app_paie_edit', {'id': paie.id}) }}" class="btn btn-sm btn-outline-warning">Modifier</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">Aucune paie trouvée.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

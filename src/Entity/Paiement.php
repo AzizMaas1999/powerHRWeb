@@ -4,9 +4,7 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-
+use Symfony\Component\Validator\Constraints as Assert; // Ajouter l'importation des contraintes Symfony
 use App\Repository\PaiementRepository;
 
 #[ORM\Entity(repositoryClass: PaiementRepository::class)]
@@ -30,6 +28,7 @@ class Paiement
     }
 
     #[ORM\Column(type: 'date', nullable: false)]
+    #[Assert\NotBlank(message: "La date de paiement est obligatoire.")]
     private ?\DateTimeInterface $date = null;
 
     public function getDate(): ?\DateTimeInterface
@@ -44,6 +43,7 @@ class Paiement
     }
 
     #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\Choice(choices: ['CB', 'Virement', 'Chèque'], message: "Le mode de paiement doit être l'un des choix suivants : CB, Virement, Chèque.")]
     private ?string $mode = null;
 
     public function getMode(): ?string
@@ -58,6 +58,8 @@ class Paiement
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "La référence est obligatoire.")]
+    #[Assert\Length(min: 3, max: 255, minMessage: "La référence doit comporter au moins 3 caractères.", maxMessage: "La référence ne peut pas dépasser 255 caractères.")]
     private ?string $reference = null;
 
     public function getReference(): ?string
@@ -72,6 +74,9 @@ class Paiement
     }
 
     #[ORM\Column(type: 'float', nullable: true)]
+    #[Assert\NotBlank(message: "Le montant est obligatoire.")]
+    #[Assert\Positive(message: "Le montant doit être un nombre positif.")]
+    #[Assert\Type(type: 'float', message: "Le montant doit être un nombre valide.")]
     private ?float $montant = null;
 
     public function getMontant(): ?float
@@ -84,5 +89,4 @@ class Paiement
         $this->montant = $montant;
         return $this;
     }
-
 }
