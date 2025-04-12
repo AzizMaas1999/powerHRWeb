@@ -1,11 +1,67 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Departement{% endblock %}
+{% block title %}Créer un Nouveau Département{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        .center-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: transparent;
+        }
+
+        .card-custom {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h3, label {
+            font-weight: bold;
+        }
+
+        .btn-info {
+            background-color: #1d8cf8 !important;
+            border-color: #1d8cf8 !important;
+            font-weight: bold;
+        }
+
+        .btn-neutral {
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <h1>Create new Departement</h1>
+<div class="center-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card card-custom p-4">
+                    <h3 class="title text-info text-center mb-4">
+                        <i class="fa fa-pencil-square-o"></i> Créer un Nouveau Département
+                    </h3>
 
-    {{ include('departement/_form.html.twig') }}
+                    <div class="px-3">
+                        {{ include('departement/_form.html.twig') }}
+                    </div>
 
-    <a href="{{ path('app_departement_index') }}">back to list</a>
+                    <div class="card-footer border-0 bg-transparent d-flex justify-content-start px-3 mt-3">
+                        <a href="{{ path('app_departement_index') }}" class="btn btn-neutral btn-round">
+                            <i class="fa fa-arrow-left"></i> Retour à la liste
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
