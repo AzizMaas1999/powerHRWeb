@@ -1,13 +1,18 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Paie{% endblock %}
+{% block title %}Modifier Paie{% endblock %}
 
 {% block body %}
-    <h1>Edit Paie</h1>
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-white">Modifier la paie</h1>
+        <a href="{{ path('app_paie_index') }}" class="btn btn-outline-light">← Retour à la liste</a>
+    </div>
 
-    {{ include('paie/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('paie/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
 
-    <a href="{{ path('app_paie_index') }}">back to list</a>
-
-    {{ include('paie/_delete_form.html.twig') }}
+    <div class="mt-4 d-flex justify-content-center gap-3">
+        {{ include('paie/_delete_form.html.twig') }}
+    </div>
+</div>
 {% endblock %}
