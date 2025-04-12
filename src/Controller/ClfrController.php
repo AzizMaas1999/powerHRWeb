@@ -69,13 +69,15 @@ final class ClfrController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_clfr_delete', methods: ['POST'])]
-    public function delete(Request $request, Clfr $clfr, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$clfr->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($clfr);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('app_clfr_index', [], Response::HTTP_SEE_OTHER);
+public function delete(Request $request, Clfr $clfr, EntityManagerInterface $entityManager): Response
+{
+    // Utilisation correcte de get() pour récupérer le token CSRF
+    if ($this->isCsrfTokenValid('delete'.$clfr->getId(), $request->request->get('_token'))) {
+        $entityManager->remove($clfr);
+        $entityManager->flush();
     }
+
+    return $this->redirectToRoute('app_clfr_index');
+}
+
 }

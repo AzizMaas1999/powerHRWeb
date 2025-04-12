@@ -70,7 +70,7 @@ class Clfr
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(name: 'numTel', type: 'string', nullable: true)]
     private ?string $numTel = null;
 
     public function getNumTel(): ?string
@@ -113,7 +113,7 @@ class Clfr
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(name: 'photoPath', type: 'string', nullable: true)]
     private ?string $photoPath = null;
 
     public function getPhotoPath(): ?string

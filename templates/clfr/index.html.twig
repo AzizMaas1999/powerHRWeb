@@ -1,45 +1,102 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Clfr index{% endblock %}
+{% block title %}Liste des CLFR{% endblock %}
 
 {% block body %}
-    <h1>Clfr index</h1>
+    <div class="container mt-4">
+        <h1 class="text-center text-white mb-4">Liste des CLFR</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nom</th>
-                <th>Matricule_fiscale</th>
-                <th>Adresse</th>
-                <th>NumTel</th>
-                <th>Type</th>
-                <th>PhotoPath</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for clfr in clfrs %}
-            <tr>
-                <td>{{ clfr.id }}</td>
-                <td>{{ clfr.nom }}</td>
-                <td>{{ clfr.matriculeFiscale }}</td>
-                <td>{{ clfr.adresse }}</td>
-                <td>{{ clfr.numTel }}</td>
-                <td>{{ clfr.type }}</td>
-                <td>{{ clfr.photoPath }}</td>
-                <td>
-                    <a href="{{ path('app_clfr_show', {'id': clfr.id}) }}">show</a>
-                    <a href="{{ path('app_clfr_edit', {'id': clfr.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="8">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        <div class="table-responsive">
+            <table class="table table-hover table-dark table-bordered text-white">
+                <thead class="bg-primary text-white">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Matricule Fiscale</th>
+                        <th>Adresse</th>
+                        <th>Téléphone</th>
+                        <th>Type</th>
+                        <th>Photo</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for clfr in clfrs %}
+                    <tr>
+                        <td>{{ clfr.id }}</td>
+                        <td>{{ clfr.nom }}</td>
+                        <td>{{ clfr.matriculeFiscale }}</td>
+                        <td>{{ clfr.adresse }}</td>
+                        <td>{{ clfr.numTel }}</td>
+                        <td>{{ clfr.type }}</td>
+                        <td>
+                            {% if clfr.photoPath %}
+                                <img src="{{ asset(clfr.photoPath) }}" alt="Photo" class="img-thumbnail rounded-circle" style="width: 50px; height: 50px;">
+                            {% else %}
+                                <span class="text-muted">Aucune image</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group">
+                                <a href="{{ path('app_clfr_show', {'id': clfr.id}) }}" class="btn btn-outline-info btn-sm">
+                                    <i class="nc-icon nc-eye"></i> Voir
+                                </a>
+                                <a href="{{ path('app_clfr_edit', {'id': clfr.id}) }}" class="btn btn-outline-warning btn-sm">
+                                    <i class="nc-icon nc-ruler-pencil"></i> Modifier
+                                </a>
+                                <form class="delete-form d-inline" data-id="{{ clfr.id }}" method="POST">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ clfr.id) }}">
+                                    <button type="button" class="btn btn-outline-danger btn-sm delete-btn">
+                                        <i class="nc-icon nc-trash"></i> Supprimer
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted">Aucun enregistrement trouvé</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
-    <a href="{{ path('app_clfr_new') }}">Create new</a>
+        <div class="text-center mt-4">
+            <a href="{{ path('app_clfr_new') }}" class="btn btn-success btn-lg">
+                <i class="nc-icon nc-simple-add"></i> Ajouter un CLFR
+            </a>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                if (!confirm('Êtes-vous sûr de vouloir supprimer ce CLFR ?')) {
+                    return;
+                }
+    
+                let form = this.closest('.delete-form');
+                let id = form.getAttribute('data-id');
+                let token = form.querySelector('input[name="_token"]').value;
+    
+                fetch(`/clfr/${id}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `_token=${token}`
+                }).then(response => {
+                    if (response.ok) {
+                        form.closest('tr').remove();
+                    } else {
+                        alert('Erreur lors de la suppression.');
+                    }
+                }).catch(error => console.error('Erreur:', error));
+            });
+        });
+    });
+    </script>
 {% endblock %}

@@ -23,6 +23,7 @@ final class EmployeController extends AbstractController
     }
 
     #[Route('/new', name: 'app_employe_new', methods: ['GET', 'POST'])]
+    
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $employe = new Employe();
