@@ -29,7 +29,7 @@
                         <td>{{ employe.username }}</td>
                         <td>{{ nb }}</td>
                         <td class="text-center">
-                            <a href="{{ path('app_pointage_new', {'id': employe.id}) }}" class="btn btn-sm btn-outline-light me-1">Ajouter Pointage</a>
+                            <a href="{{ path('app_pointageadmin_new', {'idadmin': employe.id}) }}" class="btn btn-sm btn-outline-light me-1">Ajouter Pointage</a>
                         </td>
                     </tr>
                 {% else %}

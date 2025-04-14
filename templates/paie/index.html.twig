@@ -6,7 +6,6 @@
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="text-white">Liste des paies</h1>
-        <a href="{{ path('app_paie_new') }}" class="btn btn-success">+ Nouvelle paie</a>
     </div>
 
     <div class="table-responsive">
@@ -29,7 +28,6 @@
                         <td>{{ paie.annee }}</td>
                         <td class="text-center">
                             <a href="{{ path('app_paie_show', {'id': paie.id}) }}" class="btn btn-sm btn-outline-primary me-1">Afficher</a>
-                            <a href="{{ path('app_paie_edit', {'id': paie.id}) }}" class="btn btn-sm btn-outline-warning">Modifier</a>
                         </td>
                     </tr>
                 {% else %}

@@ -28,11 +28,15 @@ final class PointageController extends AbstractController
     }
 
     #[Route('/new/{id}', name: 'app_pointage_new', methods: ['GET', 'POST'])]
-    public function new(Employe $employe, Request $request, EntityManagerInterface $entityManager): Response
+    public function new(int $id, EmployeRepository $employeRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         
         $pointage = new Pointage();
-        $pointage->setEmploye($employe);
+        $employe = $employeRepository->find($id);
+        if ($employe) {
+            $pointage->setEmploye($employe);
+        }
+        $pointage->setPaie(null);
         $form = $this->createForm(PointageType::class, $pointage);
         $form->handleRequest($request);
 

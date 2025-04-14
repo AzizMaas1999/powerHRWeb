@@ -25,7 +25,7 @@ final class PointageAdminController extends AbstractController
         ]);
     }
 
-    #[Route('/new/{id}', name: 'app_pointageadmin_new', methods: ['GET', 'POST'])]
+    #[Route('/new/{idadmin}', name: 'app_pointageadmin_new', methods: ['GET', 'POST'])]
     public function new(Employe $employe, Request $request, EntityManagerInterface $entityManager): Response
     {
         
