@@ -15761,6 +15761,8 @@ code {
 
 /* Footer */
 .footer {
+  margin-left: 122px;
+  width: inherit;
   background: #000000;
   padding: 20px 1rem;
   transition: all 0.25s ease;

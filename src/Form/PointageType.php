@@ -24,14 +24,6 @@ class PointageType extends AbstractType
             ->add('heureSortie', null, [
                 'widget' => 'single_text',
             ])
-            ->add('employe', EntityType::class, [
-                'class' => Employe::class,
-                'choice_label' => 'id',
-            ])
-            ->add('paie', EntityType::class, [
-                'class' => Paie::class,
-                'choice_label' => 'id',
-            ])
         ;
     }
 
