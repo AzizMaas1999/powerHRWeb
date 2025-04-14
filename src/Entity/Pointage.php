@@ -101,7 +101,6 @@ class Pointage
 
     #[ORM\ManyToOne(targetEntity: Paie::class, inversedBy: 'pointages')]
     #[ORM\JoinColumn(name: 'paie_id', referencedColumnName: 'id')]
-    #[Assert\NotNull(message: "La paie est obligatoire.")]
     private ?Paie $paie = null;
 
     public function getPaie(): ?Paie
