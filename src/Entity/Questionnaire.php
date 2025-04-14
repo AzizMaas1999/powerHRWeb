@@ -42,9 +42,10 @@ class Questionnaire
     }
 
     #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\NotBlank(message:'champs obligatoire')]
     #[Assert\Length(
         min: 10,
-        minMessage: "L'objet doit contenir au moins {{ 10 }} caractères."
+        minMessage: "L'objet doit contenir au moins 10 caractères."
     )]
     #[Assert\Regex(
         pattern: '/^[a-zA-ZÀ-ÿ\s]+$/u',
@@ -64,9 +65,10 @@ class Questionnaire
     }
 
     #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\NotBlank(message:'champs obligatoire')]
     #[Assert\Length(
         min: 10,
-        minMessage: "La description doit contenir au moins {{ 10}} caractères."
+        minMessage: "La description doit contenir au moins 10 caractères."
     )]
     #[Assert\Regex(
         pattern: '/^[a-zA-ZÀ-ÿ\s]+$/u',

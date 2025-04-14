@@ -2,7 +2,7 @@
     <div class="card shadow p-4">
             <h2 class="text-center mb-4 text-primary">Créer un nouveau questionnaire</h2>
 
-{{ form_start(form) }}
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 
  <div class="row justify-content-center">
             <div class="col-md-8 mb-3">
@@ -19,9 +19,12 @@
         {{ form_errors(form.description) }}
     </div>
 </div>
- <div class="text-center mt-4">
-<button class="btn">{{ button_label|default('Save') }}</button>
-</div>
+  <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary">
+                {{ button_label|default('Enregistrer') }}
+            </button>
+            <a href="{{ path('app_questionnaire_index') }}" class="btn btn-secondary">Retour</a>
+        </div>
 {{ form_end(form) }}
 </div>
 </div>

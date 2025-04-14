@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Demandes à valider{% endblock %}
+
+{% block body %}
+    <h1>Liste des demandes en attente</h1>
+
+    <a href="{{ path('app_demande_index') }}" class="btn btn-secondary mb-3">⬅ Retour</a>
+
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Date création</th>
+                <th>Type</th>
+                <th>Date début</th>
+                <th>Date fin</th>
+                <th>Salaire</th>
+                <th>Cause</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for demande in demandes %}
+            <tr>
+                <td>{{ demande.id }}</td>
+                <td>{{ demande.dateCreation|date('Y-m-d') }}</td>
+                <td>{{ demande.type }}</td>
+                <td>{{ demande.dateDebut|date('Y-m-d') }}</td>
+                <td>{{ demande.dateFin|date('Y-m-d') }}</td>
+                <td>{{ demande.salaire }}</td>
+                <td>{{ demande.cause }}</td>
+                <td class="d-flex gap-1">
+                    <form method="post" action="{{ path('app_demande_valider', {'id': demande.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('Valider' ~ demande.id) }}">
+                        <button class="btn btn-success btn-sm">Valider</button>
+                    </form>
+                    <form method="post" action="{{ path('app_demande_refuser', {'id': demande.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('Refuser' ~ demande.id) }}">
+                        <button class="btn btn-danger btn-sm">Refuser</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8" class="text-center">Aucune demande en attente.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

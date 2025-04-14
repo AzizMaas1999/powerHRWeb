@@ -5,6 +5,17 @@
 {% block body %}
     <h1>Create new Repquestionnaire</h1>
 
+<div class="mb-3">
+    <label class="form-label">Object</label>
+    <textarea class="form-style-dark" rows="2" readonly>{{ questionnaire.objet }}</textarea>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Description</label>
+    <textarea class="form-style-dark" rows="2" readonly>{{ questionnaire.description }}</textarea>
+</div>
+
+
     {{ include('repquestionnaire/_form.html.twig') }}
 
 {% endblock %}

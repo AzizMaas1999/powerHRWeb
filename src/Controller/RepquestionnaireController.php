@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Repository\QuestionnaireRepository;
 
 #[Route('/repquestionnaire')]
 final class RepquestionnaireController extends AbstractController
@@ -22,28 +23,36 @@ final class RepquestionnaireController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_repquestionnaire_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/repquestionnaire/new/{questionnaireId}', name: 'app_repquestionnaire_new')]
+    public function new(Request $request, EntityManagerInterface $entityManager, QuestionnaireRepository $questionnaireRepository, int $questionnaireId): Response
     {
-        $repquestionnaire = new Repquestionnaire();
-        $repquestionnaire->setDateCreation(new \DateTime());
-        $form = $this->createForm(RepquestionnaireType::class, $repquestionnaire);
-        $form->handleRequest($request);
+        $repQuestionnaire = new RepQuestionnaire();
+        $repQuestionnaire->setDateCreation(new \DateTime());
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($repquestionnaire);
-            $entityManager->flush();
-
-            $this->addFlash('success', 'Réponse ajoutée avec succès.');
-
-            return $this->redirectToRoute('app_repquestionnaire_index', [], Response::HTTP_SEE_OTHER);
+        $questionnaire = $questionnaireRepository->find($questionnaireId);
+        if (!$questionnaire) {
+            throw $this->createNotFoundException('Questionnaire not found');
         }
-
+    
+        $repQuestionnaire->setQuestionnaireId($questionnaire->getId());
+    
+        $form = $this->createForm(RepQuestionnaireType::class, $repQuestionnaire);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($repQuestionnaire);
+            $entityManager->flush();
+    
+            return $this->redirectToRoute('app_repquestionnaire_index');
+        }
+    
         return $this->render('repquestionnaire/new.html.twig', [
-            'repquestionnaire' => $repquestionnaire,
-            'form' => $form,
+            'rep_questionnaire' => $repQuestionnaire,
+            'form' => $form->createView(),
+            'questionnaire' => $questionnaire, // 👈 On envoie l'objet à la vue
         ]);
     }
+    
 
     #[Route('/{id}', name: 'app_repquestionnaire_show', methods: ['GET'])]
     public function show(Repquestionnaire $repquestionnaire): Response

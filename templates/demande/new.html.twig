@@ -5,6 +5,7 @@
 {% block body %}
     <h1>Create new Demande</h1>
 
-    {{ include('demande/_form.html.twig') }}
+    
+    {{ include('demande/_form.html.twig', { button_label: 'Enregistrer' }) }}
 
 {% endblock %}

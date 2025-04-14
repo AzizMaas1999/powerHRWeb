@@ -45,9 +45,11 @@ class Demande
     private ?float $salaire = null;
 
     #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\NotBlank(message: "La cause  est obligatoire.")]
+
     #[Assert\Length(
-        max: 1000,
-        maxMessage: "La cause ne doit pas dépasser {{ limit }} caractères."
+        min: 10,
+        maxMessage: "La cause doit contenir au moins 10 caractères."
     )]
     private ?string $cause = null;
 
