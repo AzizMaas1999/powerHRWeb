@@ -3,14 +3,11 @@
 namespace App\Form;
 
 use App\Entity\Clfr;
-use App\Entity\Employe;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\File;
 
 class ClfrType extends AbstractType
 {
@@ -47,23 +44,8 @@ class ClfrType extends AbstractType
                 'mapped' => false,
                 'required' => false,
                 'attr' => ['class' => 'form-control'],
-                'constraints' => [
-                    new File([
-                        'maxSize' => '2M',
-                        'mimeTypes' => [
-                            'image/jpeg',
-                            'image/png',
-                        ],
-                        'mimeTypesMessage' => 'Veuillez uploader une image valide (JPG ou PNG)',
-                    ])
-                ],
             ])
-            ->add('employe', EntityType::class, [
-                'class' => Employe::class,
-                'choice_label' => 'username',
-                'label' => 'Employé associé',
-                'attr' => ['class' => 'form-select'],
-            ]);
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
