@@ -15,9 +15,7 @@
     <table class="table table-striped">
         <thead class="table-dark">
             <tr>
-                <th>Id</th>
                 <th>Username</th>
-                <th>Password</th>
                 <th>Poste</th>
                 <th>Salaire</th>
                 <th>Rib</th>
@@ -28,9 +26,7 @@
         <tbody>
         {% for employe in employes %}
             <tr>
-                <td>{{ employe.id }}</td>
                 <td>{{ employe.username }}</td>
-                <td>{{ employe.password }}</td>
                 <td>{{ employe.poste.value }}</td>
                 <td>{{ employe.salaire }}</td>
                 <td>{{ employe.rib }}</td>

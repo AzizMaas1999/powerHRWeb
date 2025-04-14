@@ -40,93 +40,6 @@
           {% block importmap %}{{ importmap('app') }}{% endblock %}
       {% endblock %}
   </head>
-
-<<<<<<< HEAD
-        if ($("#datetimepicker").length != 0) {
-          $('#datetimepicker').datetimepicker({
-            icons: {
-              time: "fa fa-clock-o",
-              date: "fa fa-calendar",
-              up: "fa fa-chevron-up",
-              down: "fa fa-chevron-down",
-              previous: 'fa fa-chevron-left',
-              next: 'fa fa-chevron-right',
-              today: 'fa fa-screenshot',
-              clear: 'fa fa-trash',
-              close: 'fa fa-remove'
-            }
-          });
-        }
-
-        function scrollToDownload() {
-
-          if ($('.section-download').length != 0) {
-            $("html, body").animate({
-              scrollTop: $('.section-download').offset().top
-            }, 1000);
-          }
-        }
-      });
-    </script>
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
-    </head>
-    <body>
-        <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg fixed-top navbar-transparent " color-on-scroll="300">
-    <div class="container">
-    <img src="{{ asset('UI/img/Logo1.png') }}" alt="" style="height: 300px; width: auto;">
-      <div class="navbar-translate">
-        <button class="navbar-toggler navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-bar bar1"></span>
-          <span class="navbar-toggler-bar bar2"></span>
-          <span class="navbar-toggler-bar bar3"></span>
-        </button>
-      </div>
-    </div>
-  </nav>
-  <!-- End Navbar -->
-  <div class="page-header section-dark" style="background-image: url('{{ asset('UI/img/homeBackground.jpeg') }}')">
-    <div class="filter"></div>
-    <div class="content-center">
-      <div class="container">
-        <div class="title-brand">
-          <h1 class="presentation-title">PowerHR</h1>
-        </div>
-        <h2 class="presentation-subtitle text-center">La première solution Ressources Humaines à considérer !</h2>
-        <div class="fog-low" style="opacity: 0.2">
-            <img src="{{ asset('UI/img/fog-low.png') }}" alt="">
-        </div>
-        <div class="fog-low right" style="opacity: 0.2">
-            <img src="{{ asset('UI/img/fog-low.png') }}" alt="">
-        </div>
-      </div>
-    </div>
-    <div class="moving-clouds" style="background-image: url('{{ asset('UI/img/clouds.png') }}'); "></div>
-  </div>
-    {% block body %}    
-        {% endblock %}
-    <footer class="footer footer-black  footer-white ">
-      <div class="container">
-        <div class="row">
-          <nav class="footer-nav">
-            <ul>
-              <li>
-                <a href="https://www.creative-tim.com" target="_blank">Creative Tim</a>
-              </li>
-              <li>
-                <a href="http://blog.creative-tim.com/" target="_blank">Blog</a>
-              </li>
-              <li>
-                <a href="https://www.creative-tim.com/license" target="_blank">Licenses</a>
-              </li>
-            </ul>
-          </nav>
-          <div class="credits ml-auto">
-            <span class="copyright">
-              
-            </span>
-=======
   <body>
     <div class="container-scroller">
         <!-- partial:partials/_sidebar.html -->
@@ -134,7 +47,6 @@
           <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
             <a class="sidebar-brand brand-logo" href="#"><img src="{{ asset('UI/assets/images/Logo.png') }}" alt="logo" /></a>
             <a class="sidebar-brand brand-logo-mini" href="#"><img src="{{ asset('UI/assets/images/Logo.png') }}" alt="logo" /></a>
->>>>>>> origin/main
           </div>
           <ul class="nav">
             <li class="nav-item nav-category">
@@ -167,6 +79,51 @@
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <a class="nav-link" href="/paie/new">Ajouter Paie</a></li>
                   <li class="nav-item"> <a class="nav-link" href="/paie">Afficher La Liste</a></li>
+                </ul>
+              </div>
+            </li>
+            <li class="nav-item menu-items">
+              <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+                <span class="menu-icon">
+                  <i class="mdi mdi-laptop"></i>
+                </span>
+                <span class="menu-title">employe</span>
+                <i class="menu-arrow"></i>
+              </a>
+              <div class="collapse" id="ui-basic">
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item"> <a class="nav-link" href="/employe/new">Ajouter employe</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="/employe">Afficher La Liste employe</a></li>
+                </ul>
+              </div>
+            </li>
+            <li class="nav-item menu-items">
+              <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+                <span class="menu-icon">
+                  <i class="mdi mdi-laptop"></i>
+                </span>
+                <span class="menu-title">Fiche Employe</span>
+                <i class="menu-arrow"></i>
+              </a>
+              <div class="collapse" id="ui-basic">
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item"> <a class="nav-link" href="/fiche/employe/new">Ajouter Fiche</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="/fiche/employe">Afficher La Liste des fichers</a></li>
+                </ul>
+              </div>
+            </li>
+            <li class="nav-item menu-items">
+              <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+                <span class="menu-icon">
+                  <i class="mdi mdi-laptop"></i>
+                </span>
+                <span class="menu-title">Candidat</span>
+                <i class="menu-arrow"></i>
+              </a>
+              <div class="collapse" id="ui-basic">
+                <ul class="nav flex-column sub-menu">
+                  
+                  <li class="nav-item"> <a class="nav-link" href="/candidat">Afficher La Liste des Candidats/a></li>
                 </ul>
               </div>
             </li>

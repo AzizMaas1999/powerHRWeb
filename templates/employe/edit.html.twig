@@ -1,98 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier employe{% endblock %}
+{% block title %}Modifier l'employé{% endblock %}
 
 {% block body %}
-<style>
-    form {
-        max-width: 600px;
-        margin: 0 auto;
-        background-color: #f9f9f9;
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
-    }
-
-    label {
-        display: block;
-        margin-bottom: 6px;
-        font-weight: bold;
-        color: #333;
-    }
-
-    input[type="text"],
-    input[type="number"],
-    input[type="email"],
-    input[type="password"],
-    select,
-    textarea {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 20px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        font-size: 14px;
-        transition: border-color 0.3s;
-    }
-
-    input:focus,
-    select:focus,
-    textarea:focus {
-        border-color: #007bff;
-        outline: none;
-    }
-
-    .btn-success,
-    button[type="submit"],
-    input[type="submit"] {
-        background-color: #007bff;
-        color: white;
-        padding: 12px 24px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 16px;
-        transition: background-color 0.3s;
-    }
-
-    .btn-success:hover,
-    button[type="submit"]:hover {
-        background-color: #0056b3;
-    }
-
-    a {
-        display: inline-block;
-        margin-top: 15px;
-        text-decoration: none;
-        color: #007bff;
-    }
-
-    a:hover {
-        text-decoration: underline;
-    }
-</style>
-
 <div class="container mt-5">
-    <h1 class="text-center">Employe Application</h1>
-
+    <h1 class="text-center">Modifier l'Employé</h1>
     {% for message in app.flashes('success') %}
         <div class="alert alert-success">{{ message }}</div>
     {% endfor %}
 
     <div class="row justify-content-center">
         <div class="col-md-6">
-            {{ form_start(form) }}
-                {{ form_row(form.username) }}
-                {{ form_row(form.password) }}
-                {{ form_row(form.poste) }}
-                {{ form_row(form.salaire) }}
-                {{ form_row(form.rib) }}
-                {{ form_row(form.codeSociale) }}
-                {{ form_row(form.departement) }}
-                <div class="text-center">
-                    <button class="btn btn-success">{{ button_label|default('Save') }}</button>
-                </div>
-            {{ form_end(form) }}
+            {% include 'employe/_form.html.twig' with {'form': form} %}
         </div>
     </div>
 </div>

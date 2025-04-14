@@ -20622,7 +20622,8 @@ div.tagsinput {
 
 /* Sidebar */
 .sidebar {
-  min-height: calc(100vh - 70px);
+  position: fixed;
+  height: -webkit-fill-available;
   background: #191c24;
   font-weight: normal;
   padding: 0;
@@ -21126,6 +21127,7 @@ div.tagsinput {
       width: 100%; } }
 
 .content-wrapper {
+  margin-left: 122px;
   background: #000000;
   padding: 1.875rem 1.75rem;
   width: 100%;
