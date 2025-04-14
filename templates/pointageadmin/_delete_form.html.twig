@@ -1,0 +1,6 @@
+<form method="post"
+      action="{{ path('app_pointage_delete', {'id': pointage.id}) }}"
+      onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce pointage ?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ pointage.id) }}">
+    <button type="submit" class="btn btn-danger px-4">Supprimer</button>
+</form>
