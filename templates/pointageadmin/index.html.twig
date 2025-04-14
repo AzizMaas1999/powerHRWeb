@@ -1,0 +1,48 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Pointage Index{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 text-white">Liste des pointages</h1>
+        <a href="{{ path('app_newPointageEmpadmin') }}" class="btn btn-sm btn-primary">+ Nouveau pointage</a>
+    </div>
+    <div class="input-group">
+        <input type="text" class="form-control" placeholder="Date D'affectation" aria-label="Recipient's username" aria-describedby="basic-addon2">
+        <div class="input-group-append">
+            <button class="btn btn-sm btn-primary" type="button">Rechercher</button>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Heure d'entrée</th>
+                    <th>Heure de sortie</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pointage in pointages %}
+                    <tr>
+                        <td>{{ pointage.date ? pointage.date|date('Y-m-d') : '' }}</td>
+                        <td>{{ pointage.heureEntree ? pointage.heureEntree|date('H:i:s') : '' }}</td>
+                        <td>{{ pointage.heureSortie ? pointage.heureSortie|date('H:i:s') : '' }}</td>
+                        <td>
+                            <a href="{{ path('app_pointageadmin_show', {'id': pointage.id}) }}" class="btn btn-sm btn-primary me-1">Afficher</a>
+                            <a href="{{ path('app_pointageadmin_edit', {'id': pointage.id}) }}" class="btn btn-sm btn-info ">Modifier</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center text-secondary">Aucun enregistrement trouvé</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
