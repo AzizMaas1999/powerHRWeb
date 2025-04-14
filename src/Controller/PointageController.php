@@ -42,6 +42,12 @@ final class PointageController extends AbstractController
         ]);
     }
 
+    #[Route('/csv', name: 'app_pointage_csv', methods: ['GET'])]
+    public function csv(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        return $this->render('pointage/csv.html.twig');
+    }
+
     #[Route('/{id}', name: 'app_pointage_show', methods: ['GET'])]
     public function show(Pointage $pointage): Response
     {

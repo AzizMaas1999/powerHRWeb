@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 use App\Repository\PaieRepository;
 
@@ -29,6 +30,12 @@ class Paie
     }
 
     #[ORM\Column(name: 'nbJour', type: 'integer', nullable: true)]
+    #[Assert\NotNull(message: "Le nombre de jours est obligatoire.")]
+    #[Assert\Range(
+        min: 0,
+        max: 30,
+        notInRangeMessage: "Le nombre de jours doit être entre {{ min }} et {{ max }}."
+    )]
     private ?int $nbJour = null;
 
     public function getNbJour(): ?int
@@ -43,6 +50,8 @@ class Paie
     }
 
     #[ORM\Column(type: 'float', nullable: true)]
+    #[Assert\NotNull(message: "Le montant est obligatoire.")]
+    #[Assert\Positive(message: "Le montant doit être un nombre positif.")]
     private ?float $montant = null;
 
     public function getMontant(): ?float
@@ -57,6 +66,11 @@ class Paie
     }
 
     #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\NotBlank(message: "Le mois est obligatoire.")]
+    #[Assert\Choice(
+        choices: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
+        message: "Le mois doit être un nom valide."
+    )]
     private ?string $mois = null;
 
     public function getMois(): ?string
@@ -71,6 +85,15 @@ class Paie
     }
 
     #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\NotBlank(message: "L'année est obligatoire.")]
+    #[Assert\Regex(
+        pattern: "/^\d{4}$/",
+        message: "L'année doit être un nombre à 4 chiffres."
+    )]
+    #[Assert\LessThanOrEqual(
+        value: 2025,
+        message: "L'année ne peut pas être supérieure à l'année en cours."
+    )]
     private ?string $annee = null;
 
     public function getAnnee(): ?string

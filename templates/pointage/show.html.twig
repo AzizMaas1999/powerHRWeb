@@ -1,34 +1,45 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Pointage{% endblock %}
+{% block title %}Détails du Pointage{% endblock %}
 
 {% block body %}
-    <h1>Pointage</h1>
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-white">Détails du pointage</h1>
+        <a href="{{ path('app_pointage_index') }}" class="btn btn-outline-light">← Retour à la liste</a>
+    </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ pointage.id }}</td>
-            </tr>
-            <tr>
-                <th>Date</th>
-                <td>{{ pointage.date ? pointage.date|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>HeureEntree</th>
-                <td>{{ pointage.heureEntree ? pointage.heureEntree|date('H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>HeureSortie</th>
-                <td>{{ pointage.heureSortie ? pointage.heureSortie|date('H:i:s') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="card bg-dark text-white shadow-lg">
+        <div class="card-body">
+            <table class="table table-dark table-striped border-white">
+                <tbody>
+                    <tr>
+                        <th scope="row">ID</th>
+                        <td>{{ pointage.id }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Date</th>
+                        <td>{{ pointage.date ? pointage.date|date('Y-m-d') : '' }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Heure d'entrée</th>
+                        <td>{{ pointage.heureEntree ? pointage.heureEntree|date('H:i:s') : '' }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Heure de sortie</th>
+                        <td>{{ pointage.heureSortie ? pointage.heureSortie|date('H:i:s') : '' }}</td>
+                    </tr>
+                </tbody>
+            </table>
 
-    <a href="{{ path('app_pointage_index') }}">back to list</a>
+            <div class="mt-4 d-flex justify-content-center gap-3">
+                <a href="{{ path('app_pointage_edit', {'id': pointage.id}) }}" class="btn btn-success px-4">
+                    Modifier
+                </a>
 
-    <a href="{{ path('app_pointage_edit', {'id': pointage.id}) }}">edit</a>
-
-    {{ include('pointage/_delete_form.html.twig') }}
+                {{ include('pointage/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
