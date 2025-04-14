@@ -40,109 +40,6 @@
           {% block importmap %}{{ importmap('app') }}{% endblock %}
       {% endblock %}
   </head>
-
-<<<<<<< HEAD
-        if ($("#datetimepicker").length != 0) {
-          $('#datetimepicker').datetimepicker({
-            icons: {
-              time: "fa fa-clock-o",
-              date: "fa fa-calendar",
-              up: "fa fa-chevron-up",
-              down: "fa fa-chevron-down",
-              previous: 'fa fa-chevron-left',
-              next: 'fa fa-chevron-right',
-              today: 'fa fa-screenshot',
-              clear: 'fa fa-trash',
-              close: 'fa fa-remove'
-            }
-          });
-        }
-
-        function scrollToDownload() {
-
-          if ($('.section-download').length != 0) {
-            $("html, body").animate({
-              scrollTop: $('.section-download').offset().top
-            }, 1000);
-          }
-        }
-      });
-    </script>
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
-    </head>
-    <body>
-        <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg fixed-top navbar-transparent " color-on-scroll="300">
-    <div class="container">
-    <img src="{{ asset('UI/img/Logo1.png') }}" alt="" style="height: 300px; width: auto;">
-      <div class="navbar-translate">
-        <button class="navbar-toggler navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-bar bar1"></span>
-          <span class="navbar-toggler-bar bar2"></span>
-          <span class="navbar-toggler-bar bar3"></span>
-        </button>
-      </div>
-      <div class="collapse navbar-collapse justify-content-end" id="navigation">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a href="https://demos.creative-tim.com/paper-kit-2/docs/1.0/getting-started/introduction.html" target="_blank" class="nav-link"><i class="nc-icon nc-badge"></i> Documentation</a>
-          </li>
-          <li class="nav-item">
-            <a href="https://demos.creative-tim.com/paper-kit-2/docs/1.0/getting-started/introduction.html" target="_blank" class="nav-link"><i class="nc-icon nc-book-bookmark"></i> Documentation</a>
-          </li>
-          <li class="nav-item">
-            <a href="https://demos.creative-tim.com/paper-kit-2/docs/1.0/getting-started/introduction.html" target="_blank" class="nav-link"><i class="nc-icon nc-book-bookmark"></i> Documentation</a>
-          </li>
-          <li class="nav-item">
-            <a href="https://demos.creative-tim.com/paper-kit-2/docs/1.0/getting-started/introduction.html" target="_blank" class="nav-link"><i class="nc-icon nc-book-bookmark"></i> Documentation</a>
-          </li>
-          <li class="nav-item">
-            <a href="https://www.creative-tim.com/product/paper-kit-2-pro?ref=pk2-free-local" target="_blank" class="btn btn-danger btn-round">LogIn</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-  <!-- End Navbar -->
-  <div class="page-header section-dark" style="background-image: url('{{ asset('UI/img/homeBackground.jpeg') }}')">
-    <div class="filter"></div>
-    <div class="content-center">
-      <div class="container">
-        <div class="title-brand">
-          <h1 class="presentation-title">PowerHR</h1>
-        </div>
-        <h2 class="presentation-subtitle text-center">La première solution Ressources Humaines à considérer !</h2>
-        <div class="fog-low" style="opacity: 0.2">
-            <img src="{{ asset('UI/img/fog-low.png') }}" alt="">
-        </div>
-        <div class="fog-low right" style="opacity: 0.2">
-            <img src="{{ asset('UI/img/fog-low.png') }}" alt="">
-        </div>
-      </div>
-    </div>
-    <div class="moving-clouds" style="background-image: url('{{ asset('UI/img/clouds.png') }}'); "></div>
-  </div>
-    {% block body %}    
-        {% endblock %}
-    <footer class="footer footer-black  footer-white ">
-      <div class="container">
-        <div class="row">
-          <nav class="footer-nav">
-            <ul>
-              <li>
-                <a href="https://www.creative-tim.com" target="_blank">Creative Tim</a>
-              </li>
-              <li>
-                <a href="http://blog.creative-tim.com/" target="_blank">Blog</a>
-              </li>
-              <li>
-                <a href="https://www.creative-tim.com/license" target="_blank">Licenses</a>
-              </li>
-            </ul>
-          </nav>
-          
-=======
   <body>
     <div class="container-scroller">
         <!-- partial:partials/_sidebar.html -->
@@ -182,6 +79,34 @@
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <a class="nav-link" href="/paie/new">Ajouter Paie</a></li>
                   <li class="nav-item"> <a class="nav-link" href="/paie">Afficher La Liste</a></li>
+                </ul>
+              </div>
+            </li>
+            <li class="nav-item menu-items">
+              <a class="nav-link" data-toggle="collapse" href="#entreprise-menu" aria-expanded="false" aria-controls="entreprise-menu">
+                <span class="menu-icon">
+                  <i class="mdi mdi-book-plus"></i>
+                </span>
+                <span class="menu-title">Entreprise</span>
+                <i class="menu-arrow"></i>
+              </a>
+              <div class="collapse" id="entreprise-menu">
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item"> <a class="nav-link" href="{{ path('app_entreprise_index') }}">Liste des entreprises</a></li>
+                </ul>
+              </div>
+            </li>
+            <li class="nav-item menu-items">
+              <a class="nav-link" data-toggle="collapse" href="#departement-menu" aria-expanded="false" aria-controls="departement-menu">
+                <span class="menu-icon">
+                  <i class="mdi mdi-view-agenda"></i>
+                </span>
+                <span class="menu-title">Departement</span>
+                <i class="menu-arrow"></i>
+              </a>
+              <div class="collapse" id="departement-menu">
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item"> <a class="nav-link" href="{{ path('app_departement_index') }}">Liste des départements</a></li>
                 </ul>
               </div>
             </li>
@@ -344,14 +269,13 @@
             <!-- partial:partials/_footer.html -->
             <footer class="footer">
               <div class="d-sm-flex justify-content-center justify-content-sm-between">
-                <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © bootstrapdash.com 2020</span>
-                <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"> Free <a href="https://www.bootstrapdash.com/bootstrap-admin-template/" target="_blank">Bootstrap admin templates</a> from Bootstrapdash.com</span>
+                <span class="text-muted d-block text-center text-sm-left d-sm-inline-block"></span>
+                <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"></span>
               </div>
             </footer>
             <!-- partial -->
           </div>
           <!-- main-panel ends -->
->>>>>>> origin/main
         </div>
         <!-- page-body-wrapper ends -->
     </div>

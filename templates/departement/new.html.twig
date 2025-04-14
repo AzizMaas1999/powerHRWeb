@@ -1,67 +1,346 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Créer un Nouveau Département{% endblock %}
+{% block title %}Nouveau Département{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
     <style>
-        html, body {
-            height: 100%;
-            margin: 0;
+        .form-container {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 20px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
-
-        .center-section {
-            display: flex;
-            justify-content: center;
+        .form-title {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+        .form-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        .form-control {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9) !important;
+            border-radius: 6px;
+            padding: 10px 15px;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.9) !important;
+        }
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='rgba(255,255,255,0.5)' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 35px;
+        }
+        select.form-control option {
+            background-color: #191c24;
+            color: rgba(255, 255, 255, 0.9);
+            padding: 8px;
+        }
+        select.form-control option:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .form-text {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.875rem;
+            margin-top: 5px;
+        }
+        .invalid-feedback {
+            display: block;
+            color: #ff4d4d;
+            font-size: 0.85rem;
+            margin-top: 4px;
+            margin-left: 2px;
+            background: rgba(255, 77, 77, 0.1);
+            border-radius: 4px;
+            padding: 8px 12px;
+        }
+        .form-control.is-invalid {
+            border-color: rgba(255, 77, 77, 0.5);
+            background-image: none;
+        }
+        .form-control.is-valid {
+            border-color: #198754;
+            background-image: none;
+        }
+        .error-icon {
+            color: #ff4d4d;
+            margin-right: 4px;
+            font-size: 14px;
+        }
+        .validation-message {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 4px;
+        }
+        .btn-action {
+            padding: 8px 16px;
+            font-size: 0.95rem;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            display: inline-flex;
             align-items: center;
-            height: 100vh;
-            background-color: transparent;
+            gap: 6px;
         }
-
-        .card-custom {
-            background-color: rgba(255, 255, 255, 0.95);
-            border-radius: 1rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        .btn-action i {
+            font-size: 16px;
         }
-
-        h3, label {
-            font-weight: bold;
+        .btn-return {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        .btn-info {
-            background-color: #1d8cf8 !important;
-            border-color: #1d8cf8 !important;
-            font-weight: bold;
+        .btn-return:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.9);
         }
-
-        .btn-neutral {
-            font-weight: bold;
+        .btn-save {
+            background: #198754;
+            color: white;
+            border: none;
+        }
+        .btn-save:hover {
+            background: #157347;
+        }
+        .alert {
+            background: rgba(255, 77, 77, 0.1);
+            border-left: 3px solid #ff4d4d;
+            color: #ff4d4d;
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .alert i {
+            font-size: 16px;
+        }
+        .char-counter {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .char-counter.warning {
+            color: #ffc107;
+        }
+        .char-counter.danger {
+            color: #dc3545;
         }
     </style>
 {% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            const nomInput = document.querySelector('#departement_nom');
+            const descriptionInput = document.querySelector('#departement_description');
+            const entrepriseSelect = document.querySelector('#departement_entreprise');
+
+            // Validation patterns
+            const nomPattern = /^[a-zA-ZÀ-ÿ0-9\s-]{3,30}$/;
+            
+            function validateNom() {
+                const nom = nomInput.value.trim();
+                if (nom === '') {
+                    showError(nomInput, 'Le nom du département est requis');
+                    return false;
+                } else if (!nomPattern.test(nom)) {
+                    showError(nomInput, 'Le nom doit contenir entre 3 et 30 caractères (lettres, chiffres, espaces et tirets)');
+                    return false;
+                }
+                showSuccess(nomInput);
+                return true;
+            }
+
+            function validateDescription() {
+                const description = descriptionInput.value.trim();
+                if (description === '') {
+                    showError(descriptionInput, 'La description est requise');
+                    return false;
+                } else if (description.length > 120) {
+                    showError(descriptionInput, 'La description ne doit pas dépasser 120 caractères');
+                    return false;
+                }
+                showSuccess(descriptionInput);
+                return true;
+            }
+
+            function validateEntreprise() {
+                if (!entrepriseSelect.value) {
+                    showError(entrepriseSelect, 'Veuillez sélectionner une entreprise');
+                    return false;
+                }
+                showSuccess(entrepriseSelect);
+                return true;
+            }
+
+            function showError(input, message) {
+                input.classList.add('is-invalid');
+                input.classList.remove('is-valid');
+                const feedbackDiv = input.nextElementSibling;
+                if (feedbackDiv && feedbackDiv.classList.contains('invalid-feedback')) {
+                    feedbackDiv.textContent = message;
+                }
+            }
+
+            function showSuccess(input) {
+                input.classList.remove('is-invalid');
+                input.classList.add('is-valid');
+                const feedbackDiv = input.nextElementSibling;
+                if (feedbackDiv) {
+                    feedbackDiv.textContent = '';
+                }
+            }
+
+            // Add character counter for description
+            const descriptionCounter = document.createElement('div');
+            descriptionCounter.className = 'char-counter';
+            descriptionInput.parentNode.appendChild(descriptionCounter);
+
+            function updateCharCounter() {
+                const maxLength = 120;
+                const currentLength = descriptionInput.value.length;
+                const remaining = maxLength - currentLength;
+                
+                descriptionCounter.innerHTML = `<i class="bi bi-pencil-square"></i> ${currentLength}/${maxLength} caractères`;
+                
+                // Update counter color based on remaining characters
+                descriptionCounter.className = 'char-counter';
+                if (currentLength >= maxLength) {
+                    descriptionCounter.classList.add('danger');
+                } else if (currentLength >= maxLength * 0.8) {
+                    descriptionCounter.classList.add('warning');
+                }
+            }
+
+            descriptionInput.addEventListener('input', updateCharCounter);
+            updateCharCounter(); // Initial count
+
+            // Real-time validation
+            nomInput.addEventListener('input', validateNom);
+            descriptionInput.addEventListener('input', validateDescription);
+            entrepriseSelect.addEventListener('change', validateEntreprise);
+
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                let isValid = true;
+
+                if (!validateNom()) isValid = false;
+                if (!validateDescription()) isValid = false;
+                if (!validateEntreprise()) isValid = false;
+
+                if (!isValid) {
+                    e.preventDefault();
+                }
+            });
+
+            // Add validation message under inputs
+            const nomHelp = document.createElement('div');
+            nomHelp.className = 'validation-message';
+            nomHelp.textContent = '3 à 30 caractères, lettres et chiffres acceptés';
+            nomInput.parentNode.insertBefore(nomHelp, nomInput.nextSibling);
+
+            const descriptionHelp = document.createElement('div');
+            descriptionHelp.className = 'validation-message';
+            descriptionHelp.textContent = 'Maximum 120 caractères';
+            descriptionInput.parentNode.insertBefore(descriptionHelp, descriptionInput.nextSibling);
+        });
+    </script>
+{% endblock %}
+
 {% block body %}
-<div class="center-section">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6">
-                <div class="card card-custom p-4">
-                    <h3 class="title text-info text-center mb-4">
-                        <i class="fa fa-pencil-square-o"></i> Créer un Nouveau Département
-                    </h3>
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="text-white">Nouveau Département</h1>
+        </div>
 
-                    <div class="px-3">
-                        {{ include('departement/_form.html.twig') }}
+        <div class="form-container">
+            {% if form_errors(form) %}
+                <div class="alert">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    {{ form_errors(form) }}
+                </div>
+            {% endif %}
+
+            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+            
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        {{ form_label(form.entreprise, 'Entreprise associée', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.entreprise, {'attr': {'class': 'form-control' ~ (form.entreprise.vars.valid ? '' : ' is-invalid')}}) }}
+                        {% if not form.entreprise.vars.valid %}
+                            <div class="invalid-feedback">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                {{ form_errors(form.entreprise) }}
+                            </div>
+                        {% endif %}
                     </div>
+                </div>
 
-                    <div class="card-footer border-0 bg-transparent d-flex justify-content-start px-3 mt-3">
-                        <a href="{{ path('app_departement_index') }}" class="btn btn-neutral btn-round">
-                            <i class="fa fa-arrow-left"></i> Retour à la liste
-                        </a>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        {{ form_label(form.nom, 'Nom du département', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.nom, {'attr': {'class': 'form-control' ~ (form.nom.vars.valid ? '' : ' is-invalid'), 'placeholder': 'Entrez le nom du département'}}) }}
+                        {% if not form.nom.vars.valid %}
+                            <div class="invalid-feedback">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                {{ form_errors(form.nom) }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="mb-4">
+                        {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.description, {'attr': {'class': 'form-control' ~ (form.description.vars.valid ? '' : ' is-invalid'), 'rows': '4', 'placeholder': 'Décrivez le département...'}}) }}
+                        {% if not form.description.vars.valid %}
+                            <div class="invalid-feedback">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                {{ form_errors(form.description) }}
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
+
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{{ path('app_departement_index') }}" class="btn btn-action btn-return">
+                    <i class="bi bi-arrow-left"></i> Retour
+                </a>
+                <button type="submit" class="btn btn-action btn-save">
+                    <i class="bi bi-check-lg"></i> Créer
+                </button>
+            </div>
+
+            {{ form_end(form) }}
         </div>
     </div>
-</div>
 {% endblock %}
+
