@@ -1,6 +1,7 @@
 security:
     password_hashers:
-        App\Entity\Employe: 'auto'
+        App\Entity\Employe:
+            algorithm: argon2id
 
     providers:
         employe_provider:
@@ -10,11 +11,12 @@ security:
 
     firewalls:
         main:
+            pattern: ^/ 
             provider: employe_provider
             form_login:
                 login_path: app_login
                 check_path: app_login
-                default_target_path: app_paie_index
+                success_handler: App\Security\LoginSuccessHandler
                 username_parameter: _username
                 password_parameter: _password
                 enable_csrf: true  # Replaces csrf_token_generator
@@ -40,3 +42,4 @@ when@test:
                 cost: 4 # Low cost for testing
                 time_cost: 3 # Low time cost for testing
                 memory_cost: 10 # Low memory cost for testing
+

@@ -10,7 +10,7 @@ final class OuvrierHomeController extends AbstractController
 {
     #[Route('/ouvrier/home', name: 'app_ouvrier_home')]
     public function index(): Response
-    {
+    {   dump($this->getUser());
         return $this->render('ouvrier_home/index.html.twig', [
             'controller_name' => 'OuvrierHomeController',
         ]);
