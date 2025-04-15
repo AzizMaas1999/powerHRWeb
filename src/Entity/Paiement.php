@@ -43,7 +43,7 @@ class Paiement
     }
 
     #[ORM\Column(type: 'string', nullable: true)]
-    #[Assert\Choice(choices: ['CB', 'Virement', 'Chèque'], message: "Le mode de paiement doit être l'un des choix suivants : CB, Virement, Chèque.")]
+    #[Assert\Choice(choices: [ 'Virement', 'Chèque','espece','traite'], message: "Le mode de paiement doit être l'un des choix suivants : Virement, Chèque, espece, traite.")]
     private ?string $mode = null;
 
     public function getMode(): ?string

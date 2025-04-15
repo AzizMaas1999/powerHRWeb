@@ -18,8 +18,8 @@ class FactureType extends AbstractType
             ->add('typeFact')
             ->add('num')
             ->add('total')
-            ->add('clfr_id')
-            ->add('paiement_id')
+
+        
         ;
     }
 
