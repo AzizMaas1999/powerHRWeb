@@ -1,38 +1,49 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Article{% endblock %}
+{% block title %}Détail de l'article{% endblock %}
 
 {% block body %}
-    <h1>Article</h1>
+<div class="container mt-5">
+    <div class="card shadow rounded">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">Détails de l'article</h2>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-hover">
+                <tbody>
+                    <tr>
+                        <th scope="row">Description</th>
+                        <td>{{ article.description }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Quantité</th>
+                        <td>{{ article.quantity }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Prix Unitaire (€)</th>
+                        <td>{{ article.prixUni }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">TVA (%)</th>
+                        <td>{{ article.TVA }}</td>
+                    </tr>
+                </tbody>
+            </table>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ article.id }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ article.description }}</td>
-            </tr>
-            <tr>
-                <th>Quantity</th>
-                <td>{{ article.quantity }}</td>
-            </tr>
-            <tr>
-                <th>PrixUni</th>
-                <td>{{ article.prixUni }}</td>
-            </tr>
-            <tr>
-                <th>TVA</th>
-                <td>{{ article.TVA }}</td>
-            </tr>
-        </tbody>
-    </table>
+            <div class="mt-4 d-flex justify-content-between">
+                <a href="{{ path('app_article_index') }}" class="btn btn-secondary">
+                    ⬅ Retour à la liste
+                </a>
 
-    <a href="{{ path('app_article_index') }}">back to list</a>
+                <div>
+                    <a href="{{ path('app_article_edit', {'id': article.id}) }}" class="btn btn-warning me-2">
+                        ✏️ Modifier
+                    </a>
 
-    <a href="{{ path('app_article_edit', {'id': article.id}) }}">edit</a>
-
-    {{ include('article/_delete_form.html.twig') }}
+                    {{ include('article/_delete_form.html.twig', { 'button_class': 'btn btn-danger' }) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -16,7 +16,6 @@
         <table class="table table-dark table-hover table-bordered align-middle shadow-sm rounded">
             <thead class="table-light text-dark text-center">
                 <tr>
-                    <th scope="col">#</th>
                     <th scope="col">Date</th>
                     <th scope="col">Mode</th>
                     <th scope="col">Référence</th>
@@ -27,7 +26,6 @@
             <tbody class="text-center">
             {% for paiement in paiements %}
                 <tr>
-                    <td>{{ paiement.id }}</td>
                     <td>{{ paiement.date ? paiement.date|date('d/m/Y') : '—' }}</td>
                     <td>{{ paiement.mode|capitalize }}</td>
                     <td class="text-truncate" style="max-width: 150px;">{{ paiement.reference }}</td>
