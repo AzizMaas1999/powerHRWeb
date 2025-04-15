@@ -31,8 +31,8 @@ class Candidat
     #[ORM\Column(type: 'string', nullable: false)]
     #[Assert\NotBlank(message: "Le nom est requis.")]
     #[Assert\Regex(
-        pattern: "/^[a-zA-Zà-ÿÀ-ß]+$/", // Accepte uniquement des caractères alphabétiques et des accents
-        message: "Le prénom ne peut contenir que des lettres."
+        pattern: "/^[a-zA-Zà-ÿÀ-ß]+$/", 
+        message: "Le nom ne peut contenir que des lettres."
     )]
     private ?string $nom = null;
 
@@ -50,7 +50,7 @@ class Candidat
     #[ORM\Column(type: 'string', nullable: false)]
     #[Assert\NotBlank(message: "Le prénom est requis.")]
     #[Assert\Regex(
-        pattern: "/^[a-zA-Zà-ÿÀ-ß]+$/", // Accepte uniquement des caractères alphabétiques et des accents
+        pattern: "/^[a-zA-Zà-ÿÀ-ß]+$/", 
         message: "Le prénom ne peut contenir que des lettres."
     )]
     private ?string $prenom = null;
@@ -85,7 +85,7 @@ class Candidat
     #[ORM\Column(type: 'string', nullable: false)]
     #[Assert\NotBlank(message: "Le numéro de téléphone est requis.")]
     #[Assert\Regex(
-        pattern: "/^[0-9]{8}$/", // Ensure exactly 8 digits
+        pattern: "/^[0-9]{8}$/",
         message: "Le numéro de téléphone doit contenir exactement 8 chiffres."
     )]
     private ?string $telephone = null;
@@ -101,7 +101,7 @@ class Candidat
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: false)]
+    #[ORM\Column(name:'cvPdfUrl',type: 'string', nullable: false)]
     #[Assert\NotBlank(message: "Le CV est requis.")]
     private ?string $cvPdfUrl = null;
 

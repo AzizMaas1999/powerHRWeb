@@ -14,11 +14,11 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/fiche/employe')]
 final class FicheEmployeController extends AbstractController
 {
-    #[Route(name: 'app_fiche_employe_index', methods: ['GET'])]
+    #[Route('/',name: 'app_fiche_employe_index', methods: ['GET'])]
     public function index(FicheEmployeRepository $ficheEmployeRepository): Response
     {
         return $this->render('fiche_employe/index.html.twig', [
-            'fiche_employes' => $ficheEmployeRepository->findAll(),
+            'ficheemployes' => $ficheEmployeRepository->findAll(),
         ]);
     }
 

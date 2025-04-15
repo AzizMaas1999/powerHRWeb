@@ -1,24 +1,21 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}FicheEmploye{% endblock %}
+{% block title %}Fiche employe{% endblock %}
 
 {% block body %}
-    <h1>FicheEmploye</h1>
+    <h1>Fiche employe</h1>
 
     <table class="table">
         <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ fiche_employe.id }}</td>
-            </tr>
-            <tr>
-                <th>Cin</th>
-                <td>{{ fiche_employe.cin }}</td>
+        <tr>
+                <th>CIN</th>
+                <td>{{ fiche_employe.CIN }}</td>
             </tr>
             <tr>
                 <th>Nom</th>
                 <td>{{ fiche_employe.nom }}</td>
             </tr>
+            
             <tr>
                 <th>Prenom</th>
                 <td>{{ fiche_employe.prenom }}</td>
@@ -40,13 +37,14 @@
                 <td>{{ fiche_employe.zip }}</td>
             </tr>
             <tr>
-                <th>NumTel</th>
+                <th>Numero Telephone</th>
                 <td>{{ fiche_employe.numTel }}</td>
             </tr>
             <tr>
-                <th>CvPdfUrl</th>
+                <th>CV</th>
                 <td>{{ fiche_employe.cvPdfUrl }}</td>
             </tr>
+
         </tbody>
     </table>
 
@@ -54,5 +52,8 @@
 
     <a href="{{ path('app_fiche_employe_edit', {'id': fiche_employe.id}) }}">edit</a>
 
-    {{ include('fiche_employe/_delete_form.html.twig') }}
+    <a href="{{ path('app_fiche_employe_delete', {'id': fiche_employe.id}) }}">delete</a>
+
+    
+    
 {% endblock %}

@@ -86,11 +86,8 @@ class FicheEmploye
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
-    #[Assert\NotBlank(message:'L email est requis.')]
-    #[Assert\Regex(
-        pattern: "/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/",
-        message: "L email n'est pas valide."
-    )]
+    #[Assert\NotBlank(message: "L'email est requis.")]
+    #[Assert\Email(message: "L'adresse email '{{ value }}' n'est pas valide.")]
     private ?string $email = null;
 
     public function getEmail(): ?string
@@ -105,6 +102,11 @@ class FicheEmploye
     }
 
     #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\NotBlank(message: "L'adresse est requis.")]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Zà-ÿÀ-ß]+$/", 
+        message: "L'adresse ne peut contenir que des lettres."
+    )]
     private ?string $adresse = null;
 
     public function getAdresse(): ?string

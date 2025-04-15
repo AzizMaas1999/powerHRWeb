@@ -1,18 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier l'employé{% endblock %}
+{% block title %}Edit Employe{% endblock %}
 
 {% block body %}
 <div class="container mt-5">
-    <h1 class="text-center">Modifier l'Employé</h1>
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success">{{ message }}</div>
-    {% endfor %}
-
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            {% include 'employe/_form.html.twig' with {'form': form} %}
-        </div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-white">Modifier un employe</h1>
+        <a href="{{ path('app_employe_index') }}" class="btn btn-sm btn-primary">← Retour à la liste</a>
     </div>
+
+    {{ include('employe/_form.html.twig', { button_label: 'Enregistrer' }) }}
 </div>
 {% endblock %}
+

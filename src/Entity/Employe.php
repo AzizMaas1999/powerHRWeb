@@ -99,7 +99,6 @@ class Employe implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    // Getter and Setter for Username
     public function getUsername(): ?string
     {
         return $this->username;
@@ -111,7 +110,6 @@ class Employe implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    // Getter and Setter for Password
     public function getPassword(): ?string
     {
         return $this->password;
@@ -123,13 +121,11 @@ class Employe implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    // Implement the UserInterface method
     public function getUserIdentifier(): string
     {
-        return $this->username; // or email, depending on your login field
+        return $this->username; 
     }
 
-    // Implement the PasswordAuthenticatedUserInterface method
     public function getRoles(): array
     {
         return match($this->poste) {
@@ -142,13 +138,11 @@ class Employe implements UserInterface, PasswordAuthenticatedUserInterface
         };
     }
 
-    // Implement the eraseCredentials method to handle sensitive data
     public function eraseCredentials(): void
     {
-        $this->password = null; // Clearing the password after use
+        $this->password = null; 
     }
 
-    // Getter and Setter for Poste
     public function getPoste(): Poste
     {
         return $this->poste;
@@ -160,7 +154,6 @@ class Employe implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    // Getter and Setter for Salaire
     public function getSalaire(): ?float
     {
         return $this->salaire;
@@ -172,7 +165,6 @@ class Employe implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    // Getter and Setter for RIB
     public function getRib(): ?string
     {
         return $this->rib;
@@ -184,7 +176,6 @@ class Employe implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    // Getter and Setter for Code Sociale
     public function getCodeSociale(): ?string
     {
         return $this->codeSociale;
@@ -196,7 +187,6 @@ class Employe implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    // Getter and Setter for Departement
     public function getDepartement(): ?Departement
     {
         return $this->departement;
@@ -208,7 +198,6 @@ class Employe implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    // Methods for Clfr
     public function getClfrs(): Collection
     {
         return $this->clfrs;
@@ -228,7 +217,6 @@ class Employe implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    // Methods for Demande
     public function getDemandes(): Collection
     {
         return $this->demandes;
@@ -248,7 +236,6 @@ class Employe implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    // Getter and Setter for Fiche Employe
     public function getFicheEmploye(): ?FicheEmploye
     {
         return $this->ficheEmploye;
@@ -260,7 +247,6 @@ class Employe implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    // Methods for Pointage
     public function getPointages(): Collection
     {
         return $this->pointages;
@@ -280,7 +266,6 @@ class Employe implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    // Methods for Questionnaire
     public function getQuestionnaires(): Collection
     {
         return $this->questionnaires;

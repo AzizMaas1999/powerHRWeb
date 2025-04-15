@@ -11,7 +11,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class CandidatType extends AbstractType
 {
@@ -19,36 +19,41 @@ class CandidatType extends AbstractType
     {
         $builder
             ->add('nom', TextType::class, [
-                
-                'label' => ' Nom',
+                'label' => 'Nom',
                 'attr' => ['class' => 'form-control']
             ])
             ->add('prenom', TextType::class, [
-            
-                'label' => 'prenom',
+                'label' => 'Prénom',
                 'attr' => ['class' => 'form-control']
-                ])
+            ])
             ->add('email', EmailType::class, [
-                
                 'label' => 'Email Address',
                 'attr' => ['class' => 'form-control']
             ])
             ->add('telephone', NumberType::class, [
-                'label' => 'Numéro Téléphone',
+                'label' => 'Numéro de téléphone',
                 'required' => false,
-                'attr' => ['class' => 'form-control',]
+                'attr' => ['class' => 'form-control']
             ])
             ->add('entreprise', EntityType::class, [
-                'class' => Entreprise::class, // The entity to use
-                'choice_label' => 'nom', // The field to display in the dropdown
-                'placeholder' => 'Sélectionnez une entreprise', // Default option
+                'class' => Entreprise::class,
+                'choice_label' => 'nom',
+                'placeholder' => 'Sélectionnez une entreprise',
                 'label' => 'Entreprise',
                 'attr' => ['class' => 'form-select']
             ])
-
-            ->add('save', SubmitType::class, [
-                'label' => 'Submit Application',
-                'attr' => ['class' => 'btn btn-primary mt-3']
+            // Adding the PDF upload field with a label
+            ->add('cv', FileType::class, [
+                'label' => 'Télécharger un CV (PDF)',
+                'required' => True,  // Make this field optional
+                'attr' => ['class' => 'form-control'],
+                'mapped' => false,  // We don't map this field to the Candidat entity directly
+                'constraints' => [
+                    new \Symfony\Component\Validator\Constraints\File([
+                        'mimeTypes' => ['application/pdf'],
+                        'mimeTypesMessage' => 'Veuillez télécharger un fichier PDF valide.',
+                    ])
+                ],
             ]);
     }
 

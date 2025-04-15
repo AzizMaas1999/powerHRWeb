@@ -8,6 +8,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -48,9 +49,22 @@ class FicheEmployeType extends AbstractType
                 'label' => 'Téléphone',
                 'attr' => ['class' => 'form-control']
             ])
+            ->add('cv', FileType::class, [
+                'label' => 'Télécharger un CV (PDF)',
+                'required' => True,  // Make this field optional
+                'attr' => ['class' => 'form-control'],
+                'mapped' => false,  // We don't map this field to the Candidat entity directly
+                'constraints' => [
+                    new \Symfony\Component\Validator\Constraints\File([
+                        'maxSize' => '2M',
+                        'mimeTypes' => ['application/pdf'],
+                        'mimeTypesMessage' => 'Veuillez télécharger un fichier PDF valide.',
+                    ])
+                ],
+            ])
             ->add('employe', EntityType::class, [
                 'class' => Employe::class,
-                'choice_label' => 'nom', // Display name instead of ID
+                'choice_label' => 'username', 
                 'placeholder' => 'Sélectionner un employé',
                 'label' => 'Employé',
                 'attr' => ['class' => 'form-select']

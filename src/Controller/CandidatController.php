@@ -32,13 +32,13 @@ final class CandidatController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($candidat);
             $entityManager->flush();
-    
-            $this->addFlash('success', 'Application submitted successfully!');
-            return $this->redirectToRoute('app_candidat_index');
+     
+            return $this->redirectToRoute('app_candidat_index',Response::HTTP_SEE_OTHER);
         }
     
         return $this->render('candidat/new.html.twig', [
-            'form' => $form->createView(),
+            'candidat' => $candidat,
+            'form' => $form,
         ]);
     }
     
@@ -48,24 +48,6 @@ final class CandidatController extends AbstractController
     {
         return $this->render('candidat/show.html.twig', [
             'candidat' => $candidat,
-        ]);
-    }
-
-    #[Route('/{id}/edit', name: 'app_candidat_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Candidat $candidat, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(CandidatType::class, $candidat);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_candidat_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('candidat/edit.html.twig', [
-            'candidat' => $candidat,
-            'form' => $form,
         ]);
     }
 

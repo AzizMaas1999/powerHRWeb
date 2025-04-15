@@ -18,7 +18,7 @@
             
             <tr>
                 <th>Poste</th>
-                <td>{{ employe.poste }}</td>
+                <td>{{ employe.poste.value }}</td>
             </tr>
             <tr>
                 <th>Salaire</th>
@@ -40,5 +40,7 @@
     <a href="{{ path('app_employe_edit', {'id': employe.id}) }}">edit</a>
 
     <a href="{{ path('app_employe_delete', {'id': employe.id}) }}">delete</a>
+
+    
     
 {% endblock %}
