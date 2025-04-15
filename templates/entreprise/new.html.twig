@@ -75,12 +75,12 @@
                         {{ form_widget(form.nom, {
                             'attr': {
                                 'class': 'form-control',
-                                'maxlength': 15,
-                                'pattern': '.{3,15}',
-                                'title': 'Le nom doit contenir entre 3 et 15 caractères'
+                                'maxlength': 50,
+                                'pattern': '.{3,50}',
+                                'title': 'Le nom doit contenir entre 3 et 50 caractères'
                             }
                         }) }}
-                        <small class="text-muted" style="color: rgba(255, 255, 255, 0.6);">Maximum 15 caractères</small>
+                        <small class="text-muted" style="color: rgba(255, 255, 255, 0.6);">Entre 3 et 50 caractères</small>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -89,12 +89,12 @@
                         {{ form_widget(form.secteur, {
                             'attr': {
                                 'class': 'form-control',
-                                'maxlength': 10,
-                                'pattern': '.{3,10}',
-                                'title': 'Le secteur doit contenir entre 3 et 10 caractères'
+                                'maxlength': 50,
+                                'pattern': '.{3,50}',
+                                'title': 'Le secteur doit contenir entre 3 et 50 caractères'
                             }
                         }) }}
-                        <small class="text-muted" style="color: rgba(255, 255, 255, 0.6);">Maximum 10 caractères</small>
+                        <small class="text-muted" style="color: rgba(255, 255, 255, 0.6);">Entre 3 et 50 caractères</small>
                     </div>
                 </div>
             </div>
@@ -106,12 +106,12 @@
                         {{ form_widget(form.matricule_fiscale, {
                             'attr': {
                                 'class': 'form-control',
-                                'maxlength': 20,
-                                'pattern': '.{5,20}',
-                                'title': 'Le matricule fiscale doit contenir entre 5 et 20 caractères'
+                                'maxlength': 8,
+                                'pattern': '[0-9]{8}',
+                                'title': 'Le matricule fiscale doit contenir exactement 8 chiffres'
                             }
                         }) }}
-                        <small class="text-muted" style="color: rgba(255, 255, 255, 0.6);">Maximum 20 caractères</small>
+                        <small class="text-muted" style="color: rgba(255, 255, 255, 0.6);">Exactement 8 chiffres</small>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -144,7 +144,9 @@
                     <i class="bi bi-check-lg"></i> Créer
                 </button>
             </div>
+
             {{ form_end(form) }}
         </div>
     </div>
 {% endblock %}
+

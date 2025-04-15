@@ -37,7 +37,7 @@ class Departement
         pattern: '/^[a-zA-ZÀ-ÿ0-9\s\-]+$/',
         message: 'Le nom ne peut contenir que des lettres, des chiffres, des espaces et des tirets.'
     )]
-    #[Assert\NotNull(message: 'Le nom du département ne peut pas être vide.')]
+    #[Assert\NotNull(message: 'et ne peut pas être vide.')]
     private ?string $nom = null;
 
     #[ORM\Column(type: 'string', nullable: true)]

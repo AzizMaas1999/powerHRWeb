@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier le Département{% endblock %}
+{% block title %}Modifier Département{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -10,7 +10,7 @@
             border-radius: 10px;
             padding: 25px;
             margin-top: 20px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4pYx 24px rgba(0, 0, 0, 0.1);
             max-width: 800px;
             margin-left: auto;
             margin-right: auto;
@@ -23,8 +23,8 @@
         }
         .form-label {
             color: rgba(255, 255, 255, 0.8);
-            font-weight: 500;
             margin-bottom: 8px;
+            font-weight: 500;
         }
         .form-control {
             background: rgba(255, 255, 255, 0.05);
@@ -64,7 +64,7 @@
             margin-top: 5px;
         }
         .invalid-feedback {
-            display: block;
+            display: none;
             color: #ff4d4d;
             font-size: 0.85rem;
             margin-top: 4px;
@@ -72,10 +72,25 @@
             background: rgba(255, 77, 77, 0.1);
             border-radius: 4px;
             padding: 8px 12px;
+            border-left: 3px solid #ff4d4d;
+            animation: fadeIn 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .form-control.is-invalid {
             border-color: rgba(255, 77, 77, 0.5);
             background-image: none;
+            animation: shake 0.5s ease;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
         .form-control.is-valid {
             border-color: #198754;
@@ -83,7 +98,6 @@
         }
         .error-icon {
             color: #ff4d4d;
-            margin-right: 4px;
             font-size: 14px;
         }
         .validation-message {
@@ -152,6 +166,87 @@
     </style>
 {% endblock %}
 
+{% block body %}
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="text-white">Modifier Département</h1>
+        </div>
+
+        <div class="form-container">
+            {% if form_errors(form) %}
+                <div class="alert">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    {{ form_errors(form) }}
+                </div>
+            {% endif %}
+
+            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+            
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        {{ form_label(form.entreprise, 'Entreprise associée', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.entreprise, {'attr': {'class': 'form-control' ~ (form.entreprise.vars.valid ? '' : ' is-invalid'), 'required': 'required'}}) }}
+                        <small class="form-text">Sélectionnez l'entreprise à laquelle appartient ce département</small>
+                        <div class="invalid-feedback" id="entreprise-error">
+                            <i class="bi bi-exclamation-triangle-fill error-icon"></i>
+                            Veuillez sélectionner une entreprise pour ce département
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        {{ form_label(form.nom, 'Nom du département', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.nom, {'attr': {
+                            'class': 'form-control' ~ (form.nom.vars.valid ? '' : ' is-invalid'),
+                            'placeholder': 'Entrez le nom du département',
+                            'required': 'required',
+                            'minlength': '3',
+                            'maxlength': '30',
+                            'pattern': '^[a-zA-ZÀ-ÿ0-9\s-]{3,30}$'
+                        }}) }}
+                        <small class="form-text">3 à 30 caractères, lettres et chiffres acceptés</small>
+                        <div class="invalid-feedback" id="nom-error">
+                            <i class="bi bi-exclamation-triangle-fill error-icon"></i>
+                            Le nom du département est requis et doit contenir entre 3 et 30 caractères
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="mb-4">
+                        {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.description, {'attr': {
+                            'class': 'form-control' ~ (form.description.vars.valid ? '' : ' is-invalid'),
+                            'rows': '4',
+                            'placeholder': 'Décrivez le département...',
+                            'required': 'required',
+                            'maxlength': '120'
+                        }}) }}
+                        <small class="form-text">Maximum 120 caractères</small>
+                        <div class="invalid-feedback" id="description-error">
+                            <i class="bi bi-exclamation-triangle-fill error-icon"></i>
+                            La description est requise et ne doit pas dépasser 120 caractères
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{{ path('app_departement_index') }}" class="btn btn-action btn-return">
+                    <i class="bi bi-arrow-left"></i> Retour
+                </a>
+                <button type="submit" class="btn btn-action btn-save">
+                    <i class="bi bi-check-lg"></i> Enregistrer
+                </button>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+
 {% block javascripts %}
     {{ parent() }}
     <script>
@@ -160,91 +255,57 @@
             const nomInput = document.querySelector('#departement_nom');
             const descriptionInput = document.querySelector('#departement_description');
             const entrepriseSelect = document.querySelector('#departement_entreprise');
-
-            // Validation patterns
-            const nomPattern = /^[a-zA-ZÀ-ÿ0-9\s-]{3,30}$/;
             
             function validateNom() {
                 const nom = nomInput.value.trim();
-                if (nom === '') {
-                    showError(nomInput, 'Le nom du département est requis');
+                const errorDiv = document.getElementById('nom-error');
+                if (!nom) {
+                    showError(nomInput, errorDiv, 'Le nom du département est requis et doit contenir entre 3 et 30 caractères');
                     return false;
                 } else if (!nomPattern.test(nom)) {
-                    showError(nomInput, 'Le nom doit contenir entre 3 et 30 caractères (lettres, chiffres, espaces et tirets)');
+                    showError(nomInput, errorDiv, 'Le nom doit contenir entre 3 et 30 caractères (lettres, chiffres, espaces et tirets)');
                     return false;
                 }
-                showSuccess(nomInput);
+                showSuccess(nomInput, errorDiv);
                 return true;
             }
 
             function validateDescription() {
                 const description = descriptionInput.value.trim();
-                if (description === '') {
-                    showError(descriptionInput, 'La description est requise');
+                const errorDiv = document.getElementById('description-error');
+                if (!description) {
+                    showError(descriptionInput, errorDiv, 'La description est requise et ne doit pas dépasser 120 caractères');
                     return false;
                 } else if (description.length > 120) {
-                    showError(descriptionInput, 'La description ne doit pas dépasser 120 caractères');
+                    showError(descriptionInput, errorDiv, 'La description ne doit pas dépasser 120 caractères');
                     return false;
                 }
-                showSuccess(descriptionInput);
+                showSuccess(descriptionInput, errorDiv);
                 return true;
             }
 
             function validateEntreprise() {
+                const errorDiv = document.getElementById('entreprise-error');
                 if (!entrepriseSelect.value) {
-                    showError(entrepriseSelect, 'Veuillez sélectionner une entreprise');
+                    showError(entrepriseSelect, errorDiv, 'Veuillez sélectionner une entreprise pour ce département');
                     return false;
                 }
-                showSuccess(entrepriseSelect);
+                showSuccess(entrepriseSelect, errorDiv);
                 return true;
             }
-
-            function showError(input, message) {
+            
+            function showError(input, errorDiv, message) {
                 input.classList.add('is-invalid');
                 input.classList.remove('is-valid');
-                const feedbackDiv = input.nextElementSibling;
-                if (feedbackDiv && feedbackDiv.classList.contains('invalid-feedback')) {
-                    feedbackDiv.innerHTML = `<i class="bi bi-exclamation-circle error-icon"></i>${message}`;
-                }
+                errorDiv.style.display = 'flex';
+                errorDiv.innerHTML = `<i class="bi bi-exclamation-triangle-fill error-icon"></i> ${message}`;
             }
 
-            function showSuccess(input) {
+            function showSuccess(input, errorDiv) {
                 input.classList.remove('is-invalid');
                 input.classList.add('is-valid');
-                const feedbackDiv = input.nextElementSibling;
-                if (feedbackDiv) {
-                    feedbackDiv.textContent = '';
-                }
+                errorDiv.style.display = 'none';
             }
-
-            // Real-time validation
-            nomInput.addEventListener('input', validateNom);
-            descriptionInput.addEventListener('input', validateDescription);
-            entrepriseSelect.addEventListener('change', validateEntreprise);
-
-            // Form submission
-            form.addEventListener('submit', function(e) {
-                let isValid = true;
-
-                if (!validateNom()) isValid = false;
-                if (!validateDescription()) isValid = false;
-                if (!validateEntreprise()) isValid = false;
-
-                if (!isValid) {
-                    e.preventDefault();
-                }
-            });
-
-            // Add validation message under inputs
-            const nomHelp = document.createElement('div');
-            nomHelp.className = 'validation-message';
-            nomHelp.textContent = '3 à 30 caractères, lettres et chiffres acceptés';
-            nomInput.parentNode.insertBefore(nomHelp, nomInput.nextSibling);
-
-            const descriptionHelp = document.createElement('div');
-            descriptionHelp.className = 'validation-message';
-            descriptionHelp.textContent = 'Maximum 120 caractères';
-            descriptionInput.parentNode.insertBefore(descriptionHelp, descriptionInput.nextSibling);
 
             // Add character counter for description
             const descriptionCounter = document.createElement('div');
@@ -267,84 +328,59 @@
                 }
             }
 
-            descriptionInput.addEventListener('input', updateCharCounter);
-            updateCharCounter(); // Initial count
+            // Initial validation on page load
+            function validateAllFields() {
+                validateNom();
+                validateDescription();
+                validateEntreprise();
+            }
 
-            // Validate existing data on load
-            validateNom();
-            validateDescription();
-            validateEntreprise();
+            // Validate on input/change
+            nomInput.addEventListener('input', validateNom);
+            descriptionInput.addEventListener('input', validateDescription);
+            entrepriseSelect.addEventListener('change', validateEntreprise);
+
+            // Validate on blur
+            nomInput.addEventListener('blur', validateNom);
+            descriptionInput.addEventListener('blur', validateDescription);
+            entrepriseSelect.addEventListener('blur', validateEntreprise);
+
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                let isValid = true;
+
+                if (!validateNom()) isValid = false;
+                if (!validateDescription()) isValid = false;
+                if (!validateEntreprise()) isValid = false;
+
+                if (!isValid) {
+                    e.preventDefault();
+                }
+            });
+
+            // Initialize counter and validation
+            descriptionInput.addEventListener('input', updateCharCounter);
+            updateCharCounter();
+            validateAllFields();
+
+            // Add event listeners for immediate feedback
+            nomInput.addEventListener('focus', function() {
+                if (!nomInput.value.trim()) {
+                    validateNom();
+                }
+            });
+
+            descriptionInput.addEventListener('focus', function() {
+                if (!descriptionInput.value.trim()) {
+                    validateDescription();
+                }
+            });
+
+            entrepriseSelect.addEventListener('focus', function() {
+                if (!entrepriseSelect.value) {
+                    validateEntreprise();
+                }
+            });
         });
     </script>
-{% endblock %}
-
-{% block body %}
-    <div class="container mt-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="text-white">Modifier le Département</h1>
-        </div>
-
-        <div class="form-container">
-            {% if form_errors(form) %}
-                <div class="alert">
-                    <i class="bi bi-exclamation-triangle-fill"></i>
-                    {{ form_errors(form) }}
-                </div>
-            {% endif %}
-
-            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
-            
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        {{ form_label(form.entreprise, 'Entreprise associée', {'label_attr': {'class': 'form-label'}}) }}
-                        {{ form_widget(form.entreprise, {'attr': {'class': 'form-control' ~ (form.entreprise.vars.valid ? '' : ' is-invalid')}}) }}
-                        {% if not form.entreprise.vars.valid %}
-                            <div class="invalid-feedback">
-                                <i class="bi bi-exclamation-triangle-fill"></i>
-                                {{ form_errors(form.entreprise) }}
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        {{ form_label(form.nom, 'Nom du département', {'label_attr': {'class': 'form-label'}}) }}
-                        {{ form_widget(form.nom, {'attr': {'class': 'form-control' ~ (form.nom.vars.valid ? '' : ' is-invalid'), 'placeholder': 'Entrez le nom du département'}}) }}
-                        {% if not form.nom.vars.valid %}
-                            <div class="invalid-feedback">
-                                <i class="bi bi-exclamation-triangle-fill"></i>
-                                {{ form_errors(form.nom) }}
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <div class="col-12">
-                    <div class="mb-4">
-                        {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
-                        {{ form_widget(form.description, {'attr': {'class': 'form-control' ~ (form.description.vars.valid ? '' : ' is-invalid'), 'rows': '4', 'placeholder': 'Décrivez le département...'}}) }}
-                        {% if not form.description.vars.valid %}
-                            <div class="invalid-feedback">
-                                <i class="bi bi-exclamation-triangle-fill"></i>
-                                {{ form_errors(form.description) }}
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-
-            <div class="d-flex justify-content-between mt-4">
-                <a href="{{ path('app_departement_index') }}" class="btn btn-action btn-return">
-                    <i class="bi bi-arrow-left"></i> Retour
-                </a>
-                <button type="submit" class="btn btn-action btn-save">
-                    <i class="bi bi-check-lg"></i> Enregistrer
-                </button>
-            </div>
-
-            {{ form_end(form) }}
-        </div>
-    </div>
 {% endblock %}

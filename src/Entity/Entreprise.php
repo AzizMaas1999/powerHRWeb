@@ -56,8 +56,10 @@ class Entreprise
     #[ORM\Column(type: 'string', nullable: false)]
     #[Assert\NotBlank(message: 'Le numéro de téléphone est obligatoire')]
     #[Assert\Length(
-        exactly: 8,
-        exactMessage: 'Le numéro de téléphone doit contenir exactement {{ limit }} chiffres'
+        min: 8,
+        max: 8,
+        minMessage: 'Le numéro de téléphone doit contenir exactement 8 chiffres',
+        maxMessage: 'Le numéro de téléphone doit contenir exactement 8 chiffres'
     )]
     #[Assert\Regex(
         pattern: '/^[0-9]{8}$/',
