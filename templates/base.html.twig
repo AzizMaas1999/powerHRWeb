@@ -66,155 +66,146 @@
             <li class="nav-item nav-category">
               <span class="nav-link">Navigation</span>
             </li>
+
+            <!-- Pointage -->
             <li class="nav-item menu-items">
-              <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
-                <span class="menu-icon">
-                  <i class="mdi mdi-laptop"></i>
-                </span>
+              <a class="nav-link" data-toggle="collapse" href="#menu-pointage" aria-expanded="false" aria-controls="menu-pointage">
+                <span class="menu-icon"><i class="mdi mdi-laptop"></i></span>
                 <span class="menu-title">Pointage</span>
                 <i class="menu-arrow"></i>
               </a>
-              <div class="collapse" id="ui-basic">
+              <div class="collapse" id="menu-pointage">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <a class="nav-link" href="/pointage/employe">Ajouter Pointage</a></li>
                   <li class="nav-item"> <a class="nav-link" href="/pointage/csv">Ajouter Pointage Par CSV</a></li>
-                  <li class="nav-item"> <a class="nav-link" href="/pointage/newPointageEmp">Ajouter Pointage(Pour Employe)</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="/pointage/newPointageEmp">Ajouter Pointage (Pour Employé)</a></li>
                   <li class="nav-item"> <a class="nav-link" href="/pointage">Afficher La Liste</a></li>
                 </ul>
               </div>
             </li>
+
+            <!-- Demande -->
             <li class="nav-item menu-items">
-              <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
-                <span class="menu-icon">
-                  <i class="mdi mdi-laptop"></i>
-                </span>
-                
-  <span class="menu-title">Demande</span>
+              <a class="nav-link" data-toggle="collapse" href="#menu-demande" aria-expanded="false" aria-controls="menu-demande">
+                <span class="menu-icon"><i class="mdi mdi-laptop"></i></span>
+                <span class="menu-title">Demande</span>
                 <i class="menu-arrow"></i>
               </a>
-              <div class="collapse" id="ui-basic">
+              <div class="collapse" id="menu-demande">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <a class="nav-link" href="/demande/new">Ajouter demande</a></li>
                   <li class="nav-item"> <a class="nav-link" href="/demande">Afficher La Liste</a></li>
-                 <li class="nav-item"> <a class="nav-link" href="/demande/liste/attente">gerer les demandes</a></li>
-
+                  <li class="nav-item"> <a class="nav-link" href="/demande/liste/attente">Gérer les demandes</a></li>
                 </ul>
               </div>
             </li>
+
+            <!-- Questionnaire -->
             <li class="nav-item menu-items">
-<<<<<<< HEAD
-              <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
-                <span class="menu-icon">
-                  <i class="mdi mdi-laptop"></i>
-                </span>
-
-
-  <span class="menu-title">Questionnaire</span>
+              <a class="nav-link" data-toggle="collapse" href="#menu-questionnaire" aria-expanded="false" aria-controls="menu-questionnaire">
+                <span class="menu-icon"><i class="mdi mdi-laptop"></i></span>
+                <span class="menu-title">Questionnaire</span>
                 <i class="menu-arrow"></i>
               </a>
-              <div class="collapse" id="ui-basic">
+              <div class="collapse" id="menu-questionnaire">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <a class="nav-link" href="/questionnaire/new">Ajouter questionnaire</a></li>
                   <li class="nav-item"> <a class="nav-link" href="/questionnaire">Afficher La Liste</a></li>
-=======
-              <a class="nav-link" data-toggle="collapse" href="#entreprise-menu" aria-expanded="false" aria-controls="entreprise-menu">
-                <span class="menu-icon">
-                  <i class="mdi mdi-book-plus"></i>
-                </span>
-                <span class="menu-title">Entreprise</span>
-                <i class="menu-arrow"></i>
-              </a>
-              <div class="collapse" id="entreprise-menu">
-                <ul class="nav flex-column sub-menu">
-                  <li class="nav-item"> <a class="nav-link" href="{{ path('app_entreprise_index') }}">Liste des entreprises</a></li>
->>>>>>> origin/Maha
                 </ul>
               </div>
             </li>
-            <li class="nav-item menu-items">
-<<<<<<< HEAD
-              <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
-                <span class="menu-icon">
-                  <i class="mdi mdi-laptop"></i>
-                </span>
 
-                  <span class="menu-title">Reponse Questionnaire</span>
+            <!-- Entreprise -->
+            <li class="nav-item menu-items">
+              <a class="nav-link" data-toggle="collapse" href="#menu-entreprise" aria-expanded="false" aria-controls="menu-entreprise">
+                <span class="menu-icon"><i class="mdi mdi-book-plus"></i></span>
+                <span class="menu-title">Entreprise</span>
                 <i class="menu-arrow"></i>
               </a>
-              <div class="collapse" id="ui-basic">
+              <div class="collapse" id="menu-entreprise">
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item"> <a class="nav-link" href="{{ path('app_entreprise_index') }}">Liste des entreprises</a></li>
+                </ul>
+              </div>
+            </li>
+
+            <!-- Reponse Questionnaire -->
+            <li class="nav-item menu-items">
+              <a class="nav-link" data-toggle="collapse" href="#menu-rep-questionnaire" aria-expanded="false" aria-controls="menu-rep-questionnaire">
+                <span class="menu-icon"><i class="mdi mdi-laptop"></i></span>
+                <span class="menu-title">Réponse Questionnaire</span>
+                <i class="menu-arrow"></i>
+              </a>
+              <div class="collapse" id="menu-rep-questionnaire">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <a class="nav-link" href="/repquestionnaire">Afficher La Liste</a></li>
                 </ul>
               </div>
             </li>
-            <li class="nav-item menu-items">
-              <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
-                <span class="menu-icon">
-                  <i class="mdi mdi-laptop"></i>
-                </span>
 
+            <!-- Paie -->
+            <li class="nav-item menu-items">
+              <a class="nav-link" data-toggle="collapse" href="#menu-paie" aria-expanded="false" aria-controls="menu-paie">
+                <span class="menu-icon"><i class="mdi mdi-laptop"></i></span>
                 <span class="menu-title">Paie</span>
                 <i class="menu-arrow"></i>
               </a>
-            
-              <div class="collapse" id="ui-basic">
+              <div class="collapse" id="menu-paie">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <a class="nav-link" href="/paie">Afficher La Liste</a></li>
                 </ul>
               </div>
-              <li class="nav-item menu-items">
-              <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
-                <span class="menu-icon">
-                  <i class="mdi mdi-access-point"></i>
-                </span>
-              <span class="menu-title">Article</span>
+            </li>
+
+            <!-- Article -->
+            <li class="nav-item menu-items">
+              <a class="nav-link" data-toggle="collapse" href="#menu-article" aria-expanded="false" aria-controls="menu-article">
+                <span class="menu-icon"><i class="mdi mdi-access-point"></i></span>
+                <span class="menu-title">Article</span>
                 <i class="menu-arrow"></i>
               </a>
-              <div class="collapse" id="ui-basic">
+              <div class="collapse" id="menu-article">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <a class="nav-link" href="/article/new">Ajouter Article</a></li>
                   <li class="nav-item"> <a class="nav-link" href="/article">Afficher La Liste</a></li>
                 </ul>
               </div>
+            </li>
 
-
-                  <li class="nav-item menu-items">
-              <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
-                <span class="menu-icon">
-                  <i class="mdi mdi-access-point"></i>
-                </span>
-              <span class="menu-title">Facture</span>
+            <!-- Facture -->
+            <li class="nav-item menu-items">
+              <a class="nav-link" data-toggle="collapse" href="#menu-facture" aria-expanded="false" aria-controls="menu-facture">
+                <span class="menu-icon"><i class="mdi mdi-access-point"></i></span>
+                <span class="menu-title">Facture</span>
                 <i class="menu-arrow"></i>
               </a>
-              <div class="collapse" id="ui-basic">
+              <div class="collapse" id="menu-facture">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <a class="nav-link" href="/facture/new">Ajouter Facture</a></li>
                   <li class="nav-item"> <a class="nav-link" href="/facture">Afficher La Liste</a></li>
                 </ul>
               </div>
+            </li>
 
-
-                  <li class="nav-item menu-items">
-              <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
-                <span class="menu-icon">
-                  <i class="mdi mdi-access-point"></i>
-                </span>
-              <span class="menu-title">Paiement</span>
+            <!-- Paiement -->
+            <li class="nav-item menu-items">
+              <a class="nav-link" data-toggle="collapse" href="#menu-paiement" aria-expanded="false" aria-controls="menu-paiement">
+                <span class="menu-icon"><i class="mdi mdi-access-point"></i></span>
+                <span class="menu-title">Paiement</span>
                 <i class="menu-arrow"></i>
               </a>
-              <div class="collapse" id="ui-basic">
+              <div class="collapse" id="menu-paiement">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <a class="nav-link" href="/paiement/new">Ajouter Paiement</a></li>
                   <li class="nav-item"> <a class="nav-link" href="/paiement">Afficher La Liste</a></li>
                 </ul>
               </div>
-              </li>
             </li>
-=======
+
+            <!-- Departement -->
+            <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#departement-menu" aria-expanded="false" aria-controls="departement-menu">
-                <span class="menu-icon">
-                  <i class="mdi mdi-view-agenda"></i>
-                </span>
+                <span class="menu-icon"><i class="mdi mdi-view-agenda"></i></span>
                 <span class="menu-title">Departement</span>
                 <i class="menu-arrow"></i>
               </a>
@@ -224,9 +215,8 @@
                 </ul>
               </div>
             </li>
->>>>>>> origin/Maha
+
           </ul>
-        
         </nav>
         <!-- partial -->
         <div class="container-fluid page-body-wrapper">
@@ -385,7 +375,6 @@
             <!-- partial:partials/_footer.html -->
             <footer class="footer">
               <div class="d-sm-flex justify-content-center justify-content-sm-between">
-<<<<<<< HEAD
                 <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © powerHR 2025</span>
                 <div class="d-flex justify-content-center align-items-center gap-3">
                     <label for="copy-email" class="text-white mb-0">Contactez-nous :</label>
@@ -397,12 +386,8 @@
                           onclick="this.select();document.execCommand('copy');"
                           style="cursor: pointer; width: auto;">
                 </div>
-
-
-=======
                 <span class="text-muted d-block text-center text-sm-left d-sm-inline-block"></span>
                 <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"></span>
->>>>>>> origin/Maha
               </div>
             </footer>
             <!-- partial -->
