@@ -25,12 +25,7 @@ final class EmployeController extends AbstractController
     }
 
     #[Route('/new', name: 'app_employe_new', methods: ['GET', 'POST'])]
-<<<<<<< HEAD
-    
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-=======
     public function new(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher): Response
->>>>>>> origin/yassine
     {
         $employe = new Employe();
         $form = $this->createForm(EmployeType::class, $employe, [
