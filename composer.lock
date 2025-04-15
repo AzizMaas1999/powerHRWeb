@@ -5,10 +5,14 @@
         "This file is @generated automatically"
     ],
 <<<<<<< HEAD
+<<<<<<< HEAD
     "content-hash": "1e059d16924cfa1144604bbaf1de0ad3",
 =======
     "content-hash": "f03632b3aa98fba77db0e4359e67ff89",
 >>>>>>> origin/Mohamed
+=======
+    "content-hash": "684c8db081526c7ff1dde41d6ab40606",
+>>>>>>> origin/Haifa
     "packages": [
         {
             "name": "composer/semver",

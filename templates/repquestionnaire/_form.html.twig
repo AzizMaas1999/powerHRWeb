@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <div class="container mt-4">
     <div class="card shadow p-4">
         {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
@@ -21,3 +22,18 @@
         {{ form_end(form) }}
     </div>
 </div>
+=======
+{{ form_start(form, {'attr': {'class': 'row g-3'}}) }}
+
+    {% for field in form %}
+        <div class="col-md-6">
+            {{ form_row(field) }}
+        </div>
+    {% endfor %}
+
+    <div class="col-12">
+        <button class="btn btn-success">Enregistrer</button>
+    </div>
+
+{{ form_end(form) }}
+>>>>>>> origin/Haifa

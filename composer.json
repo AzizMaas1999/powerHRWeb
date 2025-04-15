@@ -44,10 +44,14 @@
         "symfony/web-link": "6.4.*",
         "symfony/yaml": "6.4.*",
 <<<<<<< HEAD
+<<<<<<< HEAD
         "twbs/bootstrap": "*",
 =======
         "twbs/bootstrap": "5.0.2",
 >>>>>>> origin/Mohamed
+=======
+        "twbs/bootstrap": "5.0.2",
+>>>>>>> origin/Haifa
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/twig": "^2.12|^3.0"
     },
