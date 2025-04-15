@@ -1,13 +1,16 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit FicheEmploye{% endblock %}
+{% block title %}Modifier une Fiche Employé{% endblock %}
 
 {% block body %}
-    <h1>Edit FicheEmploye</h1>
+<div class="container">
+    <h2>Modifier une Fiche Employé</h2>
 
-    {{ include('fiche_employe/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit" class="btn btn-primary mt-3">Mettre à jour</button>
+    {{ form_end(form) }}
 
-    <a href="{{ path('app_fiche_employe_index') }}">back to list</a>
-
-    {{ include('fiche_employe/_delete_form.html.twig') }}
+    <a href="{{ path('app_fiche_employe_index') }}" class="btn btn-secondary mt-3">Retour</a>
+</div>
 {% endblock %}

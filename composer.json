@@ -45,6 +45,7 @@
         "symfony/yaml": "6.4.*",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         "twbs/bootstrap": "*",
 =======
         "twbs/bootstrap": "5.0.2",
@@ -52,6 +53,9 @@
 =======
         "twbs/bootstrap": "5.0.2",
 >>>>>>> origin/Haifa
+=======
+        "twbs/bootstrap": "5.0.2",
+>>>>>>> origin/yassine
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/twig": "^2.12|^3.0"
     },

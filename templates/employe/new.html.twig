@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 
+<<<<<<< HEAD
 {% block title %}Créer un nouveau CLFR{% endblock %}
 
 {% block body %}
@@ -92,4 +93,17 @@
     </div>
 </div>
 {{ form_end(form) }}
+=======
+{% block title %}Nouveau Employe{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-white">Créer un nouveau employe</h1>
+        <a href="{{ path('app_employe_index') }}" class="btn btn-sm btn-primary">← Retour à la liste</a>
+    </div>
+
+    {{ include('employe/_form.html.twig', { button_label: 'Enregistrer' }) }}
+</div>
+>>>>>>> origin/yassine
 {% endblock %}

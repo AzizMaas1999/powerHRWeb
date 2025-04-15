@@ -5,8 +5,8 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-
 use App\Repository\CandidatRepository;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CandidatRepository::class)]
 #[ORM\Table(name: 'candidat')]
@@ -29,6 +29,11 @@ class Candidat
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "Le nom est requis.")]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Zà-ÿÀ-ß]+$/", 
+        message: "Le nom ne peut contenir que des lettres."
+    )]
     private ?string $nom = null;
 
     public function getNom(): ?string
@@ -43,6 +48,11 @@ class Candidat
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "Le prénom est requis.")]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Zà-ÿÀ-ß]+$/", 
+        message: "Le prénom ne peut contenir que des lettres."
+    )]
     private ?string $prenom = null;
 
     public function getPrenom(): ?string
@@ -57,6 +67,8 @@ class Candidat
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "L'email est requis.")]
+    #[Assert\Email(message: "L'adresse email '{{ value }}' n'est pas valide.")]
     private ?string $email = null;
 
     public function getEmail(): ?string
@@ -71,6 +83,11 @@ class Candidat
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "Le numéro de téléphone est requis.")]
+    #[Assert\Regex(
+        pattern: "/^[0-9]{8}$/",
+        message: "Le numéro de téléphone doit contenir exactement 8 chiffres."
+    )]
     private ?string $telephone = null;
 
     public function getTelephone(): ?string
@@ -84,7 +101,8 @@ class Candidat
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: false)]
+    #[ORM\Column(name:'cvPdfUrl',type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "Le CV est requis.")]
     private ?string $cvPdfUrl = null;
 
     public function getCvPdfUrl(): ?string
@@ -100,6 +118,7 @@ class Candidat
 
     #[ORM\ManyToOne(targetEntity: Entreprise::class, inversedBy: 'candidats')]
     #[ORM\JoinColumn(name: 'entreprise_id', referencedColumnName: 'id')]
+    #[Assert\NotNull(message: "Veuillez sélectionner une entreprise.")]
     private ?Entreprise $entreprise = null;
 
     public function getEntreprise(): ?Entreprise
@@ -112,5 +131,4 @@ class Candidat
         $this->entreprise = $entreprise;
         return $this;
     }
-
 }

@@ -28,43 +28,26 @@ final class CandidatController extends AbstractController
         $candidat = new Candidat();
         $form = $this->createForm(CandidatType::class, $candidat);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($candidat);
             $entityManager->flush();
-
-            return $this->redirectToRoute('app_candidat_index', [], Response::HTTP_SEE_OTHER);
+     
+            return $this->redirectToRoute('app_candidat_index',Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->render('candidat/new.html.twig', [
             'candidat' => $candidat,
             'form' => $form,
         ]);
     }
+    
 
     #[Route('/{id}', name: 'app_candidat_show', methods: ['GET'])]
     public function show(Candidat $candidat): Response
     {
         return $this->render('candidat/show.html.twig', [
             'candidat' => $candidat,
-        ]);
-    }
-
-    #[Route('/{id}/edit', name: 'app_candidat_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Candidat $candidat, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(CandidatType::class, $candidat);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_candidat_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('candidat/edit.html.twig', [
-            'candidat' => $candidat,
-            'form' => $form,
         ]);
     }
 
