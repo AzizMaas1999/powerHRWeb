@@ -1,4 +1,4 @@
-{{ form_start(form) }} {# Pas de 'novalidate' ici #}
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 
 <div class="container mt-5">
     <div class="card shadow-lg border-0 rounded-4 p-4 bg-dark text-white">
@@ -7,15 +7,79 @@
                 <i class="fas fa-plus-circle me-2"></i> Nouveau CLFR
             </h2>
 
-            {{ form_row(form.nom) }}
-            {{ form_row(form.matricule_fiscale) }}
-            {{ form_row(form.adresse) }}
-            {{ form_row(form.numTel) }}
-            {{ form_row(form.type) }}
-            {{ form_row(form.photoPath) }}
+            {% if not form.vars.valid %}
+                <div class="alert alert-danger">
+                    <strong>Veuillez corriger les erreurs ci-dessous.</strong>
+                </div>
+            {% endif %}
+
+            <div class="form-group mb-3">
+                {{ form_label(form.nom, null, {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.nom, {'attr': {'class': 'form-control' ~ (form.nom.vars.valid ? '' : ' is-invalid')}}) }}
+                {% if not form.nom.vars.valid %}
+                    <div class="invalid-feedback">
+                        {% for error in form.nom.vars.errors %}
+                            {{ error.message }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group mb-3">
+                {{ form_label(form.matricule_fiscale, null, {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.matricule_fiscale, {'attr': {'class': 'form-control' ~ (form.matricule_fiscale.vars.valid ? '' : ' is-invalid')}}) }}
+                {% if not form.matricule_fiscale.vars.valid %}
+                    <div class="invalid-feedback">
+                        {% for error in form.matricule_fiscale.vars.errors %}
+                            {{ error.message }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group mb-3">
+                {{ form_label(form.adresse, null, {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.adresse, {'attr': {'class': 'form-control' ~ (form.adresse.vars.valid ? '' : ' is-invalid')}}) }}
+                {% if not form.adresse.vars.valid %}
+                    <div class="invalid-feedback">
+                        {% for error in form.adresse.vars.errors %}
+                            {{ error.message }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group mb-3">
+                {{ form_label(form.numTel, null, {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.numTel, {'attr': {'class': 'form-control' ~ (form.numTel.vars.valid ? '' : ' is-invalid')}}) }}
+                {% if not form.numTel.vars.valid %}
+                    <div class="invalid-feedback">
+                        {% for error in form.numTel.vars.errors %}
+                            {{ error.message }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group mb-3">
+                {{ form_label(form.type, null, {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.type, {'attr': {'class': 'form-control' ~ (form.type.vars.valid ? '' : ' is-invalid')}}) }}
+                {% if not form.type.vars.valid %}
+                    <div class="invalid-feedback">
+                        {% for error in form.type.vars.errors %}
+                            {{ error.message }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group mb-3">
+                {{ form_label(form.photoPath, null, {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.photoPath, {'attr': {'class': 'form-control'}}) }}
+            </div>
 
             <div class="text-center mt-4">
-                <button type="submit" class="btn btn-primary">Créer</button>
+                <button type="submit" class="btn btn-primary">{{ button_label|default('Créer') }}</button>
                 <a href="{{ path('app_clfr_index') }}" class="btn btn-outline-light">
                     <i class="fas fa-arrow-left me-1"></i> Retour à la liste
                 </a>
