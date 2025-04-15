@@ -42,6 +42,9 @@ final class RepquestionnaireController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($repQuestionnaire);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Reponse Questionnaire ajouté avec succès.');
+
     
             return $this->redirectToRoute('app_repquestionnaire_index');
         }

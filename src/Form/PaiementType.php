@@ -23,10 +23,10 @@ class PaiementType extends AbstractType
             ])
             ->add('mode', ChoiceType::class, [
                 'choices' => [
-                    'Espece' => 'Espece',
+                    'Espece' => 'espece',
                     'Virement' => 'Virement',
                     'Chèque' => 'Chèque',
-                    'traite' => 'traite '
+                    'Traite' => 'traite '
 
                 ],
                 'label' => 'Mode de paiement',

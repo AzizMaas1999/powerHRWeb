@@ -185,20 +185,5 @@ public function setTotal(?float $total): self
         return $this;
     }
 
-
-    #[ORM\Column(type: 'boolean')]
-private bool $estPaye = false;
-
-public function isEstPaye(): bool
-{
-    return $this->estPaye;
-}
-
-public function setEstPaye(bool $estPaye): self
-{
-    $this->estPaye = $estPaye;
-    return $this;
-}
-
 }
 
