@@ -1,0 +1,10 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}New Questionnaire{% endblock %}
+
+{% block body %}
+    <h1>Create new Questionnaire</h1>
+
+    {{ include('questionnaireadmin/_form.html.twig', { button_label: 'Enregistrer' }) }}
+
+{% endblock %}
