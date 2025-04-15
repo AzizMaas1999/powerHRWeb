@@ -16431,7 +16431,7 @@ pre[class*=language-] > code {
   background: var(--pc-header-background);
   color: var(--pc-header-color);
   min-height: 60px;
-  margin-top: auto;
+  margin-top: -48px;
   box-shadow: var(--pc-header-shadow);
   position: fixed;
   left: 260px;
