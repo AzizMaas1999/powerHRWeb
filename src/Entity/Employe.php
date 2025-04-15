@@ -36,13 +36,14 @@ class Employe implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(message:'Le poste est requis.')]
     private Poste $poste;
 
-    #[ORM\Column(type: 'float', nullable: true)]
-    #[Assert\NotBlank(message:'Le salaire est requis.')]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\NotBlank(message: 'Le salaire est requis.')]
     #[Assert\Regex(
-        pattern: "/^[0-9]$/",
-        message: "Le salaire ne peut contenir que des chiffres."
-    )]
-    private ?float $salaire = null;
+    pattern: "/^\d+(\.\d{1,2})?$/",
+    message: "Veuillez entrer un salaire valide (ex: 2500.50)."
+)]
+private ?string $salaire = null;
+
 
     #[ORM\Column(type: 'string', nullable: true)]
     #[Assert\NotBlank(message:'Le rib est requis.')]
