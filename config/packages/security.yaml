@@ -1,45 +1,31 @@
 security:
     password_hashers:
         App\Entity\Employe:
-            algorithm: argon2id
+            algorithm: auto 
 
     providers:
-        employe_provider:
+        app_user_provider:
             entity:
                 class: App\Entity\Employe
-                property: username
+                property: username 
 
     firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
         main:
-            pattern: ^/ 
-            provider: employe_provider
-            form_login:
-                login_path: app_login
-                check_path: app_login
-                success_handler: App\Security\LoginSuccessHandler
-                username_parameter: _username
-                password_parameter: _password
-                enable_csrf: true  # Replaces csrf_token_generator
-                csrf_parameter: _csrf_token
-                csrf_token_id: authenticate
+            lazy: true
+            provider: app_user_provider
+            custom_authenticator: App\Security\AppAuthenticator
             logout:
-                path: /logout  # This is the route for logging out
-                target: app_login  # After logout, the user is redirected to the login page
-                # You can also configure custom behavior, like redirecting to a different URL
-
+                path: app_logout
+                target: app_login
+            login_throttling:
+                max_attempts: 5
     access_control:
-        - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/directeur, roles: ROLE_DIRECTEUR }
-        - { path: ^/facturation, roles: ROLE_FACTURATION }
-        - { path: ^/charges, roles: ROLE_CHARGES }
-        - { path: ^/ouvrier, roles: ROLE_OUVRIER }
-
-when@test:
-    security:
-        password_hashers:
-            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
-                algorithm: auto
-                cost: 4 # Low cost for testing
-                time_cost: 3 # Low time cost for testing
-                memory_cost: 10 # Low memory cost for testing
-
+    - { path: ^/admin, roles: ROLE_ADMIN }
+    - { path: ^/directeur, roles: ROLE_DIRECTEUR }
+    - { path: ^/charges, roles: ROLE_CHARGES }
+    - { path: ^/facturation, roles: ROLE_FACTURATION }
+    - { path: ^/ouvrier, roles: ROLE_OUVRIER }
