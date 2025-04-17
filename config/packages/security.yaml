@@ -1,0 +1,31 @@
+security:
+    password_hashers:
+        App\Entity\Employe:
+            algorithm: auto 
+
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\Employe
+                property: username 
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        main:
+            lazy: true
+            provider: app_user_provider
+            custom_authenticator: App\Security\AppAuthenticator
+            logout:
+                path: app_logout
+                target: app_login
+            login_throttling:
+                max_attempts: 5
+    access_control:
+    - { path: ^/admin, roles: ROLE_ADMIN }
+    - { path: ^/directeur, roles: ROLE_DIRECTEUR }
+    - { path: ^/charges, roles: ROLE_CHARGES }
+    - { path: ^/facturation, roles: ROLE_FACTURATION }
+    - { path: ^/ouvrier, roles: ROLE_OUVRIER }
