@@ -1,0 +1,49 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Questionnaire index{% endblock %}
+
+{% block body %}
+    <h1>Questionnaire index</h1>
+
+    <div class="d-flex justify-content-end mb-3">
+       <a href="{{ path('app_questionnaireadmin_new') }}" class="btn btn-success">➕ Create new</a>
+    </div>
+
+    <table class="table table-dark table-hover table-bordered">
+        <thead>
+            <tr>
+                
+                <th>DateCreation</th>
+                <th>Objet</th>
+                <th>Description</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+      <tbody>
+    {% for questionnaire in questionnaires %}
+        <tr onclick="window.location.href='{{ path('app_repquestionnaireadmin_new', {'questionnaireId': questionnaire.id}) }}'" style="cursor: pointer;">
+           
+            <td>{{ questionnaire.dateCreation ? questionnaire.dateCreation|date('Y-m-d') : '' }}</td>
+            <td>{{ questionnaire.objet }}</td>
+            <td>{{ questionnaire.description }}</td>
+            <td>
+                <form method="post" action="{{ path('app_questionnaireadmin_delete', {'id': questionnaire.id}) }}" style="display:inline;" onsubmit="return confirm('Supprimer ce questionnaire ?');" onclick="event.stopPropagation();">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ questionnaire.id) }}">
+                    <button type="submit" style="background: none; border: none;" title="Supprimer">
+                        <i class="bi bi-trash-fill text-danger"></i>
+                    </button>
+                </form>
+                <a href="{{ path('app_questionnaireadmin_edit', {'id': questionnaire.id}) }}" class="icon-link edit-icon text-primary" title="Modifier" onclick="event.stopPropagation();">
+                    <i class="bi bi-pencil-square"></i>
+                </a>
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="5" class="text-center">No records found</td>
+        </tr>
+    {% endfor %}
+</tbody>
+
+    </table>
+{% endblock %}

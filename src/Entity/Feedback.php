@@ -6,7 +6,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\FeedbackRepository;
 
 #[ORM\Entity(repositoryClass: FeedbackRepository::class)]
@@ -29,7 +29,7 @@ class Feedback
         return $this;
     }
 
-    #[ORM\Column(type: 'datetime', nullable: false)]
+    #[ORM\Column(name:'dateCreation' ,type: 'datetime', nullable: false)]
     private ?\DateTimeInterface $dateCreation = null;
 
     public function getDateCreation(): ?\DateTimeInterface
@@ -44,6 +44,11 @@ class Feedback
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: 'Le type est obligatoire.')]
+    #[Assert\Choice(
+        choices: ['positif', 'negatif', 'neutre'],
+        message: 'Le type doit être "positif", "négatif" ou "neutre".'
+    )]
     private ?string $type = null;
 
     public function getType(): ?string
@@ -57,7 +62,14 @@ class Feedback
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: 'La description est obligatoire.')]
+    #[Assert\Length(
+        min: 2,
+        max: 1000,
+        minMessage: 'La description doit comporter au moins {{ limit }} caractères.',
+        maxMessage: 'La description ne peut pas excéder {{ limit }} caractères.'
+    )]
     private ?string $description = null;
 
     public function getDescription(): ?string
@@ -85,5 +97,4 @@ class Feedback
         $this->clfr = $clfr;
         return $this;
     }
-
 }

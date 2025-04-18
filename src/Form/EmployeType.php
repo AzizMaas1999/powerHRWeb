@@ -9,25 +9,35 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use App\Enum\Poste;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
 class EmployeType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('username')
-            ->add('password')
-            ->add('poste')
+            ->add('username');
+
+        if (!$options['is_edit']) {
+            $builder->add('password', PasswordType::class);
+        }
+
+        $builder
+            ->add('poste', ChoiceType::class, [
+                'choices' => Poste::cases(),
+                'choice_label' => fn(Poste $poste) => $poste->value,
+                'choice_value' => fn (?Poste $poste) => $poste?->value,
+                'label' => 'Poste'
+            ])            
             ->add('salaire')
             ->add('rib')
             ->add('codeSociale')
             ->add('departement', EntityType::class, [
                 'class' => Departement::class,
-                'choice_label' => 'id',
-            ])
-            ->add('ficheEmploye', EntityType::class, [
-                'class' => FicheEmploye::class,
-                'choice_label' => 'id',
+                'choice_label' => 'nom',
+                'label' => 'Département',
             ])
         ;
     }
@@ -36,6 +46,7 @@ class EmployeType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Employe::class,
+            'is_edit' => false,
         ]);
     }
 }

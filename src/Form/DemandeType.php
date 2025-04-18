@@ -8,16 +8,23 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+
 
 class DemandeType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('dateCreation', null, [
-                'widget' => 'single_text',
+            
+            ->add('type', ChoiceType::class, [
+                'choices' => [
+                    'Conges' => 'Conges',
+                    'Augmentation Salaire' => 'Augmentation Salaire',
+                ],
+                'placeholder' => 'Choisir un type de demande',
+                'attr' => ['class' => 'form-select'],
             ])
-            ->add('type')
             ->add('dateDebut', null, [
                 'widget' => 'single_text',
             ])
@@ -26,11 +33,11 @@ class DemandeType extends AbstractType
             ])
             ->add('salaire')
             ->add('cause')
-            ->add('status')
-            ->add('employe', EntityType::class, [
-                'class' => Employe::class,
-                'choice_label' => 'id',
-            ])
+           
+            //->add('employe', EntityType::class, [
+               // 'class' => Employe::class,
+               // 'choice_label' => 'id',
+            //])
         ;
     }
 

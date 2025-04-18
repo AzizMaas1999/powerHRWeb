@@ -1,4 +1,19 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_start(form, { attr: { class: 'needs-validation', novalidate: 'novalidate' } }) }}
+    <div class="row g-3">
+        {% for field in form %}
+            {% if field.vars.name != '_token' %}
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form_label(field, null, { label_attr: { class: 'form-label text-white fw-bold' } }) }}
+                        {{ form_widget(field, { attr: { class: 'form-control bg-dark text-white border-secondary' } }) }}
+                        {{ form_errors(field) }}
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <button class="btn btn-success mt-4">
+        {{ button_label|default('Enregistrer') }}
+    </button>
 {{ form_end(form) }}

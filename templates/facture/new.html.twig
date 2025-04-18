@@ -1,11 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Facture{% endblock %}
+{% block title %}Nouvelle Facture{% endblock %}
 
 {% block body %}
-    <h1>Create new Facture</h1>
+<div class="container py-5 text-white">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-6 fw-semibold">
+            🧾 Créer une <span class="text-info">Nouvelle Facture</span>
+        </h1>
+        <a href="{{ path('app_facture_index') }}" class="btn btn-outline-info rounded-pill px-4">
+            ← Retour à la liste
+        </a>
+    </div>
 
-    {{ include('facture/_form.html.twig') }}
-
-    <a href="{{ path('app_facture_index') }}">back to list</a>
+    <div class="card bg-gradient bg-dark border border-info shadow-lg rounded-4">
+        <div class="card-body p-4">
+            {{ include('facture/_form.html.twig') }}
+        </div>
+    </div>
+</div>
 {% endblock %}

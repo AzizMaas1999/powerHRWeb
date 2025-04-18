@@ -1,4 +1,52 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+<div class="container mt-4">
+    <div class="card shadow p-4">
+            <h2 class="text-center mb-4 text-primary">Créer une nouvelle demande</h2>
+
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+        <div class="row">
+
+            <div class="col-md-6 mb-3">
+                {{ form_label(form.type, 'Type de demande', {'label_attr': {'class': 'form-label'}}) }}
+                 {{ form_widget(form.type, {'attr': {'class': 'form-select'}}) }}
+                  {{ form_errors(form.type) }}
+            </div>
+
+            <div class="col-md-6 mb-3">
+                {{ form_label(form.dateDebut, 'Date de début', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.dateDebut, {'attr': {'class': 'form-control'}}) }}
+                 {{ form_errors(form.dateDebut) }}
+            </div>
+
+            <div class="col-md-6 mb-3">
+                {{ form_label(form.dateFin, 'Date de fin', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.dateFin, {'attr': {'class': 'form-control'}}) }}
+                 {{ form_errors(form.dateFin) }}
+            </div>
+
+            <div class="col-md-6 mb-3">
+                {{ form_label(form.salaire, 'Salaire', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.salaire, {'attr': {'class': 'form-control'}}) }}
+                 {{ form_errors(form.salaire) }}
+            </div>
+
+            <div class="col-md-6 mb-3">
+                {{ form_label(form.cause, 'Cause', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.cause, {'attr': {'class': 'form-control'}}) }}
+                 {{ form_errors(form.cause) }}
+            </div>
+
+
+            
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary">
+                {{ button_label|default('Enregistrer') }}
+            </button>
+            <a href="{{ path('app_demande_index') }}" class="btn btn-secondary">Retour</a>
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+</div>

@@ -1,0 +1,60 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Demande index{% endblock %}
+
+{% block body %}
+    <h1>Demande index</h1>
+
+
+    <div class="d-flex justify-content-end mb-3">
+        <a href="{{ path('app_demandeadmin_new') }}" class="btn btn-success">➕ Create new</a>
+    </div>
+
+    <table class="table table-dark table-hover table-bordered">
+        <thead>
+            <tr>
+         
+                <th>DateCreation</th>
+                <th>Type</th>
+                <th>DateDebut</th>
+                <th>DateFin</th>
+                <th>Salaire</th>
+                <th>Cause</th>
+                <th>Status</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for demande in demandes %}
+            <tr>
+             
+                <td>{{ demande.dateCreation ? demande.dateCreation|date('Y-m-d') : '' }}</td>
+                <td>{{ demande.type }}</td>
+                <td>{{ demande.dateDebut ? demande.dateDebut|date('Y-m-d') : '' }}</td>
+                <td>{{ demande.dateFin ? demande.dateFin|date('Y-m-d') : '' }}</td>
+                <td>{{ demande.salaire }}</td>
+                <td>{{ demande.cause }}</td>
+                <td>{{ demande.status }}</td>
+                <td>
+
+
+                   <form method="post" action="{{ path('app_demandeadmin_delete', {'id': demande.id}) }}" style="display:inline;" onsubmit="return confirm('Supprimer cette demande ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ demande.id) }}">
+                        <button type="submit" style="background: none; border: none;" title="Supprimer">
+                            <i class="bi bi-trash-fill text-danger icon-size"></i>
+                        </button>
+                    </form>
+                    <a href="{{ path('app_demandeadmin_edit', {'id': demande.id}) }}" class="icon-link edit-icon text-primary" title="Modifier">
+                     <i class="bi bi-pencil-square text-primary icon-size"></i>
+                    </a>
+                </td>
+            </tr>
+            
+        {% else %}
+            <tr>
+                <td colspan="9" class="text-center">No records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
