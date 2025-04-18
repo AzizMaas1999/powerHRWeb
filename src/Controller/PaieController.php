@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Paie;
+use App\Entity\Pointage;
 use App\Form\PaieType;
 use App\Repository\PaieRepository;
+use App\Repository\PointageRepository;
+use App\Repository\EmployeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,10 +18,16 @@ use Symfony\Component\Routing\Attribute\Route;
 final class PaieController extends AbstractController
 {
     #[Route(name: 'app_paie_index', methods: ['GET'])]
-    public function index(PaieRepository $paieRepository): Response
+    public function index(PaieRepository $paieRepository, PointageRepository $pointageRepository, EmployeRepository $employeRepository): Response
     {
         return $this->render('paie/index.html.twig', [
-            'paies' => $paieRepository->findAll(),
+            'paies' => $paieRepository->findAll(
+                ['mois' => 'ASC'],
+                ['annee' => 'ASC']
+            ),
+            'pointages' => $pointageRepository->findAll(
+                ['paie' => 'NOT NULL']
+            ),
         ]);
     }
 
@@ -40,6 +49,37 @@ final class PaieController extends AbstractController
             'paie' => $paie,
             'form' => $form,
         ]);
+    }
+
+    #[Route('/employe', name: 'app_showEmployePaie_index', methods: ['GET'])]
+    public function showEmp(EmployeRepository $employeRepository, PointageRepository $pointageRepository, PaieRepository $paieRepository): Response
+    {
+        return $this->render('paie/showEmp.html.twig', [
+            'employes' => $employeRepository->findBy([], ['username' => 'ASC']),
+            'pointages' => $pointageRepository->findAll(),
+            'paies' => $pointageRepository->findAll(),
+        ]);
+    }
+
+    #[Route('/newPaie/{id}/{nb}', name: 'app_newEmployePaie', methods: ['GET', 'POST'])]
+    public function newPaie(int $id, int $nb, Request $request, EntityManagerInterface $entityManager, EmployeRepository $employeRepository, PointageRepository $pointageRepository): Response
+    {
+        $paie = new Paie();
+        $employe = $employeRepository->find($id);
+        $paie->setNbJour($nb);
+        $paie->setMontant($nb * ($employe->getSalaire() / 30));
+        $paie->setMois(date('M'));
+        $paie->setAnnee(date('Y'));
+        $entityManager->persist($paie);
+        $pointage = $pointageRepository->findBy(
+            ['employe' => $id],
+            ['date' => date('Y-m')]
+        );
+        foreach ($pointage as $p) {
+            $p->setPaie($paie);        
+        }
+        $entityManager->flush();
+        return $this->redirectToRoute('app_paie_index', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/{id}', name: 'app_paie_show', methods: ['GET'])]

@@ -21147,7 +21147,8 @@ div.tagsinput {
 
 .content-wrapper {
   margin-left: 122px;
-  background: #000000;
+  min-height: inherit;
+  background: #ffffff;
   padding: 1.875rem 1.75rem;
   width: 100%;
   -webkit-flex-grow: 1;
