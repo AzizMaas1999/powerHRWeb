@@ -19,6 +19,7 @@ class Facture
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
+
     public function getId(): ?int
     {
         return $this->id;
@@ -36,15 +37,18 @@ class Facture
 }
 
 
-    #[ORM\Column(type: 'date', nullable: false)]
-    private ?\DateTimeInterface $date = null;
+#[ORM\Column(type: 'date', nullable: false)]
+#[Assert\NotBlank(message: "La date est requise.")]
+#[Assert\LessThanOrEqual("today", message: "La date ne peut pas être dans le futur.")]
+private ?\DateTimeInterface $date = null;
+
 
     public function getDate(): ?\DateTimeInterface
     {
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): self
+    public function setDate(?\DateTimeInterface $date): self
     {
         $this->date = $date;
         return $this;
@@ -186,19 +190,6 @@ public function setTotal(?float $total): self
     }
 
 
-    #[ORM\Column(type: 'boolean')]
-private bool $estPaye = false;
-
-public function isEstPaye(): bool
-{
-    return $this->estPaye;
-}
-
-public function setEstPaye(bool $estPaye): self
-{
-    $this->estPaye = $estPaye;
-    return $this;
-}
 
 }
 

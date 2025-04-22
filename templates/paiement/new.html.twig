@@ -3,10 +3,40 @@
 {% block title %}Nouveau Paiement{% endblock %}
 
 {% block body %}
+{% block javascripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const factureSelect = document.querySelector('select[name$="[factures][]"]');
+        const montantInput = document.querySelector('input[name$="[montant]"]');
+
+        if (factureSelect && montantInput) {
+            factureSelect.addEventListener('change', function () {
+                let total = 0;
+                const selectedOptions = factureSelect.selectedOptions;
+
+                for (let i = 0; i < selectedOptions.length; i++) {
+                    const montant = parseFloat(selectedOptions[i].dataset.total);
+                    if (!isNaN(montant)) {
+                        total += montant;
+                    }
+                }
+
+                montantInput.value = total.toFixed(2);
+            });
+        }
+    });
+</script>
+{% endblock %}
+
 <div class="container mt-5">
     <div class="card shadow-lg rounded border-0 bg-dark text-white">
         <div class="card-body">
-        <h1 class="card-title mb-4 text-white">Créer un nouveau Paiement</h1>
+            <h1 class="card-title mb-4 text-white">Créer un nouveau Paiement</h1>
+
+            {# ✅ Affichage des messages d'erreur flash #}
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger">{{ message }}</div>
+            {% endfor %}
 
             {{ include('paiement/_form.html.twig') }}
 

@@ -18,7 +18,9 @@ class Article
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(type: 'integer', nullable: true)]
+    #[ORM\Column(type: 'integer', nullable: false)]
+    #[Assert\NotNull(message: "La quantité est requise.")]
+    #[Assert\PositiveOrZero(message: "La quantité ne peut pas être négative.")]
     private ?int $quantity = null;
 
     #[ORM\Column(name: "prixUni", type: 'float', nullable: true)]
@@ -37,7 +39,7 @@ class Article
     #[ORM\JoinColumn(name: 'facture_id', referencedColumnName: 'id')]
     private ?Facture $facture = null;
 
-    // Getters & Setters...
+    // Getters & Setters
 
     public function getId(): ?int
     {
