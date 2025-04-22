@@ -5,6 +5,9 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
+#[IsGranted('ROLE_CHARGE')]
 
 final class ChargeHomeController extends AbstractController
 {
@@ -36,7 +39,7 @@ final class ChargeHomeController extends AbstractController
             'controller_name' => 'QuestionnaireController',
         ]);
     }
-    #[Route('/fiche/employe', name: 'app_fiche_index')]
+    #[Route('/fiche/employe', name: 'app_fiche_employe_index')]
     public function ficheEmploye(): Response
     {
         return $this->render('fiche_employe/index.html.twig', [

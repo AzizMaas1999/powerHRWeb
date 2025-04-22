@@ -56,7 +56,6 @@ class FicheEmployeType extends AbstractType
                 'mapped' => false,  // We don't map this field to the Candidat entity directly
                 'constraints' => [
                     new \Symfony\Component\Validator\Constraints\File([
-                        'maxSize' => '2M',
                         'mimeTypes' => ['application/pdf'],
                         'mimeTypesMessage' => 'Veuillez télécharger un fichier PDF valide.',
                     ])

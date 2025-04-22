@@ -26,6 +26,6 @@ security:
     access_control:
     - { path: ^/admin, roles: ROLE_ADMIN }
     - { path: ^/directeur, roles: ROLE_DIRECTEUR }
-    - { path: ^/charges, roles: ROLE_CHARGES }
+    - { path: ^/charges, roles: ROLE_CHARGE }
     - { path: ^/facturation, roles: ROLE_FACTURATION }
     - { path: ^/ouvrier, roles: ROLE_OUVRIER }

@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 use App\Repository\EmployeRepository;
 
@@ -31,6 +32,11 @@ class Employe implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message:'Le username est requis.')]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Zà-ÿÀ-ß]+$/",
+        message: "Le nom ne peut contenir que des lettres."
+    )]
     private ?string $username = null;
 
     public function getUsername(): ?string
@@ -45,6 +51,7 @@ class Employe implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "Le mot de passe est requis.")]
     private ?string $password = null;
 
     public function getPassword(): ?string
@@ -59,6 +66,11 @@ class Employe implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message:'Le poste est requis.')]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Zà-ÿÀ-ß]+$/",
+        message: "Le nom ne peut contenir que des lettres."
+    )]
     private ?string $poste = null;
 
     public function getPoste(): ?string
@@ -73,6 +85,11 @@ class Employe implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     #[ORM\Column(type: 'float', nullable: true)]
+    #[Assert\NotBlank(message:'Le salaire est requis.')]
+    #[Assert\Regex(
+        pattern: "/^(?!0+(\.0+)?$)[0-9]+(\.[0-9]{1,2})?$/",
+        message: "Le salaire doit être un nombre positif"
+    )]
     private ?float $salaire = null;
 
     public function getSalaire(): ?float
@@ -87,6 +104,11 @@ class Employe implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\NotBlank(message:'Le rib est requis.')]
+    #[Assert\Regex(
+        pattern: "/^[0-9]{15}+$/", 
+        message: "Le rib ne peut contenir que des chiffres."
+    )]
     private ?string $rib = null;
 
     public function getRib(): ?string
@@ -101,6 +123,12 @@ class Employe implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     #[ORM\Column(name: 'codeSociale', type: 'string', nullable: true)]
+    #[Assert\NotBlank(message:'Le code sociale est requis.')]
+   
+    #[Assert\Regex(
+        pattern: "/^[0-9]{4}+$/", 
+        message: "Le code sociale ne peut contenir que des chiffres."
+    )]
     private ?string $codeSociale = null;
 
     public function getCodeSociale(): ?string
@@ -116,6 +144,7 @@ class Employe implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToOne(targetEntity: Departement::class, inversedBy: 'employes')]
     #[ORM\JoinColumn(name: 'departement_id', referencedColumnName: 'id')]
+    #[Assert\NotBlank(message:'Le departement est requis.')]
     private ?Departement $departement = null;
 
     public function getDepartement(): ?Departement
@@ -268,7 +297,7 @@ class Employe implements UserInterface, PasswordAuthenticatedUserInterface
         return match ($this->getPoste()) {
             'Admin' => ['ROLE_ADMIN'],
             'Directeur' => ['ROLE_DIRECTEUR'],
-            'Charges' => ['ROLE_CHARGES'],
+            'Charges' => ['ROLE_CHARGE'],
             'Facturation' => ['ROLE_FACTURATION'],
             'Ouvrier' => ['ROLE_OUVRIER'],
         };

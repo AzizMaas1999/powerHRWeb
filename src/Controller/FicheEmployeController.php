@@ -10,15 +10,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
+#[IsGranted('ROLE_CHARGE')]
 
 #[Route('/fiche/employe')]
 final class FicheEmployeController extends AbstractController
 {
-    #[Route('/',name: 'app_fiche_employe_index', methods: ['GET'])]
-    public function index(FicheEmployeRepository $ficheEmployeRepository): Response
+    #[Route(name: 'app_fiche_employe_index', methods: ['GET'])]
+    public function index(FicheEmployeRepository $FicheEmployeRepository): Response
     {
         return $this->render('fiche_employe/index.html.twig', [
-            'ficheemployes' => $ficheEmployeRepository->findAll(),
+            'fiches' => $FicheEmployeRepository->findAll(),
         ]);
     }
 
