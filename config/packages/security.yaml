@@ -3,15 +3,7 @@ security:
         App\Entity\Employe:
             algorithm: auto 
 
-        App\Entity\Employe:
-            algorithm: auto 
-
     providers:
-        app_user_provider:
-            entity:
-                class: App\Entity\Employe
-                property: username 
-
         app_user_provider:
             entity:
                 class: App\Entity\Employe

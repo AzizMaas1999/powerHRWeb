@@ -67,6 +67,7 @@
               <span class="nav-link">Navigation</span>
             </li>
 
+            {% if app.user.poste == 'Charges' or app.user.poste == 'Directeur' %}
             <!-- Pointage -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-pointage" aria-expanded="false" aria-controls="menu-pointage">
@@ -78,12 +79,13 @@
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <a class="nav-link" href="/pointage/employe">Ajouter Pointage</a></li>
                   <li class="nav-item"> <a class="nav-link" href="/pointage/csv">Ajouter Pointage Par CSV</a></li>
-                  <li class="nav-item"> <a class="nav-link" href="/pointage/newPointageEmp">Ajouter Pointage (Pour Employé)</a></li>
                   <li class="nav-item"> <a class="nav-link" href="/pointage">Afficher La Liste</a></li>
                 </ul>
               </div>
             </li>
+            {% endif %}
 
+            {% if app.user.poste == 'Ouvrier' or app.user.poste == 'Directeur' %}
             <!-- Demande -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-demande" aria-expanded="false" aria-controls="menu-demande">
@@ -94,12 +96,14 @@
               <div class="collapse" id="menu-demande">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <a class="nav-link" href="/demande/new">Ajouter demande</a></li>
-                  <li class="nav-item"> <a class="nav-link" href="/demande">Afficher La Liste</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="{{ path('app_demande_index') }}">Afficher La Liste</a></li>
                   <li class="nav-item"> <a class="nav-link" href="/demande/liste/attente">Gérer les demandes</a></li>
                 </ul>
               </div>
             </li>
+            {% endif %}
 
+            {% if app.user.poste == 'Charges' or app.user.poste == 'Directeur' %}
             <!-- Questionnaire -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-questionnaire" aria-expanded="false" aria-controls="menu-questionnaire">
@@ -114,7 +118,9 @@
                 </ul>
               </div>
             </li>
-
+            {% endif %}
+              
+            {% if app.user.poste == 'Directeur' %}
             <!-- Entreprise -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-entreprise" aria-expanded="false" aria-controls="menu-entreprise">
@@ -128,7 +134,9 @@
                 </ul>
               </div>
             </li>
+            {% endif %}
 
+            {% if app.user.poste == 'Ouvrier' %}
             <!-- Reponse Questionnaire -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-rep-questionnaire" aria-expanded="false" aria-controls="menu-rep-questionnaire">
@@ -142,7 +150,9 @@
                 </ul>
               </div>
             </li>
+            {% endif %}
 
+            {% if app.user.poste == 'Directeur' or app.user.poste == 'Charges' %}
             <!-- Paie -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-paie" aria-expanded="false" aria-controls="menu-paie">
@@ -152,10 +162,14 @@
               </a>
               <div class="collapse" id="menu-paie">
                 <ul class="nav flex-column sub-menu">
-                  <li class="nav-item"> <a class="nav-link" href="/paie">Afficher La Liste</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="/paie/new">Ajouter Paie</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="/paie/employe">Afficher La Liste</a></li>
                 </ul>
               </div>
             </li>
+            {% endif %}
+
+            {% if app.user.poste == 'Directeur' or app.user.poste == 'Facturation' %}
             <!-- Article -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-article" aria-expanded="false" aria-controls="menu-article">
@@ -170,7 +184,9 @@
                 </ul>
               </div>
             </li>
+            {% endif %}
 
+            {% if app.user.poste == 'Directeur' or app.user.poste == 'Facturation' %}
             <!-- Facture -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-facture" aria-expanded="false" aria-controls="menu-facture">
@@ -185,7 +201,9 @@
                 </ul>
               </div>
             </li>
+            {% endif %}
 
+            {% if app.user.poste == 'Directeur' or app.user.poste == 'Facturation' %}
             <!-- Paiement -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-paiement" aria-expanded="false" aria-controls="menu-paiement">
@@ -200,7 +218,9 @@
                 </ul>
               </div>
             </li>
+            {% endif %}
 
+            {% if app.user.poste == 'Directeur' %}
             <!-- Departement -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#departement-menu" aria-expanded="false" aria-controls="departement-menu">
@@ -214,7 +234,9 @@
                 </ul>
               </div>
             </li>
+            {% endif %}
 
+            {% if app.user.poste == 'Directeur' or app.user.poste == 'Facturation' %}
             <!-- Client/Fournisseur -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-clfr" aria-expanded="false" aria-controls="menu-clfr">
@@ -229,7 +251,9 @@
                 </ul>
               </div>
             </li>
+            {% endif %}
 
+            {% if app.user.poste == 'Directeur' or app.user.poste == 'Facturation' %}
             <!-- Feedback -->
             <li class="nav-item menu-items">
               <a class="nav-link" href="{{ path('app_clfr_feedback') }}">
@@ -237,21 +261,29 @@
                 <span class="menu-title">Feedback</span>
               </a>
             </li>
+            {% endif %}
+
+            {% if app.user.poste == 'Directeur' or app.user.poste == 'Charges' %}
+            <!-- Employe -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
                 <span class="menu-icon">
                   <i class="mdi mdi-laptop"></i>
                 </span>
-                <span class="menu-title">employe</span>
+                <span class="menu-title">Employe</span>
                 <i class="menu-arrow"></i>
               </a>
               <div class="collapse" id="ui-basic">
                 <ul class="nav flex-column sub-menu">
-                  <li class="nav-item"> <a class="nav-link" href="/employe/new">Ajouter employe</a></li>
-                  <li class="nav-item"> <a class="nav-link" href="/employe">Afficher La Liste employe</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="/employe/new">Ajouter Employe</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="/employe">Afficher La Liste Employe</a></li>
                 </ul>
               </div>
-            </li>
+            </li>  
+            {% endif %}
+  
+            {% if app.user.poste == 'Directeur' or app.user.poste == 'Ouvrier' or app.user.poste == 'Charges' %}
+            <!-- Fiche Employe -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
                 <span class="menu-icon">
@@ -263,10 +295,14 @@
               <div class="collapse" id="ui-basic">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <a class="nav-link" href="/fiche/employe/new">Ajouter Fiche</a></li>
-                  <li class="nav-item"> <a class="nav-link" href="/fiche/employe">Afficher La Liste des fichers</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="/fiche/employe">Afficher La Liste des fiches</a></li>
                 </ul>
               </div>
             </li>
+            {% endif %}
+
+            {% if app.user.poste == 'Directeur' %}
+            <!-- Candidat -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
                 <span class="menu-icon">
@@ -277,17 +313,11 @@
               </a>
               <div class="collapse" id="ui-basic">
                 <ul class="nav flex-column sub-menu">
-                  
+                  <li class="nav-item"> <a class="nav-link" href="/candidat/new">Ajouter Candidat</a></li>
                   <li class="nav-item"> <a class="nav-link" href="/candidat">Afficher La Liste des Candidats/a></li>
                 </ul>
               </div>
             </li>
-            {% endif %}
-            {% if app.user.poste == 'Ouvrier' %}
-            {% endif %}
-            {% if app.user.poste == 'Facturation' %}
-            {% endif %}
-            {% if app.user.poste == 'Charges' %}
             {% endif %}
           </ul>
         </nav>
@@ -311,7 +341,7 @@
                 <li class="nav-item nav-settings d-none d-lg-block border-right">
                   {% set heure = "now"|date('H:i:s', 'Africa/Tunis') %}
 
-                  {% if heure >= '08:00:00' and heure <= '08:30:00' %}
+                  {% if heure >= '14:00:00' and heure <= '14:30:00' %}
                       <a class="nav-link" href="{{ path('app_pointageEntree') }}">
                         <button class="btn btn-primary btn-sm" >Pointage Entrée</button>
                       </a>
@@ -322,7 +352,7 @@
                   {% endif %}
                 </li>
                 <li class="nav-item nav-settings d-none d-lg-block border-right">
-                  {% if heure >= '02:00:00' and heure <= '02:30:00' %}
+                  {% if heure >= '16:50:00' and heure <= '17:00:00' %}
                       <a class="nav-link" href="{{ path('app_pointageSortie') }}">
                         <button class="btn btn-danger btn-sm">Pointage Sortie</button>
                       </a>

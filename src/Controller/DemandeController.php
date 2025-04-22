@@ -17,7 +17,9 @@ final class DemandeController extends AbstractController
     #[Route(name: 'app_demande_index', methods: ['GET'])]
     public function index(DemandeRepository $demandeRepository): Response
     {
-        $demandesEnAttente = $demandeRepository->findBy(['status' => 'En Attente']);
+        $demandesEnAttente = $demandeRepository->findBy(
+            ['status' => 'En Attente'],
+        );
     
         return $this->render('demande/index.html.twig', [
             'demandes' => $demandesEnAttente,
@@ -50,7 +52,17 @@ final class DemandeController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_demande_show', methods: ['GET'])]
+    #[Route('/liste/attente', name: 'app_demande_liste_attente', methods: ['GET'])]
+    public function listeAttente(DemandeRepository $demandeRepository): Response
+    {
+        $demandesEnAttente = $demandeRepository->findBy(['status' => 'En Attente']);
+    
+        return $this->render('demande/listeDR.html.twig', [
+            'demandes' => $demandesEnAttente,
+        ]);
+    }
+
+    #[Route('/show/{id}', name: 'app_demande_show', methods: ['GET'])]
     public function show(Demande $demande): Response
     {
         return $this->render('demande/show.html.twig', [
@@ -79,7 +91,7 @@ final class DemandeController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_demande_delete', methods: ['POST'])]
+    #[Route('/del/{id}', name: 'app_demande_delete', methods: ['POST'])]
     public function delete(Request $request, Demande $demande, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$demande->getId(), $request->getPayload()->getString('_token'))) {
@@ -90,16 +102,6 @@ final class DemandeController extends AbstractController
         }
 
         return $this->redirectToRoute('app_demande_index', [], Response::HTTP_SEE_OTHER);
-    }
-
-    #[Route('/liste/attente', name: 'app_demande_liste_attente', methods: ['GET'])]
-    public function listeAttente(DemandeRepository $demandeRepository): Response
-    {
-        $demandesEnAttente = $demandeRepository->findBy(['status' => 'En Attente']);
-    
-        return $this->render('demande/listeDR.html.twig', [
-            'demandes' => $demandesEnAttente,
-        ]);
     }
     
     #[Route('/{id}/valider', name: 'app_demande_valider', methods: ['POST'])]

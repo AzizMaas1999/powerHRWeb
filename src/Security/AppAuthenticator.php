@@ -46,14 +46,17 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
     {
         $roles = $token->getRoleNames();
 
-        if (in_array('ROLE_ADMIN', $roles)) {
-            return new RedirectResponse($this->urlGenerator->generate('app_pointageadmin_index'));
-        }
         if (in_array('ROLE_DIRECTEUR', $roles)) {
-            return new RedirectResponse($this->urlGenerator->generate('app_paie_index'));
+            return new RedirectResponse($this->urlGenerator->generate('directeur_home'));
+        }
+        if (in_array('ROLE_OUVRIER', $roles)) {
+            return new RedirectResponse($this->urlGenerator->generate('ouvrier_home'));
+        }
+        if (in_array('ROLE_CHARGES', $roles)) {
+            return new RedirectResponse($this->urlGenerator->generate('charges_home'));
         }
         if (in_array('ROLE_FACTURATION', $roles)) {
-            return new RedirectResponse($this->urlGenerator->generate('app_pointage_index'));
+            return new RedirectResponse($this->urlGenerator->generate('facturation_home'));
         }
 
         return new RedirectResponse($this->urlGenerator->generate('default_home'));
