@@ -15,7 +15,7 @@ use App\Repository\QuestionnaireRepository;
 #[Route('/repquestionnaireadmin')]
 final class RepquestionnaireAdminController extends AbstractController
 {
-    #[Route(name: 'app_repquestionnaireadmin_index', methods: ['GET'])]
+    #[Route('/', name: 'app_repquestionnaireadmin_index', methods: ['GET'])]
     public function index(RepquestionnaireRepository $repquestionnaireRepository): Response
     {
         return $this->render('repquestionnaireadmin/index.html.twig', [

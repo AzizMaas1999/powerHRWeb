@@ -13,17 +13,47 @@ use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/demande')]
 final class DemandeController extends AbstractController
-{
-    #[Route(name: 'app_demande_index', methods: ['GET'])]
-    public function index(DemandeRepository $demandeRepository): Response
+{#[Route(name: 'app_demande_index', methods: ['GET'])]
+    public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $demandesEnAttente = $demandeRepository->findBy(['status' => 'En Attente']);
+        $type = $request->query->get('type');
+        
+        $qb = $entityManager->createQueryBuilder();
+        $qb->select('d')
+            ->from(Demande::class, 'd')
+            ->where('LOWER(d.status) = :status')
+            ->setParameter('status', 'en attente');
+    
+        if ($type) {
+            $qb->andWhere('LOWER(d.type) LIKE :type')
+               ->setParameter('type', strtolower($type) . '%'); // or '%'.strtolower($type).'%' for partial match
+        }
+    
+        $demandes = $qb->getQuery()->getResult();
     
         return $this->render('demande/index.html.twig', [
-            'demandes' => $demandesEnAttente,
+            'demandes' => $demandes,
+            'typeRecherche' => $type,
         ]);
     }
     
+    
+    
+    // src/Repository/DemandeRepository.php
+
+    public function findByTypeInsensitive(?string $type): array
+    {
+        $qb = $this->createQueryBuilder('d');
+    
+        if ($type) {
+            $qb->where('LOWER(d.type) LIKE :type')
+               ->setParameter('type', '%' . strtolower($type) . '%');
+        }
+    
+        return $qb->getQuery()->getResult();
+    }
+    
+
 
     #[Route('/new', name: 'app_demande_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response

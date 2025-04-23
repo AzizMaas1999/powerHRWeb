@@ -5,9 +5,17 @@
 {% block body %}
     <h1>Questionnaire index</h1>
 
-    <div class="d-flex justify-content-end mb-3">
-       <a href="{{ path('app_questionnaire_new') }}" class="btn btn-success">➕ Create new</a>
+    <div class="input-group mb-4"> {# Ajout de mb-4 ici pour plus d'espace en bas #}
+        <input type="text" class="form-control" placeholder="Recherche" aria-label="Recipient's username" aria-describedby="basic-addon2">
+        <div class="input-group-append">
+            <button class="btn btn-sm btn-primary" type="button">Rechercher</button>
+        </div>
     </div>
+
+    <div class="d-flex justify-content-end mb-3">
+        <a href="{{ path('app_questionnaire_new') }}" class="btn btn-success">➕ Create new</a>
+    </div>
+
 
     <table class="table table-dark table-hover table-bordered">
         <thead>

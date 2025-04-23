@@ -5,6 +5,12 @@
 {% block body %}
     <h1>Demande index</h1>
 
+<form method="get" action="{{ path('app_demande_index') }}" class="mb-4">
+    <div class="input-group">
+        <input type="text" name="type" class="form-control" placeholder="Rechercher par type" value="{{ typeRecherche }}">
+        <button class="btn btn-primary" type="submit">🔍 Rechercher</button>
+    </div>
+</form>
 
     <div class="d-flex justify-content-end mb-3">
         <a href="{{ path('app_demande_new') }}" class="btn btn-success">➕ Create new</a>
@@ -30,9 +36,9 @@
              
                 <td>{{ demande.dateCreation ? demande.dateCreation|date('Y-m-d') : '' }}</td>
                 <td>{{ demande.type }}</td>
-                <td>{{ demande.dateDebut ? demande.dateDebut|date('Y-m-d') : '' }}</td>
-                <td>{{ demande.dateFin ? demande.dateFin|date('Y-m-d') : '' }}</td>
-                <td>{{ demande.salaire }}</td>
+                <td>{{ demande.dateDebut ? demande.dateDebut|date('Y-m-d') : 'N/A' }}</td>
+                <td>{{ demande.dateFin ? demande.dateFin|date('Y-m-d') : 'N/A' }}</td>
+                <td>{{ demande.salaire == 0 ? '0' : demande.salaire }}</td>
                 <td>{{ demande.cause }}</td>
                 <td>{{ demande.status }}</td>
                 <td>
