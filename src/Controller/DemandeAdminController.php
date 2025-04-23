@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class DemandeAdminController extends AbstractController
 {
     #[Route(name: 'app_demandeadmin_index', methods: ['GET'])]
-    public function index(DemandeRepository $demandeRepository): Response
+    public function indexadmin(DemandeRepository $demandeRepository): Response
     {
         $demandesEnAttente = $demandeRepository->findBy(['status' => 'En Attente']);
 

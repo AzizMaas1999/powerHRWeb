@@ -1,11 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Candidat{% endblock %}
+{% block title %}Nouveau candidat{% endblock %}
 
 {% block body %}
-    <h1>Create new Candidat</h1>
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-white">apply as a candidat</h1>
+    </div>
 
-    {{ include('candidat/_form.html.twig') }}
-
-    <a href="{{ path('app_candidat_index') }}">back to list</a>
+    {{ include('candidat/_form.html.twig', { button_label: 'Enregistrer' }) }}
+</div>
 {% endblock %}

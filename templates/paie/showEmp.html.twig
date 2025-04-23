@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Employé Index{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 text-dark">Liste Des Employés</h1>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nom d'utilisateur</th>
+                    <th>Nombre de pointages effectués</th>
+                    <th>Nombre de absences</th>
+                    <th>Salaire de base</th>
+                    <th>Salaire mensuel</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for employe in employes %}
+                    {% if employe.poste != "Admin" %}
+                        {% set nb = 0 %}
+                        {% set payed = false %}
+                        {% for pointage in pointages %}
+                            {% if pointage.employe == employe and pointage.date.format('Y-m') == "now"|date("Y-m") and pointage.heureSortie != null %}
+                                {% set nb = nb + 1 %}
+                            {% endif %}
+                            {% if pointage.paie != null and pointage.employe == employe and (pointage.date.format('Y-m') == "now"|date("Y-m")) %}
+                                {% set payed = true %}
+                            {% endif %}
+                        {% endfor %}
+                        {% if not payed %}
+                        <tr>
+                            <td>{{ employe.username }}</td>
+                            <td>{{ nb }}</td>
+                            <td>{{ "now"|date("d") - nb}}</td>
+                            <td>{{ employe.salaire }}</td>
+                            <td>{{ ((employe.salaire / 30) * nb)|round(0, 'floor') }}</td>
+                            <td class="text-center">
+                                <a href="{{ path('app_newEmployePaie', {'id': employe.id, 'nb': nb}) }}" class="btn btn-outline-dark btn-fw me-1">Ajouter Paie</a>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    <tr>
+                        <td colspan="3" class="text-center text-secondary">Aucun employé trouvé</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

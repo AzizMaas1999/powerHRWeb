@@ -20198,7 +20198,24 @@ div.tagsinput {
 /* Auth */
 .auth.login-bg {
   background: url("../images/auth/Login_bg.jpg");
-  background-size: cover; }
+  background-size: cover;
+  height: 695px;
+  margin-left: 0px;
+  overflow: hidden;}
+
+.login-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1); /* light blur tint */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 0;
+  pointer-events: none; /* ensure it doesn’t block inputs */
+}
 
 .auth .login-half-bg {
   background: url("../images/auth/login-bg.jpg");
@@ -20629,7 +20646,7 @@ div.tagsinput {
   background: #191c24;
   font-weight: normal;
   padding: 0;
-  width: 244px;
+  width: 278px;
   z-index: 11;
   transition: width 0.25s ease, background 0.25s ease;
   -webkit-transition: width 0.25s ease, background 0.25s ease;
@@ -21105,7 +21122,7 @@ div.tagsinput {
   width: calc(100% - 244px); }
   .page-body-wrapper.full-page-wrapper {
     width: 100%;
-    min-height: 100vh; }
+    min-height: auto; }
   @media (max-width: 992px) {
     .page-body-wrapper {
       width: 100%; } }
@@ -21130,7 +21147,8 @@ div.tagsinput {
 
 .content-wrapper {
   margin-left: 122px;
-  background: #000000;
+  min-height: inherit;
+  background: #ffffff;
   padding: 1.875rem 1.75rem;
   width: 100%;
   -webkit-flex-grow: 1;

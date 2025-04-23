@@ -29,6 +29,12 @@ class Facture
         $this->id = $id;
         return $this;
     }
+    
+    public function __toString(): string
+{
+    return 'Facture n°' . $this->getNum(); // ou toute autre propriété représentative
+}
+
 
     #[ORM\Column(type: 'date', nullable: false)]
     private ?\DateTimeInterface $date = null;
@@ -178,4 +184,6 @@ public function setTotal(?float $total): self
         $this->paiement_id = $paiement_id;
         return $this;
     }
+
 }
+

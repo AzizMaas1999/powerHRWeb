@@ -1,11 +1,50 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Feedback{% endblock %}
+{% block title %}Créer un Feedback{% endblock %}
 
 {% block body %}
-    <h1>Create new Feedback</h1>
+<div class="container mt-5">
+    <h1 class="mb-4">Créer un nouveau Feedback</h1>
 
-    {{ include('feedback/_form.html.twig') }}
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+        {% if not form.vars.valid %}
+            <div class="alert alert-danger">
+                <strong>Veuillez corriger les erreurs ci-dessous.</strong>
+            </div>
+        {% endif %}
 
-    <a href="{{ path('app_feedback_index') }}">back to list</a>
+        <div class="mb-3">
+            {{ form_label(form.type, 'Type') }}
+            {{ form_widget(form.type, {'attr': {'class': 'form-control' ~ (form.type.vars.valid ? '' : ' is-invalid')}}) }}
+            {% if not form.type.vars.valid %}
+                <div class="invalid-feedback">
+                    {% for error in form.type.vars.errors %}
+                        {{ error.message }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.description, 'Description') }}
+            {{ form_widget(form.description, {'attr': {'class': 'form-control' ~ (form.description.vars.valid ? '' : ' is-invalid')}}) }}
+            {% if not form.description.vars.valid %}
+                <div class="invalid-feedback">
+                    {% for error in form.description.vars.errors %}
+                        {{ error.message }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+    
+
+        <button type="submit" class="btn btn-primary">
+            {{ button_label|default('Enregistrer') }}
+        </button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('app_feedback_index') }}" class="btn btn-link mt-3">← Retour à la liste</a>
+</div>
 {% endblock %}
+

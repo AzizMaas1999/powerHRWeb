@@ -3,7 +3,7 @@
 {% block title %}Demande index{% endblock %}
 
 {% block body %}
-    <h1>Demande index</h1>
+    <h1 class="h1 text-dark">Demande index</h1>
 
 <form method="get" action="{{ path('app_demande_index') }}" class="mb-4">
     <div class="input-group">
@@ -16,7 +16,7 @@
         <a href="{{ path('app_demande_new') }}" class="btn btn-success">➕ Create new</a>
     </div>
 
-    <table class="table table-dark table-hover table-bordered">
+    <table class="table ">
         <thead>
             <tr>
          
@@ -33,7 +33,6 @@
         <tbody>
         {% for demande in demandes %}
             <tr>
-             
                 <td>{{ demande.dateCreation ? demande.dateCreation|date('Y-m-d') : '' }}</td>
                 <td>{{ demande.type }}</td>
                 <td>{{ demande.dateDebut ? demande.dateDebut|date('Y-m-d') : 'N/A' }}</td>

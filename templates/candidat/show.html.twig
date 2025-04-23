@@ -1,20 +1,18 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Candidat{% endblock %}
+{% block title %}candidat{% endblock %}
 
 {% block body %}
-    <h1>Candidat</h1>
+    <h1>candidat</h1>
 
     <table class="table">
         <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ candidat.id }}</td>
-            </tr>
+            
             <tr>
                 <th>Nom</th>
                 <td>{{ candidat.nom }}</td>
             </tr>
+            
             <tr>
                 <th>Prenom</th>
                 <td>{{ candidat.prenom }}</td>
@@ -24,19 +22,24 @@
                 <td>{{ candidat.email }}</td>
             </tr>
             <tr>
-                <th>Telephone</th>
+                <th>telephone</th>
                 <td>{{ candidat.telephone }}</td>
             </tr>
             <tr>
-                <th>CvPdfUrl</th>
+                <th>CV</th>
                 <td>{{ candidat.cvPdfUrl }}</td>
+            </tr>
+            <tr>
+                <th>entreprise</th>
+                <td>{{ candidat.entreprise.nom }}</td>
             </tr>
         </tbody>
     </table>
 
     <a href="{{ path('app_candidat_index') }}">back to list</a>
 
-    <a href="{{ path('app_candidat_edit', {'id': candidat.id}) }}">edit</a>
-
     {{ include('candidat/_delete_form.html.twig') }}
+
+    
+    
 {% endblock %}
