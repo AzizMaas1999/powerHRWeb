@@ -1,4 +1,35 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+<div class="d-flex justify-content-center align-items-center min-vh-100">
+    <div class="card shadow-lg bg-dark text-white p-4" style="min-width: 700px;">
+        <div class="card-body">
+            <h2 class="text-center mb-4">Ajouter un Employé</h2>
+
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+            <div class="row g-3">
+                {% for field in form %}
+                    {% if field.vars.name != '_token' %}
+                        {% if field.vars.name != 'password' or (field.vars.name == 'password' and form.password is defined) %}
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    {{ form_label(field, null, {'label_attr': {'class': 'col-sm-3 col-form-label'}}) }}
+                                    <div class="col-sm-9">
+                                        {{ form_widget(field, {'attr': {'class': 'form-control'}}) }}
+                                        {{ form_errors(field) }}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <div class="mt-4 d-flex justify-content-center gap-3">
+                <button type="submit" class="btn btn-success px-4">
+                    {{ button_label|default('Enregistrer') }}
+                </button>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>

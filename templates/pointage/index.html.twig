@@ -5,8 +5,8 @@
 {% block body %}
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 text-white">Liste des pointages</h1>
-        <a href="{{ path('app_pointage_new') }}" class="btn btn-sm btn-primary">+ Nouveau pointage</a>
+        <h1 class="h3 text-dark">Liste des pointages</h1>
+        <a href="{{ path('app_showEmploye_index') }}" class="btn btn-sm btn-primary">+ Nouveau pointage</a>
     </div>
     <div class="input-group">
         <input type="text" class="form-control" placeholder="Date D'affectation" aria-label="Recipient's username" aria-describedby="basic-addon2">
@@ -16,7 +16,7 @@
     </div>
 
     <div class="table-responsive">
-        <table class="table table-striped">
+        <table class="table">
             <thead>
                 <tr>
                     <th>Date</th>

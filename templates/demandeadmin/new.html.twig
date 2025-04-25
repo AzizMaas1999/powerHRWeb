@@ -1,0 +1,11 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}New Demande{% endblock %}
+
+{% block body %}
+    <h1>Create new Demande</h1>
+
+    
+    {{ include('demandeadmin/_form.html.twig', { button_label: 'Enregistrer' }) }}
+
+{% endblock %}

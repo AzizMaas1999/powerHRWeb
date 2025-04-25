@@ -5,12 +5,14 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 use App\Repository\EmployeRepository;
 
 #[ORM\Entity(repositoryClass: EmployeRepository::class)]
 #[ORM\Table(name: 'employe')]
-class Employe
+class Employe implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -260,5 +262,31 @@ class Employe
         $this->getQuestionnaires()->removeElement($questionnaire);
         return $this;
     }
+
+    public function getRoles(): array
+    {
+        return match ($this->getPoste()) {
+            'Admin' => ['ROLE_ADMIN'],
+            'Directeur' => ['ROLE_DIRECTEUR'],
+            'Charges' => ['ROLE_CHARGES'],
+            'Facturation' => ['ROLE_FACTURATION'],
+            'Ouvrier' => ['ROLE_OUVRIER'],
+        };
+    }
+
+    public function getSalt(): ?string
+    {
+        return null; // bcrypt does not require a separate salt
+    }
+    public function eraseCredentials(): void
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
+    }
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->username;
+    }
+
 
 }

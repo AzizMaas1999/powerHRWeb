@@ -10,6 +10,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\Form\FormError;
+
 
 #[Route('/clfr')]
 final class ClfrController extends AbstractController
@@ -23,13 +27,32 @@ final class ClfrController extends AbstractController
     }
 
     #[Route('/new', name: 'app_clfr_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $clfr = new Clfr();
         $form = $this->createForm(ClfrType::class, $clfr);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $photoFile = $form->get('photoPath')->getData();
+
+            if ($photoFile) {
+                $originalFilename = pathinfo($photoFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $photoFile->guessExtension();
+
+                try {
+                    $photoFile->move(
+                        $this->getParameter('photos_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // Gérer l'erreur si besoin
+                }
+
+                $clfr->setPhotoPath('uploads/photos/' . $newFilename);
+            }
+
             $entityManager->persist($clfr);
             $entityManager->flush();
 
@@ -38,7 +61,7 @@ final class ClfrController extends AbstractController
 
         return $this->render('clfr/new.html.twig', [
             'clfr' => $clfr,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -51,12 +74,31 @@ final class ClfrController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_clfr_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Clfr $clfr, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Clfr $clfr, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $form = $this->createForm(ClfrType::class, $clfr);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $photoFile = $form->get('photoPath')->getData();
+
+            if ($photoFile) {
+                $originalFilename = pathinfo($photoFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $photoFile->guessExtension();
+
+                try {
+                    $photoFile->move(
+                        $this->getParameter('photos_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // Gérer l'erreur
+                }
+
+                $clfr->setPhotoPath('uploads/photos/' . $newFilename);
+            }
+
             $entityManager->flush();
 
             return $this->redirectToRoute('app_clfr_index', [], Response::HTTP_SEE_OTHER);
@@ -71,11 +113,11 @@ final class ClfrController extends AbstractController
     #[Route('/{id}', name: 'app_clfr_delete', methods: ['POST'])]
     public function delete(Request $request, Clfr $clfr, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$clfr->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $clfr->getId(), $request->request->get('_token'))) {
             $entityManager->remove($clfr);
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_clfr_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_clfr_index');
     }
 }

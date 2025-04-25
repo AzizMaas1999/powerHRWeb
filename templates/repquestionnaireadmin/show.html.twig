@@ -1,0 +1,38 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Repquestionnaire{% endblock %}
+
+{% block body %}
+    <h1>Repquestionnaire</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ repquestionnaire.id }}</td>
+            </tr>
+            <tr>
+                <th>DateCreation</th>
+                <td>{{ repquestionnaire.dateCreation ? repquestionnaire.dateCreation|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Reponse</th>
+                <td>{{ repquestionnaire.reponse }}</td>
+            </tr>
+            <tr>
+                <th>Questionnaire_id</th>
+                <td>{{ repquestionnaire.questionnaireId }}</td>
+            </tr>
+            <tr>
+                <th>Employe_id</th>
+                <td>{{ repquestionnaire.employeId }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_repquestionnaireadmin_index') }}">back to list</a>
+
+    <a href="{{ path('app_repquestionnaireadmin_edit', {'id': repquestionnaire.id}) }}">edit</a>
+
+    {{ include('repquestionnaireadmin/_delete_form.html.twig') }}
+{% endblock %}

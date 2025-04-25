@@ -1,4 +1,31 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    {% if not form.vars.valid %}
+        <div class="alert alert-danger">
+            <strong>Veuillez corriger les erreurs ci-dessous.</strong>
+        </div>
+    {% endif %}
+
+    <div class="mb-3">
+        {{ form_label(form.type, 'Type') }}
+        {{ form_widget(form.type, {'attr': {'class': 'form-control' ~ (form.type.vars.valid ? '' : ' is-invalid')}}) }}
+        {% if not form.type.vars.valid %}
+            
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.description, 'Description') }}
+        {{ form_widget(form.description, {'attr': {'class': 'form-control' ~ (form.description.vars.valid ? '' : ' is-invalid')}}) }}
+        {% if not form.description.vars.valid %}
+            <div class="invalid-feedback">
+                {% for error in form.description.vars.errors %}
+                    {{ error.message }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    
+
+    <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
 {{ form_end(form) }}

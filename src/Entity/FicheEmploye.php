@@ -5,7 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\FicheEmployeRepository;
 
 #[ORM\Entity(repositoryClass: FicheEmployeRepository::class)]
@@ -29,6 +29,11 @@ class FicheEmploye
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "Le cin est requis.")]
+    #[Assert\Regex(
+        pattern: "/^[0-9]{8}+$/", 
+        message: "Le cin ne peut contenir que des chiffres."
+    )]
     private ?string $cin = null;
 
     public function getCin(): ?string
@@ -43,6 +48,11 @@ class FicheEmploye
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message:'Le nom est requis.')]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Zà-ÿÀ-ß]+$/",
+        message: "Le nom ne peut contenir que des lettres."
+    )]
     private ?string $nom = null;
 
     public function getNom(): ?string
@@ -57,6 +67,11 @@ class FicheEmploye
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message:'Le prenom est requis.')]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Zà-ÿÀ-ß]+$/",
+        message: "Le prenom ne peut contenir que des lettres."
+    )]
     private ?string $prenom = null;
 
     public function getPrenom(): ?string
@@ -71,6 +86,8 @@ class FicheEmploye
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "L'email est requis.")]
+    #[Assert\Email(message: "L'adresse email '{{ value }}' n'est pas valide.")]
     private ?string $email = null;
 
     public function getEmail(): ?string
@@ -85,6 +102,11 @@ class FicheEmploye
     }
 
     #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\NotBlank(message: "L'adresse est requis.")]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Zà-ÿÀ-ß]+$/", 
+        message: "L'adresse ne peut contenir que des lettres."
+    )]
     private ?string $adresse = null;
 
     public function getAdresse(): ?string
@@ -99,6 +121,11 @@ class FicheEmploye
     }
 
     #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\NotBlank(message: "Le city est requis.")]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Zà-ÿÀ-ß]+$/",
+        message: "Le city ne peut contenir que des lettres."
+    )]
     private ?string $city = null;
 
     public function getCity(): ?string
@@ -113,6 +140,11 @@ class FicheEmploye
     }
 
     #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\NotBlank(message:'Le zip est requis.')]
+    #[Assert\Regex(
+        pattern: "/^[0-9]{5}$/",
+        message:"Le zip doit contenir exactement 5 chiffres."
+    )]
     private ?string $zip = null;
 
     public function getZip(): ?string
@@ -127,6 +159,11 @@ class FicheEmploye
     }
 
     #[ORM\Column(name: 'numTel', type: 'string', nullable: true)]
+    #[Assert\NotBlank(message: "Le numéro de téléphone est requis.")]
+    #[Assert\Regex(
+        pattern: "/^[0-9]{8}$/",
+        message: "Le numéro de téléphone doit contenir exactement 8 chiffres."
+    )]
     private ?string $numTel = null;
 
     public function getNumTel(): ?string
@@ -141,6 +178,7 @@ class FicheEmploye
     }
 
     #[ORM\Column(name: 'cvPdfUrl', type: 'string', nullable: true)]
+    #[Assert\NotBlank(message:'Le CV est requis.')]
     private ?string $cvPdfUrl = null;
 
     public function getCvPdfUrl(): ?string

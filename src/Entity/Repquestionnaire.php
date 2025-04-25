@@ -4,9 +4,7 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\RepquestionnaireRepository;
 
 #[ORM\Entity(repositoryClass: RepquestionnaireRepository::class)]
@@ -29,7 +27,7 @@ class Repquestionnaire
         return $this;
     }
 
-    #[ORM\Column(type: 'date', nullable: false)]
+    #[ORM\Column(name: "dateCreation", type: 'date', nullable: false)]
     private ?\DateTimeInterface $dateCreation = null;
 
     public function getDateCreation(): ?\DateTimeInterface
@@ -43,8 +41,16 @@ class Repquestionnaire
         return $this;
     }
 
+   
     #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\NotBlank(message: "La réponse ne peut pas être vide.")]
+    #[Assert\Length(
+        min: 10,
+        minMessage: "La réponse doit contenir au moins {{ limit }} caractères.",
+       
+    )]
     private ?string $reponse = null;
+    
 
     public function getReponse(): ?string
     {
@@ -93,7 +99,6 @@ class Repquestionnaire
     public function setQuestionnaireId(?int $questionnaire_id): static
     {
         $this->questionnaire_id = $questionnaire_id;
-
         return $this;
     }
 
@@ -105,8 +110,6 @@ class Repquestionnaire
     public function setEmployeId(?int $employe_id): static
     {
         $this->employe_id = $employe_id;
-
         return $this;
     }
-
 }
