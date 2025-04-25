@@ -136,6 +136,7 @@ public function setTotal(?float $total): self
 
     #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'facture')]
     private Collection $articles;
+    
 
     public function __construct()
     {
@@ -188,6 +189,30 @@ public function setTotal(?float $total): self
         $this->paiement_id = $paiement_id;
         return $this;
     }
+
+
+
+
+
+    // Dans ton entité Facture
+
+public function calculerTotal(): void
+{
+    $total = 0.0;
+
+    foreach ($this->getArticles() as $article) {
+        $prixUnitaire = $article->getPrixUni();
+        $quantite = $article->getQuantity();
+        $tva = $article->getTVA() / 100;  // TVA sous forme de pourcentage
+
+        // Calcul du prix total de l'article (prix unitaire * quantité * (1 + taux de TVA))
+        $total += ($prixUnitaire * $quantite * (1 + $tva));
+    }
+
+    // Assigner le total à l'entité Facture
+    $this->setTotal($total);
+}
+
 
 
 

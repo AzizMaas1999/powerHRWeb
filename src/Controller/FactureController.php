@@ -18,6 +18,7 @@ use Stripe\Checkout\Session;
 #[Route('/facture')]
 final class FactureController extends AbstractController
 {
+    // Afficher la liste des factures
     #[Route(name: 'app_facture_index', methods: ['GET'])]
     public function index(FactureRepository $factureRepository): Response
     {
@@ -26,6 +27,7 @@ final class FactureController extends AbstractController
         ]);
     }
 
+    // Créer une nouvelle facture
     #[Route('/new', name: 'app_facture_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -34,6 +36,9 @@ final class FactureController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Calculer le total des articles associés à la facture
+            $facture->calculerTotal();  // Appel de la méthode pour calculer le total à partir des articles
+            
             $entityManager->persist($facture);
             $entityManager->flush();
 
@@ -46,6 +51,7 @@ final class FactureController extends AbstractController
         ]);
     }
 
+    // Afficher les détails d'une facture
     #[Route('/{id}', name: 'app_facture_show', methods: ['GET'])]
     public function show(Facture $facture): Response
     {
@@ -54,6 +60,7 @@ final class FactureController extends AbstractController
         ]);
     }
 
+    // Modifier une facture existante
     #[Route('/{id}/edit', name: 'app_facture_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Facture $facture, EntityManagerInterface $entityManager): Response
     {
@@ -61,6 +68,7 @@ final class FactureController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Mettre à jour la facture
             $entityManager->flush();
 
             return $this->redirectToRoute('app_facture_index', [], Response::HTTP_SEE_OTHER);
@@ -72,10 +80,11 @@ final class FactureController extends AbstractController
         ]);
     }
 
+    // Supprimer une facture
     #[Route('/{id}', name: 'app_facture_delete', methods: ['POST'])]
     public function delete(Request $request, Facture $facture, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $facture->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $facture->getId(), $request->get('token'))) {
             $entityManager->remove($facture);
             $entityManager->flush();
         }
@@ -83,21 +92,23 @@ final class FactureController extends AbstractController
         return $this->redirectToRoute('app_facture_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    // 🔥 Étape B : Paiement Stripe pour une facture
+    // Effectuer le paiement Stripe pour une facture
     #[Route('/{id}/payer', name: 'app_facture_paiement', methods: ['GET'])]
     public function payerFacture(Facture $facture): Response
     {
+        // Initialiser Stripe
         Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
 
+        // Créer une session de paiement Stripe
         $checkoutSession = Session::create([
             'payment_method_types' => ['card'],
             'line_items' => [[
                 'price_data' => [
                     'currency' => 'eur',
                     'product_data' => [
-                        'name' => 'Facture #'.$facture->getId(),
+                        'name' => 'Facture #'.$facture->getNum(),
                     ],
-                    'unit_amount' => $facture->getTotal() * 100
+                    'unit_amount' => $facture->getTotal() * 100,  // Le montant est en centimes
                 ],
                 'quantity' => 1,
             ]],
@@ -106,7 +117,7 @@ final class FactureController extends AbstractController
             'cancel_url' => $this->generateUrl('app_facture_show', ['id' => $facture->getId()], UrlGeneratorInterface::ABSOLUTE_URL),
         ]);
 
+        // Rediriger l'utilisateur vers la page Stripe pour le paiement
         return new RedirectResponse($checkoutSession->url);
     }
-
 }

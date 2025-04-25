@@ -18,6 +18,7 @@ class ArticleType extends AbstractType
             ->add('quantity')
             ->add('prixUni')
             ->add('TVA')
+            
         ;
     }
 
