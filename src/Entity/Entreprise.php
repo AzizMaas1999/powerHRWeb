@@ -7,11 +7,16 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use App\Repository\EntrepriseRepository;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use App\Entity\Candidat;
 use App\Entity\Departement;
 
 #[ORM\Entity(repositoryClass: EntrepriseRepository::class)]
 #[ORM\Table(name: 'entreprise')]
+#[UniqueEntity(
+    fields: ['matricule_fiscale'],
+    message: 'Ce matricule fiscale existe déjà.'
+)]
 class Entreprise
 {
     #[ORM\Id]
@@ -39,31 +44,23 @@ class Entreprise
     )]
     private ?string $secteur = null;
 
-    #[ORM\Column(type: 'string', nullable: false)]
+    #[ORM\Column(type: 'string', length: 19, nullable: false, unique: true)]
     #[Assert\NotBlank(message: 'Le matricule fiscale est obligatoire')]
-    #[Assert\Length(
-        min: 5,
-        max: 20,
-        minMessage: 'Le matricule fiscale doit contenir au moins {{ limit }} caractères',
-        maxMessage: 'Le matricule fiscale ne peut pas dépasser {{ limit }} caractères'
-    )]
     #[Assert\Regex(
-        pattern: '/^[0-9A-Z\-]+$/i',
-        message: 'Le matricule fiscale ne peut contenir que des chiffres, des lettres et des tirets'
+        pattern: '/^[0-9]{7}\/[A-Z]\/[A-Z]\/[A-Z]\/[0-9]{3}$/',
+        message: 'Le format du matricule fiscal doit être: 7 chiffres/Lettre/Lettre/Lettre/3 chiffres (ex: 1234567/A/B/C/000)'
     )]
     private ?string $matricule_fiscale = null;
 
-    #[ORM\Column(type: 'string', nullable: false)]
+    #[ORM\Column(type: 'string', length: 8, nullable: false)]
     #[Assert\NotBlank(message: 'Le numéro de téléphone est obligatoire')]
     #[Assert\Length(
-        min: 8,
-        max: 8,
-        minMessage: 'Le numéro de téléphone doit contenir exactement 8 chiffres',
-        maxMessage: 'Le numéro de téléphone doit contenir exactement 8 chiffres'
+        exactly: 8,
+        exactMessage: 'Le numéro de téléphone doit contenir exactement {{ limit }} chiffres'
     )]
     #[Assert\Regex(
         pattern: '/^[0-9]{8}$/',
-        message: 'Le numéro de téléphone doit contenir exactement 8 chiffres'
+        message: 'Le numéro de téléphone doit contenir uniquement 8 chiffres'
     )]
     private ?string $phone_number = null;
 

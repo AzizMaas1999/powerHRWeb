@@ -188,10 +188,12 @@
                         {{ form_label(form.entreprise, 'Entreprise associée', {'label_attr': {'class': 'form-label'}}) }}
                         {{ form_widget(form.entreprise, {'attr': {'class': 'form-control' ~ (form.entreprise.vars.valid ? '' : ' is-invalid'), 'required': 'required'}}) }}
                         <small class="form-text">Sélectionnez l'entreprise à laquelle appartient ce département</small>
-                        <div class="invalid-feedback" id="entreprise-error">
-                            <i class="bi bi-exclamation-triangle-fill error-icon"></i>
-                            Veuillez sélectionner une entreprise pour ce département
-                        </div>
+                        {% if app.request.method == 'POST' %}
+                            <div class="invalid-feedback" id="entreprise-error" style="display: flex;">
+                                <i class="bi bi-exclamation-triangle-fill error-icon"></i>
+                                {{ form_errors(form.entreprise) }}
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -207,10 +209,12 @@
                             'pattern': '^[a-zA-ZÀ-ÿ0-9\s-]{3,30}$'
                         }}) }}
                         <small class="form-text">3 à 30 caractères, lettres et chiffres acceptés</small>
-                        <div class="invalid-feedback" id="nom-error">
-                            <i class="bi bi-exclamation-triangle-fill error-icon"></i>
-                            Le nom du département est requis et doit contenir entre 3 et 30 caractères
-                        </div>
+                        {% if app.request.method == 'POST' %}
+                            <div class="invalid-feedback" id="nom-error" style="display: flex;">
+                                <i class="bi bi-exclamation-triangle-fill error-icon"></i>
+                                {{ form_errors(form.nom) }}
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -225,10 +229,12 @@
                             'maxlength': '120'
                         }}) }}
                         <small class="form-text">Maximum 120 caractères</small>
-                        <div class="invalid-feedback" id="description-error">
-                            <i class="bi bi-exclamation-triangle-fill error-icon"></i>
-                            La description est requise et ne doit pas dépasser 120 caractères
-                        </div>
+                        {% if app.request.method == 'POST' %}
+                            <div class="invalid-feedback" id="description-error" style="display: flex;">
+                                <i class="bi bi-exclamation-triangle-fill error-icon"></i>
+                                {{ form_errors(form.description) }}
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

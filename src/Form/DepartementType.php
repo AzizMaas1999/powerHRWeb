@@ -12,9 +12,19 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Asset\Package;
+use Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy;
 
 class DepartementType extends AbstractType
 {
+    private $package;
+
+    public function __construct()
+    {
+        $this->package = new Package(new EmptyVersionStrategy());
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -22,18 +32,21 @@ class DepartementType extends AbstractType
                 'label' => 'Nom',
                 'required' => true,
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Le nom du département est obligatoire.'
-                    ]),
+                    
                     new Length([
-                        'min' => 2,
-                        'max' => 255,
+                        'min' => 3,
+                        'max' => 30,
                         'minMessage' => 'Le nom doit contenir au moins {{ limit }} caractères.',
                         'maxMessage' => 'Le nom ne peut pas dépasser {{ limit }} caractères.'
+                    ]),
+                    new Regex([
+                        'pattern' => '/^[a-zA-ZÀ-ÿ0-9\s-]{3,30}$/',
+                        'message' => 'Le nom doit contenir uniquement des lettres, chiffres, espaces et tirets.'
                     ])
                 ],
                 'attr' => [
-                    'placeholder' => 'Entrez le nom du département'
+                    'placeholder' => 'Entrez le nom du département',
+                    'class' => 'form-control'
                 ]
             ])
             ->add('description', TextareaType::class, [
@@ -41,13 +54,14 @@ class DepartementType extends AbstractType
                 'required' => false,
                 'constraints' => [
                     new Length([
-                        'max' => 1000,
+                        'max' => 120,
                         'maxMessage' => 'La description ne peut pas dépasser {{ limit }} caractères.'
                     ])
                 ],
                 'attr' => [
                     'placeholder' => 'Entrez une description (optionnel)',
-                    'rows' => 4
+                    'rows' => 4,
+                    'class' => 'form-control'
                 ]
             ])
             ->add('entreprise', EntityType::class, [
@@ -59,6 +73,9 @@ class DepartementType extends AbstractType
                     new NotBlank([
                         'message' => 'Veuillez sélectionner une entreprise.'
                     ])
+                ],
+                'attr' => [
+                    'class' => 'form-control'
                 ]
             ])
         ;
