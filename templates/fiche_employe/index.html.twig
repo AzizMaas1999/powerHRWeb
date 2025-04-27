@@ -39,13 +39,13 @@
                                 <td>{{ fiche_employe.city }}</td>
                                 <td>{{ fiche_employe.zip }}</td>
                                 <td>{{ fiche_employe.numTel}}</td>
-                                <td>{% if fiche_employe.cvPdfUrl %}
-                            <a href="{{ asset('uploads/cv/' ~ fiche_employe.cvPdfUrl) }}" target="_blank" class="btn btn-sm btn-outline-info">
-                                <i class="fas fa-file-pdf"></i> Voir CV
-                            </a>
-                        {% else %}
-                            <span class="badge bg-secondary">Non disponible</span>
-                        {% endif %}</td>
+                                <td>{% if ficheEmploye.cvPdfUrl %}
+                                <a href="{{ asset('uploads/cv/' ~ ficheEmploye.cvPdfUrl) }}" target="_blank" class="btn btn-primary">
+                                    📄 Voir CV
+                                </a>
+                                {% else %}
+                                    <p>Aucun CV disponible.</p>
+                                {% endif %}</td>
                                 <td>{{ fiche_employe.employe ? fiche_employe.employe.username : 'Non assigné' }}</td>
                                 <td class="text-center">
                                         <a href="{{ path('app_fiche_employe_show', {'id': fiche_employe.id}) }}" class="btn btn-outline-primary btn-sm" title="Afficher">

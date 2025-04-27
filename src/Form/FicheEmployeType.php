@@ -11,6 +11,10 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Vich\UploaderBundle\Form\Type\VichFileType;
+
+
+
 
 class FicheEmployeType extends AbstractType
 {
@@ -48,6 +52,12 @@ class FicheEmployeType extends AbstractType
             ->add('numTel', TextType::class, [
                 'label' => 'Téléphone',
                 'attr' => ['class' => 'form-control']
+            ])
+            ->add('cvPdfFile', VichFileType::class, [
+                'label' => 'Télécharger CV (PDF)',
+                'required' => false,
+                'allow_delete' => true,
+                'download_uri' => false,
             ])
             ->add('cv', FileType::class, [
                 'label' => 'Télécharger un CV (PDF)',
