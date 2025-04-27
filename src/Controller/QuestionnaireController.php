@@ -29,12 +29,16 @@ final class QuestionnaireController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $questionnaire = new Questionnaire();
+        $questionnaire->setDateCreation(new \DateTime());
+
         $form = $this->createForm(QuestionnaireType::class, $questionnaire);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($questionnaire);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Questionnaire ajouté avec succès.');
 
             return $this->redirectToRoute('app_questionnaire_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -62,6 +66,8 @@ final class QuestionnaireController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
+            $this->addFlash('success', 'Questionnaire modifié avec succès.');
+
             return $this->redirectToRoute('app_questionnaire_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -74,9 +80,11 @@ final class QuestionnaireController extends AbstractController
     #[Route('/{id}', name: 'app_questionnaire_delete', methods: ['POST'])]
     public function delete(Request $request, Questionnaire $questionnaire, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$questionnaire->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $questionnaire->getId(), $request->get('_token'))) {
             $entityManager->remove($questionnaire);
             $entityManager->flush();
+
+            $this->addFlash('danger', 'Questionnaire supprimé avec succès.');
         }
 
         return $this->redirectToRoute('app_questionnaire_index', [], Response::HTTP_SEE_OTHER);

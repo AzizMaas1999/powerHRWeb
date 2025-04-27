@@ -2,12 +2,9 @@
 
 namespace App\Entity;
 
-use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-
 use App\Repository\DemandeRepository;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: DemandeRepository::class)]
 #[ORM\Table(name: 'demande')]
@@ -17,6 +14,56 @@ class Demande
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
+
+    #[ORM\Column(name: "dateCreation", type: 'date', nullable: false)]
+    #[Assert\NotNull(message: "La date de création est obligatoire.")]
+    #[Assert\Type("\DateTimeInterface")]
+    private ?\DateTimeInterface $dateCreation = null;
+
+    #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "Le type de demande est obligatoire.")]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: "Le type ne doit pas dépasser {{ limit }} caractères."
+    )]
+    private ?string $type = null;
+
+    #[ORM\Column(name: "dateDebut", type: 'date', nullable: true)]
+    #[Assert\Type("\DateTimeInterface")]
+    #[Assert\LessThanOrEqual(
+        propertyPath: "dateFin",
+        message: "La date de début doit être antérieure ou égale à la date de fin."
+    )]
+    private ?\DateTimeInterface $dateDebut = null;
+
+    #[ORM\Column(name: "dateFin", type: 'date', nullable: true)]
+    #[Assert\Type("\DateTimeInterface")]
+    private ?\DateTimeInterface $dateFin = null;
+
+    #[ORM\Column(type: 'float', nullable: true)]
+    #[Assert\PositiveOrZero(message: "Le salaire doit être un nombre positif ou nul.")]
+    private ?float $salaire = null;
+
+    #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\NotBlank(message: "La cause  est obligatoire.")]
+
+    #[Assert\Length(
+        min: 10,
+        maxMessage: "La cause doit contenir au moins 10 caractères."
+    )]
+    private ?string $cause = null;
+
+    #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\Choice(
+        choices: ["En Attente", "acceptée", "refusée"],
+        message: "Le statut doit être 'en attente', 'acceptée' ou 'refusée'."
+    )]
+    private ?string $status = null;
+
+    #[ORM\ManyToOne(targetEntity: Employe::class, inversedBy: 'demandes')]
+    #[ORM\JoinColumn(name: 'employe_id', referencedColumnName: 'id')]
+    private ?Employe $employe = null;
+ 
 
     public function getId(): ?int
     {
@@ -29,9 +76,6 @@ class Demande
         return $this;
     }
 
-    #[ORM\Column(type: 'date', nullable: false)]
-    private ?\DateTimeInterface $dateCreation = null;
-
     public function getDateCreation(): ?\DateTimeInterface
     {
         return $this->dateCreation;
@@ -42,9 +86,6 @@ class Demande
         $this->dateCreation = $dateCreation;
         return $this;
     }
-
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $type = null;
 
     public function getType(): ?string
     {
@@ -57,9 +98,6 @@ class Demande
         return $this;
     }
 
-    #[ORM\Column(type: 'date', nullable: true)]
-    private ?\DateTimeInterface $dateDebut = null;
-
     public function getDateDebut(): ?\DateTimeInterface
     {
         return $this->dateDebut;
@@ -70,9 +108,6 @@ class Demande
         $this->dateDebut = $dateDebut;
         return $this;
     }
-
-    #[ORM\Column(type: 'date', nullable: true)]
-    private ?\DateTimeInterface $dateFin = null;
 
     public function getDateFin(): ?\DateTimeInterface
     {
@@ -85,9 +120,6 @@ class Demande
         return $this;
     }
 
-    #[ORM\Column(type: 'float', nullable: true)]
-    private ?float $salaire = null;
-
     public function getSalaire(): ?float
     {
         return $this->salaire;
@@ -98,9 +130,6 @@ class Demande
         $this->salaire = $salaire;
         return $this;
     }
-
-    #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $cause = null;
 
     public function getCause(): ?string
     {
@@ -113,9 +142,6 @@ class Demande
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $status = null;
-
     public function getStatus(): ?string
     {
         return $this->status;
@@ -127,10 +153,6 @@ class Demande
         return $this;
     }
 
-    #[ORM\ManyToOne(targetEntity: Employe::class, inversedBy: 'demandes')]
-    #[ORM\JoinColumn(name: 'employe_id', referencedColumnName: 'id')]
-    private ?Employe $employe = null;
-
     public function getEmploye(): ?Employe
     {
         return $this->employe;
@@ -141,5 +163,4 @@ class Demande
         $this->employe = $employe;
         return $this;
     }
-
 }

@@ -21,21 +21,29 @@ final class DemandeController extends AbstractController
     #[Route(name: 'app_demande_index', methods: ['GET'])]
     public function index(DemandeRepository $demandeRepository): Response
     {
+        $demandesEnAttente = $demandeRepository->findBy(['status' => 'En Attente']);
+    
         return $this->render('demande/index.html.twig', [
-            'demandes' => $demandeRepository->findAll(),
+            'demandes' => $demandesEnAttente,
         ]);
     }
+    
 
     #[Route('/new', name: 'app_demande_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $demande = new Demande();
+        $demande->setDateCreation(new \DateTime());
+        $demande->setstatus('En Attente');
+
         $form = $this->createForm(DemandeType::class, $demande);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($demande);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Demande ajoutée avec succès.');
 
             return $this->redirectToRoute('app_demande_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -53,6 +61,7 @@ final class DemandeController extends AbstractController
             'demande' => $demande,
         ]);
     }
+    
 
     #[Route('/{id}/edit', name: 'app_demande_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Demande $demande, EntityManagerInterface $entityManager): Response
@@ -62,6 +71,8 @@ final class DemandeController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
+
+            $this->addFlash('info', 'Demande modifiée avec succès.');
 
             return $this->redirectToRoute('app_demande_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -78,8 +89,49 @@ final class DemandeController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$demande->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($demande);
             $entityManager->flush();
+
+            $this->addFlash('danger', 'Demande supprimée avec succès.');
         }
 
         return $this->redirectToRoute('app_demande_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/liste/attente', name: 'app_demande_liste_attente', methods: ['GET'])]
+    public function listeAttente(DemandeRepository $demandeRepository): Response
+    {
+        $demandesEnAttente = $demandeRepository->findBy(['status' => 'En Attente']);
+    
+        return $this->render('demande/listeDR.html.twig', [
+            'demandes' => $demandesEnAttente,
+        ]);
+    }
+    
+    #[Route('/{id}/valider', name: 'app_demande_valider', methods: ['POST'])]
+    public function valider(Request $request, Demande $demande, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('Valider' . $demande->getId(), $request->getPayload()->getString('_token'))) {
+            $demande->setStatus('Valider');
+            $entityManager->flush();
+    
+            $this->addFlash('success', 'Demande validée avec succès.');
+        }
+    
+        return $this->redirectToRoute('app_demande_liste_attente');
+    }
+    #[Route('/{id}/refuser', name: 'app_demande_refuser', methods: ['POST'])]
+    public function refuser(Request $request, Demande $demande, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('Refuser' . $demande->getId(), $request->getPayload()->getString('_token'))) {
+            $demande->setStatus('Refuser');
+            $entityManager->flush();
+    
+            $this->addFlash('danger', 'Demande refusée.');
+        }
+    
+        return $this->redirectToRoute('app_demande_liste_attente');
+    }
+        
+    
+    
+
 }

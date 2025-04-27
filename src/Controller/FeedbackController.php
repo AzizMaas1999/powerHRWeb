@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Feedback;
 use App\Form\FeedbackType;
+use App\Entity\Clfr;
+use App\Repository\ClfrRepository;
 use App\Repository\FeedbackRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,18 +19,30 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/feedback')]
 final class FeedbackController extends AbstractController
 {
-    #[Route(name: 'app_feedback_index', methods: ['GET'])]
-    public function index(FeedbackRepository $feedbackRepository): Response
+    #[Route('/{clfr_id?}', name: 'app_feedback_index', methods: ['GET'])]
+    public function index(FeedbackRepository $feedbackRepository, ?int $clfr_id = null): Response
     {
+        $feedbacks = $clfr_id 
+            ? $feedbackRepository->findBy(['clfr' => $clfr_id])
+            : $feedbackRepository->findAll();
+
         return $this->render('feedback/index.html.twig', [
-            'feedback' => $feedbackRepository->findAll(),
+            'feedbacks' => $feedbacks,
+            'clfr_id' => $clfr_id
         ]);
     }
 
-    #[Route('/new', name: 'app_feedback_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/new/{clfr_id}', name: 'app_feedback_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager, ClfrRepository $clfrRepository, int $clfr_id): Response
     {
         $feedback = new Feedback();
+        $feedback->setDateCreation(new \DateTime());
+        
+        $clfr = $clfrRepository->find($clfr_id);
+        if ($clfr) {
+            $feedback->setClfr($clfr);
+        }
+        
         $form = $this->createForm(FeedbackType::class, $feedback);
         $form->handleRequest($request);
 

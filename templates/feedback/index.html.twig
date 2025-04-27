@@ -1,39 +1,61 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Feedback index{% endblock %}
+{% block title %}Liste des Feedbacks{% endblock %}
 
 {% block body %}
-    <h1>Feedback index</h1>
+    <div class="container mt-4">
+        <h1 class="text-white mb-4">Liste des Feedbacks</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>DateCreation</th>
-                <th>Type</th>
-                <th>Description</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for feedback in feedback %}
-            <tr>
-                <td>{{ feedback.id }}</td>
-                <td>{{ feedback.dateCreation ? feedback.dateCreation|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ feedback.type }}</td>
-                <td>{{ feedback.description }}</td>
-                <td>
-                    <a href="{{ path('app_feedback_show', {'id': feedback.id}) }}">show</a>
-                    <a href="{{ path('app_feedback_edit', {'id': feedback.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date de création</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Client/Fournisseur</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for feedback in feedbacks %}
+                <tr>
+                    <td>{{ feedback.dateCreation ? feedback.dateCreation|date('Y-m-d H:i:s') : '' }}</td>
+                    <td>
+                        <span class="badge bg-{{ feedback.type == 'positif' ? 'success' : (feedback.type == 'negatif' ? 'danger' : 'warning') }}">
+                            {{ feedback.type }}
+                        </span>
+                    </td>
+                    <td>{{ feedback.description }}</td>
+                    <td>{{ feedback.clfr ? feedback.clfr.nom : 'Non associé' }}</td>
+                    <td>
+                        <a href="{{ path('app_feedback_show', {'id': feedback.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                        <a href="{{ path('app_feedback_edit', {'id': feedback.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
+                        <form method="post" action="{{ path('app_feedback_delete', {'id': feedback.id}) }}" 
+                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce feedback ?');"
+                              class="d-inline">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ feedback.id) }}">
+                            <button class="btn btn-sm btn-danger">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" class="text-center">Aucun feedback trouvé</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
 
-    <a href="{{ path('app_feedback_new') }}">Create new</a>
+        <div class="mt-3">
+            {% if clfr_id %}
+                <a href="{{ path('app_feedback_new', {'clfr_id': clfr_id}) }}" class="btn btn-primary">
+                    Ajouter un Feedback
+                </a>
+            {% else %}
+                <a href="{{ path('app_clfr_feedback') }}" class="btn btn-primary">
+                    Voir les Clients/Fournisseurs
+                </a>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}

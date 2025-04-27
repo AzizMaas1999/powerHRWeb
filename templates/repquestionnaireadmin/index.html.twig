@@ -1,0 +1,45 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Repquestionnaire index{% endblock %}
+
+{% block body %}
+    <h1>Repquestionnaire index</h1>
+
+
+    <table class="table table-dark table-hover table-bordered">
+        <thead>
+            <tr>
+                
+                <th>DateCreation</th>
+                <th>Reponse</th>
+                
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for repquestionnaire in repquestionnaires %}
+            <tr>
+                
+                <td>{{ repquestionnaire.dateCreation ? repquestionnaire.dateCreation|date('Y-m-d') : '' }}</td>
+                <td>{{ repquestionnaire.reponse }}</td>
+               
+                <td>
+                    <form method="post" action="{{ path('app_repquestionnaireadmin_delete', {'id': repquestionnaire.id}) }}" style="display:inline;" onsubmit="return confirm('Supprimer cette reponse questionnaire ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ repquestionnaire.id) }}">
+                        <button type="submit" style="background: none; border: none;" title="Supprimer">
+                            <i class="bi bi-trash-fill text-danger"></i>
+                        </button>
+                    </form>
+                    <a href="{{ path('app_repquestionnaireadmin_edit', {'id': repquestionnaire.id}) }}" class="icon-link edit-icon text-primary" title="Modifier">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6" class="text-center">No records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

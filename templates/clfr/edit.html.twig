@@ -1,13 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Clfr{% endblock %}
+{% block title %}Modifier un CLFR{% endblock %}
 
 {% block body %}
-    <h1>Edit Clfr</h1>
+    <div class="container mt-5">
+        <div class="card shadow-lg border-0 rounded-4 p-4 bg-dark text-white">
+            <div class="card-body">
+                <h2 class="mb-4 text-center">
+                    <i class="fas fa-edit me-2"></i> Modifier un CLFR
+                </h2>
 
-    {{ include('clfr/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('app_clfr_index') }}">back to list</a>
-
-    {{ include('clfr/_delete_form.html.twig') }}
+                {{ include('clfr/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+            </div>
+        </div>
+    </div>
 {% endblock %}

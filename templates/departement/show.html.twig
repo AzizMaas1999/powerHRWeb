@@ -1,30 +1,154 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Departement{% endblock %}
+{% block title %}Détails du Département{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .details-container {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 20px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+        }
+        .details-title {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.75rem;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+        .details-row {
+            display: flex;
+            margin-bottom: 20px;
+            align-items: flex-start;
+        }
+        .details-label {
+            flex: 0 0 200px;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 500;
+        }
+        .details-value {
+            flex: 1;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        .actions-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            font-size: 0.875rem;
+        }
+        .btn-action i {
+            font-size: 16px;
+        }
+        .modal-content {
+            background: #191c24;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .modal-header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .modal-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .modal-title {
+            color: rgba(255, 255, 255, 0.9);
+        }
+        .modal-body {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .btn-confirm-delete {
+            background: #dc3545;
+            color: white;
+            border: none;
+        }
+        .btn-confirm-delete:hover {
+            background: #bb2d3b;
+        }
+        .btn-cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.9);
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <h1>Departement</h1>
+    <div class="container mt-5">
+        <div class="details-container">
+            <h1 class="details-title">Détails du Département</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ departement.id }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
-                <td>{{ departement.nom }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ departement.description }}</td>
-            </tr>
-        </tbody>
-    </table>
+            <div class="details-row">
+                <div class="details-label">ID</div>
+                <div class="details-value">{{ departement.id }}</div>
+            </div>
 
-    <a href="{{ path('app_departement_index') }}">back to list</a>
+            <div class="details-row">
+                <div class="details-label">Nom</div>
+                <div class="details-value">{{ departement.nom }}</div>
+            </div>
 
-    <a href="{{ path('app_departement_edit', {'id': departement.id}) }}">edit</a>
+            <div class="details-row">
+                <div class="details-label">Description</div>
+                <div class="details-value">{{ departement.description }}</div>
+            </div>
 
-    {{ include('departement/_delete_form.html.twig') }}
+            <div class="details-row">
+                <div class="details-label">Entreprise</div>
+                <div class="details-value">{{ departement.entreprise.nom }}</div>
+            </div>
+
+            <div class="actions-container">
+                <a href="{{ path('app_departement_index') }}" class="btn btn-sm btn-outline-secondary btn-action">
+                    <i class="bi bi-arrow-left"></i> Retour
+                </a>
+                <a href="{{ path('app_departement_edit', {'id': departement.id}) }}" class="btn btn-sm btn-outline-warning btn-action">
+                    <i class="bi bi-pencil"></i> Modifier
+                </a>
+                <button type="button" class="btn btn-sm btn-outline-danger btn-action" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                    <i class="bi bi-trash"></i> Supprimer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Confirmation de suppression</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Êtes-vous sûr de vouloir supprimer ce département ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Annuler</button>
+                    <form method="post" action="{{ path('app_departement_delete', {'id': departement.id}) }}" style="display:inline-block;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ departement.id) }}">
+                        <button class="btn btn-confirm-delete">Confirmer la suppression</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <!-- Bootstrap 5 JS for modals -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 {% endblock %}

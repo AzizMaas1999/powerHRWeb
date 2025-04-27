@@ -124,15 +124,6 @@ final class PointageController extends AbstractController
                     return $this->redirectToRoute('csv_pointage_all');
                 }
                 
-                // Strict header validation
-                for ($i = 0; $i < 4; $i++) {
-                    if (strtolower(trim($headers[$i])) !== $expectedHeaders[$i]) {
-                        $this->addFlash('danger', 'Fichier invalide!!!');
-                        fclose($handle);
-                        return $this->redirectToRoute('csv_pointage_all');
-                    }
-                }
-                
                 // Initialize data validation patterns
                 $datePattern = '/^\d{4}-\d{2}-\d{2}$/';
                 $timePattern = '/^\d{2}:\d{2}:\d{2}$/';

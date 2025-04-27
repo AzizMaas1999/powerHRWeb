@@ -3,11 +3,26 @@
 {% block title %}Edit Facture{% endblock %}
 
 {% block body %}
-    <h1>Edit Facture</h1>
+    <div class="container py-5 text-white">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="display-6 fw-semibold">
+                ✏️ Editer la <span class="text-info">Facture</span>
+            </h1>
+            <a href="{{ path('app_facture_index') }}" class="btn btn-outline-info rounded-pill px-4">Retour à la liste</a>
+        </div>
 
-    {{ include('facture/_form.html.twig', {'button_label': 'Update'}) }}
+        <div class="card bg-gradient bg-dark border border-info shadow-lg rounded-4">
+            <div class="card-body p-4">
+                <h2 class="text-center text-info mb-4">Modifier la Facture</h2>
 
-    <a href="{{ path('app_facture_index') }}">back to list</a>
+                {{ include('facture/_form.html.twig', {'button_label': 'Mettre à jour', 'attr': {'class': 'mb-4'}}) }}
 
-    {{ include('facture/_delete_form.html.twig') }}
+                <!-- Only "Supprimer" button -->
+                <div class="d-flex justify-content-center mt-4">
+                    {{ include('facture/_delete_form.html.twig', {'button_label': 'Supprimer', 'attr': {'class': 'btn btn-danger rounded-pill px-4 mx-2'}}) }}
+                </div>
+
+            </div>
+        </div>
+    </div>
 {% endblock %}
