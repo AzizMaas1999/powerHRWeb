@@ -1,0 +1,4 @@
+api_bundle:
+    resource: '../src/ApiBundle/Controller/'
+    type: attribute
+    prefix: /api

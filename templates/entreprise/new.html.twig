@@ -4,6 +4,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/css/intlTelInput.css">
     <style>
         .form-container {
             background: rgba(255, 255, 255, 0.02);
@@ -106,6 +107,27 @@
         .btn-action i {
             margin-right: 0.5rem;
         }
+        .iti { width: 100%; }
+        .iti__flag-container { z-index: 4; }
+        .form-control.iti__tel-input { padding-left: 90px; }
+        .iti__selected-flag { background: rgba(255,255,255,0.05); border-right: 1px solid rgba(255,255,255,0.1); border-radius: 6px 0 0 6px; }
+        .iti__country-list { background: rgba(30,34,54,0.95); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.9); }
+        .iti__country:hover { background: rgba(255,255,255,0.1); }
+        .iti__active { background: rgba(255,255,255,0.15); }
+        .iti__selected-flag:hover { background: rgba(255,255,255,0.1); }
+        .iti__arrow { border-top-color: rgba(255,255,255,0.7); }
+        .iti__arrow--up { border-bottom-color: rgba(255,255,255,0.7); }
+        .iti__country.iti__highlight { background: rgba(255,255,255,0.15); }
+        .iti__country.iti__active.iti__highlight { background: rgba(255,255,255,0.2); }
+        .iti__country.iti__preferred { background: rgba(255,255,255,0.05); }
+        .iti__country.iti__preferred:hover { background: rgba(255,255,255,0.1); }
+        .iti__divider { border-bottom-color: rgba(255,255,255,0.1); }
+        .iti__search-input { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.9); border: 1px solid rgba(255,255,255,0.1); }
+        .iti__search-input::placeholder { color: rgba(255,255,255,0.5); }
+        .iti__search-input:focus { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); }
+        /* Ensure phone input and button stay on the same line */
+        .input-group .iti { flex: 1 1 auto; width: 1%; }
+        .input-group .form-control.iti__tel-input { width: 100%; }
     </style>
 {% endblock %}
 
@@ -128,9 +150,9 @@
                         <small class="help-text">Entre 3 et 15 caractères</small>
                         {% if form_errors(form.nom) %}
                             <div class="invalid-feedback" style="display: flex;">
-                                <i class="bi bi-exclamation-triangle-fill error-icon"></i>
+                            <i class="bi bi-exclamation-triangle-fill error-icon"></i>
                                 {{ form_errors(form.nom) }}
-                            </div>
+                        </div>
                         {% endif %}
                     </div>
                 </div>
@@ -146,13 +168,13 @@
                         <small class="help-text">Entre 3 et 10 caractères</small>
                         {% if form_errors(form.secteur) %}
                             <div class="invalid-feedback" style="display: flex;">
-                                <i class="bi bi-exclamation-triangle-fill error-icon"></i>
+                            <i class="bi bi-exclamation-triangle-fill error-icon"></i>
                                 {{ form_errors(form.secteur) }}
                             </div>
                         {% endif %}
+                        </div>
                     </div>
                 </div>
-            </div>
 
             <div class="row">
                 <div class="col-md-6">
@@ -167,44 +189,233 @@
                         <small class="help-text">Format exemple: 1234567/A/B/C/000</small>
                         {% if form_errors(form.matricule_fiscale) %}
                             <div class="invalid-feedback" style="display: flex;">
-                                <i class="bi bi-exclamation-triangle-fill error-icon"></i>
+                            <i class="bi bi-exclamation-triangle-fill error-icon"></i>
                                 {{ form_errors(form.matricule_fiscale) }}
-                            </div>
+                        </div>
                         {% endif %}
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        {{ form_label(form.phone_number, 'Téléphone', {'label_attr': {'class': 'form-label'}}) }}
-                        {{ form_widget(form.phone_number, {
-                            'attr': {
-                                'class': 'form-control' ~ (form_errors(form.phone_number) ? ' is-invalid' : ''),
-                                'placeholder': 'Entrez le numéro de téléphone'
-                            }
-                        }) }}
-                        <small class="help-text">Exactement 8 chiffres</small>
+    {{ form_label(form.phone_number, 'Téléphone', {'label_attr': {'class': 'form-label'}}) }}
+    <div class="input-group">
+        {{ form_widget(form.phone_number, {
+            'attr': {
+                'class': 'form-control iti__tel-input' ~ (form_errors(form.phone_number) ? ' is-invalid' : ''),
+                'placeholder': 'Entrez le numéro de téléphone',
+                'id': 'entreprise_phone_number',
+                'type': 'tel'
+            }
+        }) }}
+        <button type="button" id="send-verification-btn" class="btn btn-sm btn-outline-primary btn-action" style="margin-left: 8px;">Envoyer le code</button>
+    </div>
+    <small class="help-text">Format: +XXX XXXXXXXXX</small>
                         {% if form_errors(form.phone_number) %}
                             <div class="invalid-feedback" style="display: flex;">
-                                <i class="bi bi-exclamation-triangle-fill error-icon"></i>
+                            <i class="bi bi-exclamation-triangle-fill error-icon"></i>
                                 {{ form_errors(form.phone_number) }}
-                            </div>
+                        </div>
                         {% endif %}
+                        <div id="send-status" style="margin-top: 5px; color: #0d6efd;"></div>
+
+<style>
+/* Futuristic Glassmorphism Modal Styles */
+#codeVerificationModal.modal {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(18, 22, 34, 0.65) !important;
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+}
+#codeVerificationModal .modal-dialog {
+  margin: 0 auto;
+  min-width: 350px;
+  max-width: 400px;
+  display: flex;
+  align-items: center;
+  min-height: 100vh;
+}
+#codeVerificationModal .modal-content {
+  border-radius: 22px;
+  background: rgba(30, 34, 54, 0.92);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  border: 1.5px solid rgba(255,255,255,0.12);
+  color: #e6eaff;
+  padding: 0 18px 18px 18px;
+  position: relative;
+  animation: modalPop 0.4s cubic-bezier(.48,1.5,.63,1);
+}
+@keyframes modalPop {
+  0% { transform: scale(0.85) translateY(80px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+#codeVerificationModal .modal-header {
+  border-bottom: none;
+  padding: 24px 0 6px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#codeVerificationModal .modal-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #6cf6ff;
+  text-shadow: 0 0 8px #3ff0ff88;
+}
+#codeVerificationModal .close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #6cf6ff;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+#codeVerificationModal .close:hover {
+  opacity: 1;
+  color: #fff;
+}
+#codeVerificationModal .modal-body {
+  padding: 12px 0 0 0;
+}
+#codeVerificationModal .form-group label {
+  color: #a4b8ff;
+  font-size: 1.05rem;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+#codeVerificationModal .form-control {
+  background: rgba(255,255,255,0.09);
+  border: 1.5px solid #6cf6ff44;
+  border-radius: 12px;
+  color: #e6eaff;
+  font-size: 1.1rem;
+  box-shadow: 0 0 0 1.5px #6cf6ff33;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+#codeVerificationModal .form-control:focus {
+  border-color: #6cf6ff;
+  box-shadow: 0 0 0 2px #6cf6ff66;
+  background: rgba(255,255,255,0.13);
+  color: #fff;
+}
+#codeVerificationModal .modal-footer {
+  border-top: none;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 12px;
+}
+#codeVerificationModal .btn-primary {
+  background: linear-gradient(90deg, #6cf6ff 0%, #3fbbff 100%);
+  border: none;
+  color: #232b3b;
+  font-weight: 600;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px #6cf6ff33;
+  transition: background 0.2s, color 0.2s;
+}
+#codeVerificationModal .btn-primary:hover {
+  background: linear-gradient(90deg, #3fbbff 0%, #6cf6ff 100%);
+  color: #111;
+}
+#codeVerificationModal .btn-secondary {
+  background: transparent;
+  color: #6cf6ff;
+  border: 1.5px solid #6cf6ff44;
+  border-radius: 10px;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s;
+}
+#codeVerificationModal .btn-secondary:hover {
+  background: #232b3b;
+  color: #fff;
+}
+#codeVerificationModal #code-verification-success {
+  color: #00ffb2;
+  font-size: 2.2em;
+  text-align: center;
+  margin-top: 14px;
+  text-shadow: 0 0 12px #00ffb277;
+  animation: tickPop 0.6s cubic-bezier(.48,1.5,.63,1);
+}
+@keyframes tickPop {
+  0% { transform: scale(0.5) rotate(-10deg); opacity: 0; }
+  80% { transform: scale(1.1) rotate(3deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+#codeVerificationModal #code-verification-feedback {
+  color: #ff5a5a;
+  background: rgba(255, 90, 90, 0.06);
+  border-radius: 8px;
+  font-size: 1em;
+  margin-top: 8px;
+  padding: 5px 10px;
+  text-align: center;
+  display: none;
+}
+@media (max-width: 480px) {
+  #codeVerificationModal .modal-dialog {
+    min-width: 90vw;
+    max-width: 98vw;
+  }
+  #codeVerificationModal .modal-content {
+    padding: 0 4vw 18px 4vw;
+  }
+}
+</style>
+<!-- Code Verification Modal -->
+<div class="modal fade" id="codeVerificationModal" tabindex="-1" role="dialog" aria-labelledby="codeVerificationModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="codeVerificationModalLabel">Vérification du code</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="verification-code-input">Entrez le code reçu :</label>
+          <input type="text" class="form-control" id="verification-code-input" maxlength="8" autocomplete="one-time-code">
+          <div id="code-verification-feedback" class="invalid-feedback" style="display:none;"></div>
+          <div id="code-verification-success" style="display:none; color: green; font-size: 2em; text-align: center; margin-top: 10px;">
+            <i class="mdi mdi-check-circle-outline"></i> Code vérifié !
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        <button type="button" id="verify-code-btn" class="btn btn-primary">Vérifier</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="code-input-group" style="display:none; margin-top: 10px;">
+    <input type="text" id="verification-code" class="form-control" placeholder="Entrez le code reçu" maxlength="6" style="width: 200px; display: inline-block;">
+    <button type="button" id="verify-code-btn" class="btn btn-sm btn-outline-success btn-action">Vérifier</button>
+    <div id="verify-status" style="margin-top: 5px;"></div>
+</div>
                     </div>
                 </div>
             </div>
 
             <div class="form-group">
-                {{ form_widget(form.phone_verified, {'attr': {'class': 'form-check-input'}}) }}
+                    {{ form_widget(form.phone_verified, {'attr': {'class': 'form-check-input'}}) }}
                 {{ form_label(form.phone_verified, 'Téléphone vérifié', {'label_attr': {'class': 'form-check-label'}}) }}
-            </div>
+                </div>
 
             <div class="actions-container">
                 <a href="{{ path('app_entreprise_index') }}" class="btn btn-sm btn-outline-secondary btn-action">
-                    <i class="bi bi-arrow-left"></i> Retour
-                </a>
+                        <i class="bi bi-arrow-left"></i> Retour
+                    </a>
                 <button type="submit" class="btn btn-sm btn-outline-success btn-action">
-                    <i class="bi bi-check-lg"></i> Créer
-                </button>
+                        <i class="bi bi-check-lg"></i> Créer
+                    </button>
             </div>
 
             {{ form_end(form) }}
@@ -213,23 +424,56 @@
 {% endblock %}
 
 {% block javascripts %}
-    {{ parent() }}
-    <script>
-        // Format matricule fiscale input
-        document.querySelector('#entreprise_matricule_fiscale').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/[^0-9A-Z/]/g, '').toUpperCase();
-            let formatted = '';
-            
-            // Format: NNNNNNN/X/X/X/NNN
-            for(let i = 0; i < value.length && i < 16; i++) {
-                if(i === 7 || i === 9 || i === 11 || i === 13) {
-                    formatted += '/';
-                }
-                formatted += value[i];
+{{ parent() }}
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/intlTelInput.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const sendBtn = document.getElementById('send-verification-btn');
+    const phoneInput = document.getElementById('entreprise_phone_number');
+    const sendStatus = document.getElementById('send-status');
+    if (!sendBtn || !phoneInput || !sendStatus) return;
+
+    sendBtn.addEventListener('click', function() {
+        sendStatus.textContent = '';
+        const phone = phoneInput.value.trim();
+        if (!phone.match(/^[0-9]{8}$/)) {
+            sendStatus.textContent = "Numéro de téléphone invalide.";
+            sendStatus.style.color = "#ff4d4d";
+            return;
+        }
+        const fullPhone = '+216' + phone;
+        sendStatus.textContent = "Envoi du code...";
+        sendStatus.style.color = "#0d6efd";
+        fetch('/api/sms/send', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ to: fullPhone })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                sendStatus.textContent = "Code envoyé !";
+                sendStatus.style.color = "#28a745";
+            } else {
+                sendStatus.textContent = data.error || "Erreur lors de l'envoi du code.";
+                sendStatus.style.color = "#ff4d4d";
             }
-            
-            e.target.value = formatted;
+        })
+        .catch(() => {
+            sendStatus.textContent = "Erreur réseau.";
+            sendStatus.style.color = "#ff4d4d";
         });
-    </script>
+    });
+
+    if (phoneInput) {
+        window.intlTelInput(phoneInput, {
+            initialCountry: 'tn',
+            preferredCountries: ['tn', 'fr', 'ma', 'dz'],
+            separateDialCode: true,
+            utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js"
+        });
+    }
+});
+</script>
 {% endblock %}
 
