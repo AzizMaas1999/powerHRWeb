@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Chatbot CLFR{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Assistant CLFR</h1>
+
+    <form method="post">
+        <div class="mb-3">
+            <label for="message" class="form-label">Votre message :</label>
+            <textarea id="message" name="message" class="form-control" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+    </form>
+
+    {% if response %}
+        <div class="mt-4">
+            <h5>Réponse du chatbot :</h5>
+            <div class="alert alert-info">{{ response }}</div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

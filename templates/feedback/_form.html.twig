@@ -29,3 +29,10 @@
 
     <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
 {{ form_end(form) }}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    $("#{{ form.description.vars.id }}").emojioneArea({
+        pickerPosition: "bottom"
+    });
+});
+</script>
