@@ -67,6 +67,7 @@
               <span class="nav-link">Navigation</span>
             </li>
 
+            {% if app.user.poste == 'Charges' or app.user.poste == 'Directeur' %}
             <!-- Pointage -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-pointage" aria-expanded="false" aria-controls="menu-pointage">
@@ -78,12 +79,13 @@
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <a class="nav-link" href="/pointage/employe">Ajouter Pointage</a></li>
                   <li class="nav-item"> <a class="nav-link" href="/pointage/csv">Ajouter Pointage Par CSV</a></li>
-                  <li class="nav-item"> <a class="nav-link" href="/pointage/newPointageEmp">Ajouter Pointage (Pour Employé)</a></li>
                   <li class="nav-item"> <a class="nav-link" href="/pointage">Afficher La Liste</a></li>
                 </ul>
               </div>
             </li>
+            {% endif %}
 
+            {% if app.user.poste == 'Ouvrier' or app.user.poste == 'Directeur' %}
             <!-- Demande -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-demande" aria-expanded="false" aria-controls="menu-demande">
@@ -94,12 +96,14 @@
               <div class="collapse" id="menu-demande">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <a class="nav-link" href="/demande/new">Ajouter demande</a></li>
-                  <li class="nav-item"> <a class="nav-link" href="/demande">Afficher La Liste</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="{{ path('app_demande_index') }}">Afficher La Liste</a></li>
                   <li class="nav-item"> <a class="nav-link" href="/demande/liste/attente">Gérer les demandes</a></li>
                 </ul>
               </div>
             </li>
+            {% endif %}
 
+            {% if app.user.poste == 'Charges' or app.user.poste == 'Directeur' %}
             <!-- Questionnaire -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-questionnaire" aria-expanded="false" aria-controls="menu-questionnaire">
@@ -114,7 +118,9 @@
                 </ul>
               </div>
             </li>
-
+            {% endif %}
+              
+            {% if app.user.poste == 'Directeur' %}
             <!-- Entreprise -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-entreprise" aria-expanded="false" aria-controls="menu-entreprise">
@@ -128,7 +134,9 @@
                 </ul>
               </div>
             </li>
+            {% endif %}
 
+            {% if app.user.poste == 'Ouvrier' %}
             <!-- Reponse Questionnaire -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-rep-questionnaire" aria-expanded="false" aria-controls="menu-rep-questionnaire">
@@ -142,7 +150,9 @@
                 </ul>
               </div>
             </li>
+            {% endif %}
 
+            {% if app.user.poste == 'Directeur' or app.user.poste == 'Charges' %}
             <!-- Paie -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-paie" aria-expanded="false" aria-controls="menu-paie">
@@ -152,10 +162,14 @@
               </a>
               <div class="collapse" id="menu-paie">
                 <ul class="nav flex-column sub-menu">
-                  <li class="nav-item"> <a class="nav-link" href="/paie">Afficher La Liste</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="/paie/new">Ajouter Paie</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="/paie/employe">Afficher La Liste</a></li>
                 </ul>
               </div>
             </li>
+            {% endif %}
+
+            {% if app.user.poste == 'Directeur' or app.user.poste == 'Facturation' %}
             <!-- Article -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-article" aria-expanded="false" aria-controls="menu-article">
@@ -170,7 +184,9 @@
                 </ul>
               </div>
             </li>
+            {% endif %}
 
+            {% if app.user.poste == 'Directeur' or app.user.poste == 'Facturation' %}
             <!-- Facture -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-facture" aria-expanded="false" aria-controls="menu-facture">
@@ -185,7 +201,9 @@
                 </ul>
               </div>
             </li>
+            {% endif %}
 
+            {% if app.user.poste == 'Directeur' or app.user.poste == 'Facturation' %}
             <!-- Paiement -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-paiement" aria-expanded="false" aria-controls="menu-paiement">
@@ -200,7 +218,9 @@
                 </ul>
               </div>
             </li>
+            {% endif %}
 
+            {% if app.user.poste == 'Directeur' %}
             <!-- Departement -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#departement-menu" aria-expanded="false" aria-controls="departement-menu">
@@ -214,7 +234,9 @@
                 </ul>
               </div>
             </li>
+            {% endif %}
 
+            {% if app.user.poste == 'Directeur' or app.user.poste == 'Facturation' %}
             <!-- Client/Fournisseur -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-clfr" aria-expanded="false" aria-controls="menu-clfr">
@@ -229,7 +251,9 @@
                 </ul>
               </div>
             </li>
+            {% endif %}
 
+            {% if app.user.poste == 'Directeur' or app.user.poste == 'Facturation' %}
             <!-- Feedback -->
             <li class="nav-item menu-items">
               <a class="nav-link" href="{{ path('app_clfr_feedback') }}">
@@ -237,21 +261,29 @@
                 <span class="menu-title">Feedback</span>
               </a>
             </li>
+            {% endif %}
+
+            {% if app.user.poste == 'Directeur' or app.user.poste == 'Charges' %}
+            <!-- Employe -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
                 <span class="menu-icon">
                   <i class="mdi mdi-laptop"></i>
                 </span>
-                <span class="menu-title">employe</span>
+                <span class="menu-title">Employe</span>
                 <i class="menu-arrow"></i>
               </a>
               <div class="collapse" id="ui-basic">
                 <ul class="nav flex-column sub-menu">
-                  <li class="nav-item"> <a class="nav-link" href="/employe/new">Ajouter employe</a></li>
-                  <li class="nav-item"> <a class="nav-link" href="/employe">Afficher La Liste employe</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="/employe/new">Ajouter Employe</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="/employe">Afficher La Liste Employe</a></li>
                 </ul>
               </div>
-            </li>
+            </li>  
+            {% endif %}
+  
+            {% if app.user.poste == 'Directeur' or app.user.poste == 'Ouvrier' or app.user.poste == 'Charges' %}
+            <!-- Fiche Employe -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
                 <span class="menu-icon">
@@ -263,10 +295,14 @@
               <div class="collapse" id="ui-basic">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <a class="nav-link" href="/fiche/employe/new">Ajouter Fiche</a></li>
-                  <li class="nav-item"> <a class="nav-link" href="/fiche/employe">Afficher La Liste des fichers</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="/fiche/employe">Afficher La Liste des fiches</a></li>
                 </ul>
               </div>
             </li>
+            {% endif %}
+
+            {% if app.user.poste == 'Directeur' %}
+            <!-- Candidat -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
                 <span class="menu-icon">
@@ -277,11 +313,12 @@
               </a>
               <div class="collapse" id="ui-basic">
                 <ul class="nav flex-column sub-menu">
-                  
+                  <li class="nav-item"> <a class="nav-link" href="/candidat/new">Ajouter Candidat</a></li>
                   <li class="nav-item"> <a class="nav-link" href="/candidat">Afficher La Liste des Candidats/a></li>
                 </ul>
               </div>
             </li>
+            {% endif %}
           </ul>
         </nav>
         <!-- partial -->
@@ -296,104 +333,41 @@
                 <span class="mdi mdi-menu"></span>
               </button>
               <ul class="navbar-nav navbar-nav-right">
-                <li class="nav-item nav-settings d-none d-lg-block">
-                  <a class="nav-link" href="#">
-                    <i class="mdi mdi-view-grid"></i>
-                  </a>
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <button type="button" class="btn btn-outline-{{ label }} btn-fw" disabled>{{ message }}</button>
+                    {% endfor %}
+                {% endfor %}
+                <li class="nav-item nav-settings d-none d-lg-block border-right">
+                  {% set heure = "now"|date('H:i:s', 'Africa/Tunis') %}
+
+                  {% if heure >= '14:00:00' and heure <= '14:30:00' %}
+                      <a class="nav-link" href="{{ path('app_pointageEntree') }}">
+                        <button class="btn btn-primary btn-sm" >Pointage Entrée</button>
+                      </a>
+                  {% else %}
+                      <a class="nav-link">
+                        <button class="btn btn-primary btn-sm" disabled >Pointage Entrée</button>
+                      </a>
+                  {% endif %}
                 </li>
-                <li class="nav-item dropdown border-left">
-                  <a class="nav-link count-indicator dropdown-toggle" id="messageDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
-                    <i class="mdi mdi-email"></i>
-                    <span class="count bg-success"></span>
+                <li class="nav-item nav-settings d-none d-lg-block border-right">
+                  {% if heure >= '16:50:00' and heure <= '17:00:00' %}
+                      <a class="nav-link" href="{{ path('app_pointageSortie') }}">
+                        <button class="btn btn-danger btn-sm">Pointage Sortie</button>
+                      </a>
+                  {% else %}
+                      <a class="nav-link">
+                        <button class="btn btn-danger btn-sm" disabled>Pointage Sortie</button>
+                      </a>
+                  {% endif %}
                   </a>
-                  <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="messageDropdown">
-                    <h6 class="p-3 mb-0">Messages</h6>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item preview-item">
-                      <div class="preview-thumbnail">
-                        <img src="{{ asset('UI/assets/images/faces/face4.jpg') }}" alt="image" class="rounded-circle profile-pic">
-                      </div>
-                      <div class="preview-item-content">
-                        <p class="preview-subject ellipsis mb-1">Mark send you a message</p>
-                        <p class="text-muted mb-0"> 1 Minutes ago </p>
-                      </div>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item preview-item">
-                      <div class="preview-thumbnail">
-                        <img src="{{ asset('UI/assets/images/faces/face2.jpg') }}" alt="image" class="rounded-circle profile-pic">
-                      </div>
-                      <div class="preview-item-content">
-                        <p class="preview-subject ellipsis mb-1">Cregh send you a message</p>
-                        <p class="text-muted mb-0"> 15 Minutes ago </p>
-                      </div>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item preview-item">
-                      <div class="preview-thumbnail">
-                        <img src="{{ asset('UI/assets/images/faces/face3.jpg') }}" alt="image" class="rounded-circle profile-pic">
-                      </div>
-                      <div class="preview-item-content">
-                        <p class="preview-subject ellipsis mb-1">Profile picture updated</p>
-                        <p class="text-muted mb-0"> 18 Minutes ago </p>
-                      </div>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <p class="p-3 mb-0 text-center">4 new messages</p>
-                  </div>
-                </li>
-                <li class="nav-item dropdown border-left">
-                  <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
-                    <i class="mdi mdi-bell"></i>
-                    <span class="count bg-danger"></span>
-                  </a>
-                  <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
-                    <h6 class="p-3 mb-0">Notifications</h6>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item preview-item">
-                      <div class="preview-thumbnail">
-                        <div class="preview-icon bg-dark rounded-circle">
-                          <i class="mdi mdi-calendar text-success"></i>
-                        </div>
-                      </div>
-                      <div class="preview-item-content">
-                        <p class="preview-subject mb-1">Event today</p>
-                        <p class="text-muted ellipsis mb-0"> Just a reminder that you have an event today </p>
-                      </div>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item preview-item">
-                      <div class="preview-thumbnail">
-                        <div class="preview-icon bg-dark rounded-circle">
-                          <i class="mdi mdi-settings text-danger"></i>
-                        </div>
-                      </div>
-                      <div class="preview-item-content">
-                        <p class="preview-subject mb-1">Settings</p>
-                        <p class="text-muted ellipsis mb-0"> Update dashboard </p>
-                      </div>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item preview-item">
-                      <div class="preview-thumbnail">
-                        <div class="preview-icon bg-dark rounded-circle">
-                          <i class="mdi mdi-link-variant text-warning"></i>
-                        </div>
-                      </div>
-                      <div class="preview-item-content">
-                        <p class="preview-subject mb-1">Launch Admin</p>
-                        <p class="text-muted ellipsis mb-0"> New admin wow! </p>
-                      </div>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <p class="p-3 mb-0 text-center">See all notifications</p>
-                  </div>
                 </li>
                 <li class="nav-item dropdown">
                   <a class="nav-link" id="profileDropdown" href="#" data-toggle="dropdown">
                     <div class="navbar-profile">
                       <img class="img-xs rounded-circle" src="{{ asset('UI/assets/images/faces/face15.jpg') }}" alt="">
-                      <p class="mb-0 d-none d-sm-block navbar-profile-name">Henry Klein</p>
+                      <p class="mb-0 d-none d-sm-block navbar-profile-name">{{app.user.username}}</p>
                       <i class="mdi mdi-menu-down d-none d-sm-block"></i>
                     </div>
                   </a>
@@ -411,7 +385,7 @@
                       </div>
                     </a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item preview-item">
+                    <a class="dropdown-item preview-item" href="/logout">
                       <div class="preview-thumbnail">
                         <div class="preview-icon bg-dark rounded-circle">
                           <i class="mdi mdi-logout text-danger"></i>
@@ -421,9 +395,7 @@
                         <p class="preview-subject mb-1">Log out</p>
                       </div>
                     </a>
-                    <div class="dropdown-divider"></div>
-                    <p class="p-3 mb-0 text-center">Advanced settings</p>
-                  </div>
+                    </div>
                 </li>
               </ul>
               <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">

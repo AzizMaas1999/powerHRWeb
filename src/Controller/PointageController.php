@@ -27,6 +27,54 @@ final class PointageController extends AbstractController
         ]);
     }
 
+    #[Route('/pointageentree', name: 'app_pointageEntree', methods: ['GET', 'POST'])]
+    public function pointageEntree(EntityManagerInterface $entityManager, PointageRepository $pointageRepository, Request $request): Response
+    {
+        $pointage = new Pointage();
+        $pointageexiste = $pointageRepository->findOneBy([
+            'employe' => $this->getUser(),
+            'date' => new \DateTime('now', new \DateTimeZone('Africa/Tunis')),
+            'heureSortie' => null,
+        ]);
+        if ($pointageexiste) {
+            $this->addFlash('danger', 'Vous avez déjà pointé votre entrée aujourd\'hui!');
+            return $this->redirect($request->headers->get('referer'), Response::HTTP_SEE_OTHER);
+        }
+        else {
+            $pointage->setDate(new \DateTime('now', new \DateTimeZone('Africa/Tunis')));
+            $pointage->setHeureEntree(new \DateTime('now', new \DateTimeZone('Africa/Tunis')));
+            $pointage->setHeureSortie(null);
+            $pointage->setPaie(null);
+            $employe = $this->getUser(); 
+            $pointage->setEmploye($employe);
+
+            $entityManager->persist($pointage);
+            $entityManager->flush();
+            $this->addFlash('success', 'Pointage d\'entrée enregistré avec succès!');
+            return $this->redirect($request->headers->get('referer'), Response::HTTP_SEE_OTHER);
+        }
+    }
+
+    #[Route('/pointagesortie', name: 'app_pointageSortie', methods: ['GET', 'POST'])]
+    public function pointageSortie(EntityManagerInterface $entityManager, PointageRepository $pointageRepository, Request $request): Response
+    {
+        $pointageexiste = $pointageRepository->findOneBy([
+            'employe' => $this->getUser(),
+            'date' => new \DateTime('now', new \DateTimeZone('Africa/Tunis')),
+            'heureSortie' => null,
+        ]);
+        if ($pointageexiste) {
+            $pointageexiste->setHeureSortie(new \DateTime('now', new \DateTimeZone('Africa/Tunis')));
+            $entityManager->flush();
+            $this->addFlash('success', 'Pointage de sortie enregistré avec succès!');
+            return $this->redirect($request->headers->get('referer'), Response::HTTP_SEE_OTHER);
+        }
+        else {
+            $this->addFlash('danger', 'Vous avez déjà pointé votre sortie aujourd\'hui!');
+            return $this->redirect($request->headers->get('referer'), Response::HTTP_SEE_OTHER);
+        }
+    }
+
     #[Route('/new/{id}', name: 'app_pointage_new', methods: ['GET', 'POST'])]
     public function new(int $id, EmployeRepository $employeRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -226,34 +274,8 @@ final class PointageController extends AbstractController
             'pointages' => $pointageRepository->findAll(),
         ]);
     }
-
-    #[Route('/newPointageEmp', name: 'app_newPointageEmp', methods: ['GET', 'POST'])]
-    public function newPointageEmp(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $pointage = new Pointage();
-        $pointage->setDate(new \DateTime());
-        $pointage->setHeureEntree(new \DateTime());
-
-        $employe = $this->getUser(); 
-        $pointage->setEmploye($employe);
-
-        $form = $this->createForm(PointageType::class, $pointage);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($pointage);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_pointage_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('pointage/newPointageEmp.html.twig', [
-            'pointage' => $pointage,
-            'form' => $form,
-        ]);
-    }
-
-    #[Route('/{id}', name: 'app_pointage_show', methods: ['GET'])]
+    
+    #[Route('/show/{id}', name: 'app_pointage_show', methods: ['GET'])]
     public function show(Pointage $pointage): Response
     {
         return $this->render('pointage/show.html.twig', [

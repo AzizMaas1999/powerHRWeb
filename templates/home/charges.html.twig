@@ -1,0 +1,308 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de bord Charges{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h3 class="page-title text-white">
+        <span class="page-title-icon bg-gradient-primary text-white me-2">
+            <i class="mdi mdi-account-group"></i>
+        </span> Tableau de bord Ressources Humaines
+    </h3>
+    <div class="d-flex align-items-center">
+        <p class="text-muted mb-0">Dernière mise à jour: {{ "now"|date("d/m/Y H:i", 'Africa/Tunis') }}</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 stretch-card grid-margin">
+        <div class="card bg-gradient-primary card-img-holder text-white">
+            <div class="card-body">
+                <img src="{{ asset('UI/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image">
+                <h4 class="font-weight-normal mb-3">Employés actifs <i class="mdi mdi-account-multiple mdi-24px float-right"></i>
+                </h4>
+                <h2 class="mb-5">45</h2>
+                <h6 class="card-text">
+                    <a href="{{ path('app_employe_index') }}" class="text-white">Gérer les employés</a>
+                </h6>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 stretch-card grid-margin">
+        <div class="card bg-gradient-warning card-img-holder text-white">
+            <div class="card-body">
+                <img src="{{ asset('UI/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image">
+                <h4 class="font-weight-normal mb-3">Fiches à traiter <i class="mdi mdi-clipboard-text mdi-24px float-right"></i>
+                </h4>
+                <h2 class="mb-5">12</h2>
+                <h6 class="card-text">
+                    <a href="{{ path('app_fiche_employe_index') }}" class="text-white">Voir les fiches</a>
+                </h6>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 stretch-card grid-margin">
+        <div class="card bg-gradient-info card-img-holder text-white">
+            <div class="card-body">
+                <img src="{{ asset('UI/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image">
+                <h4 class="font-weight-normal mb-3">Questionnaires <i class="mdi mdi-clipboard-check mdi-24px float-right"></i>
+                </h4>
+                <h2 class="mb-5">7</h2>
+                <h6 class="card-text">
+                    <a href="{{ path('app_questionnaire_index') }}" class="text-white">Gérer les questionnaires</a>
+                </h6>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-7 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Aperçu des employés</h4>
+                <canvas id="employee-chart" style="height:250px"></canvas>
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="text-center bg-light p-3 rounded">
+                            <h5>65%</h5>
+                            <p class="text-muted mb-0">Taux de présence</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-center bg-light p-3 rounded">
+                            <h5>12%</h5>
+                            <p class="text-muted mb-0">Taux d'absence</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Pointages récents</h4>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Employé</th>
+                                <th>Date</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Ahmed B.</td>
+                                <td>{{ "now"|date("d/m/Y") }}</td>
+                                <td><label class="badge badge-success">Présent</label></td>
+                            </tr>
+                            <tr>
+                                <td>Samia K.</td>
+                                <td>{{ "now"|date("d/m/Y") }}</td>
+                                <td><label class="badge badge-success">Présente</label></td>
+                            </tr>
+                            <tr>
+                                <td>Mohamed F.</td>
+                                <td>{{ "now"|date("d/m/Y") }}</td>
+                                <td><label class="badge badge-danger">Absent</label></td>
+                            </tr>
+                            <tr>
+                                <td>Amina H.</td>
+                                <td>{{ "now"|date("d/m/Y") }}</td>
+                                <td><label class="badge badge-warning">Retard</label></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="d-flex justify-content-end mt-3">
+                    <a href="{{ path('app_pointageadmin_index') }}" class="btn btn-sm btn-primary">Voir tout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Accès rapide</h4>
+                <div class="row mt-3">
+                    <div class="col-md-3 mb-4 stretch-card grid-margin">
+                        <div class="card card-tale">
+                            <div class="card-body">
+                                <p class="mb-4">Gestion de paie</p>
+                                <p class="fs-30 mb-2">25</p>
+                                <p>fiches traitées ce mois</p>
+                                <a href="{{ path('app_paie_index') }}" class="btn btn-outline-light btn-sm mt-3">Gérer</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4 stretch-card grid-margin">
+                        <div class="card card-dark-blue">
+                            <div class="card-body">
+                                <p class="mb-4">Candidatures</p>
+                                <p class="fs-30 mb-2">15</p>
+                                <p>nouveaux candidats</p>
+                                <a href="{{ path('app_candidat_index') }}" class="btn btn-outline-light btn-sm mt-3">Consulter</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4 stretch-card grid-margin">
+                        <div class="card card-light-blue">
+                            <div class="card-body">
+                                <p class="mb-4">Demandes congés</p>
+                                <p class="fs-30 mb-2">8</p>
+                                <p>en attente d'approbation</p>
+                                <a href="{{ path('app_demandeadmin_liste_attente') }}" class="btn btn-outline-light btn-sm mt-3">Traiter</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4 stretch-card grid-margin">
+                        <div class="card card-light-danger">
+                            <div class="card-body">
+                                <p class="mb-4">Importation CSV</p>
+                                <p class="fs-30 mb-2"><i class="mdi mdi-upload"></i></p>
+                                <p>pointages des employés</p>
+                                <a href="#" class="btn btn-outline-light btn-sm mt-3">Importer</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <h4 class="card-title">Calendrier des formations</h4>
+                    <a href="#" class="btn btn-sm btn-primary">Ajouter</a>
+                </div>
+                <div class="preview-list">
+                    <div class="preview-item border-bottom">
+                        <div class="preview-item-content d-sm-flex flex-grow">
+                            <div class="flex-grow">
+                                <h6 class="preview-subject">Sécurité au travail</h6>
+                                <p class="text-muted mb-0">25 Avril 2025 | 09:00 - 12:00</p>
+                            </div>
+                            <div class="me-auto text-sm-right">
+                                <p class="text-success">Confirmée</p>
+                                <p class="text-muted mb-0">15 participants</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="preview-item border-bottom">
+                        <div class="preview-item-content d-sm-flex flex-grow">
+                            <div class="flex-grow">
+                                <h6 class="preview-subject">Excel avancé</h6>
+                                <p class="text-muted mb-0">28 Avril 2025 | 14:00 - 17:00</p>
+                            </div>
+                            <div class="me-auto text-sm-right">
+                                <p class="text-warning">En planification</p>
+                                <p class="text-muted mb-0">8 participants</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="preview-item">
+                        <div class="preview-item-content d-sm-flex flex-grow">
+                            <div class="flex-grow">
+                                <h6 class="preview-subject">Communication d'équipe</h6>
+                                <p class="text-muted mb-0">2 Mai 2025 | 09:30 - 16:30</p>
+                            </div>
+                            <div class="me-auto text-sm-right">
+                                <p class="text-warning">En planification</p>
+                                <p class="text-muted mb-0">20 participants</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Répartition par département</h4>
+                <canvas id="department-distribution-chart" style="height:250px"></canvas>
+                <div class="text-center mt-4">
+                    <a href="{{ path('app_departement_index') }}" class="btn btn-outline-primary btn-sm">
+                        <i class="mdi mdi-eye"></i> Voir tous les départements
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Employee chart
+    if (document.getElementById('employee-chart')) {
+        var ctx = document.getElementById('employee-chart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+                datasets: [{
+                    label: 'Présence',
+                    data: [38, 42, 40, 45, 43, 0],
+                    backgroundColor: 'rgba(54, 162, 235, 0.8)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'Absence',
+                    data: [5, 3, 6, 4, 2, 0],
+                    backgroundColor: 'rgba(255, 99, 132, 0.8)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    // Department distribution chart
+    if (document.getElementById('department-distribution-chart')) {
+        var ctx = document.getElementById('department-distribution-chart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Technique', 'Marketing', 'RH', 'Finance', 'Administration'],
+                datasets: [{
+                    data: [12, 8, 5, 10, 10],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.8)',
+                        'rgba(54, 162, 235, 0.8)',
+                        'rgba(255, 206, 86, 0.8)',
+                        'rgba(255, 99, 132, 0.8)',
+                        'rgba(153, 102, 255, 0.8)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

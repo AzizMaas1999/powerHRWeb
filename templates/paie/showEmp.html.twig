@@ -15,6 +15,8 @@
                     <th>Nom d'utilisateur</th>
                     <th>Nombre de pointages effectués</th>
                     <th>Nombre de absences</th>
+                    <th>Salaire de base</th>
+                    <th>Salaire mensuel</th>
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
@@ -22,19 +24,27 @@
                 {% for employe in employes %}
                     {% if employe.poste != "Admin" %}
                         {% set nb = 0 %}
+                        {% set payed = false %}
                         {% for pointage in pointages %}
-                            {% if pointage.employe == employe and pointage.date.format('Y-m') == "now"|date("Y-m") %}
+                            {% if pointage.employe == employe and pointage.date.format('Y-m') == "now"|date("Y-m") and pointage.heureSortie != null %}
                                 {% set nb = nb + 1 %}
                             {% endif %}
+                            {% if pointage.paie != null and pointage.employe == employe and (pointage.date.format('Y-m') == "now"|date("Y-m")) %}
+                                {% set payed = true %}
+                            {% endif %}
                         {% endfor %}
+                        {% if not payed %}
                         <tr>
                             <td>{{ employe.username }}</td>
                             <td>{{ nb }}</td>
                             <td>{{ "now"|date("d") - nb}}</td>
+                            <td>{{ employe.salaire }}</td>
+                            <td>{{ ((employe.salaire / 30) * nb)|round(0, 'floor') }}</td>
                             <td class="text-center">
-                                <a href="{{ path('app_pointage_new', {'id': employe.id}) }}" class="btn btn-outline-dark btn-fw me-1">Ajouter Pointage</a>
+                                <a href="{{ path('app_newEmployePaie', {'id': employe.id, 'nb': nb}) }}" class="btn btn-outline-dark btn-fw me-1">Ajouter Paie</a>
                             </td>
                         </tr>
+                        {% endif %}
                     {% endif %}
                 {% else %}
                     <tr>

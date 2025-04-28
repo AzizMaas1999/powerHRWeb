@@ -1,0 +1,249 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de bord Facturation{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h3 class="page-title text-white">
+        <span class="page-title-icon bg-gradient-primary text-white me-2">
+            <i class="mdi mdi-finance"></i>
+        </span> Tableau de bord Facturation
+    </h3>
+    <div class="d-flex align-items-center">
+        <p class="text-muted mb-0">Dernière mise à jour: {{ "now"|date("d/m/Y H:i", 'Africa/Tunis') }}</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 stretch-card grid-margin">
+        <div class="card bg-gradient-success card-img-holder text-white">
+            <div class="card-body">
+                <img src="{{ asset('UI/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image">
+                <h4 class="font-weight-normal mb-3">Chiffre d'affaires <i class="mdi mdi-chart-line mdi-24px float-right"></i>
+                </h4>
+                <h2 class="mb-5">95,500 TND</h2>
+                <h6 class="card-text">
+                    <a href="{{ path('app_facture_index') }}" class="text-white">Voir le détail</a>
+                </h6>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 stretch-card grid-margin">
+        <div class="card bg-gradient-info card-img-holder text-white">
+            <div class="card-body">
+                <img src="{{ asset('UI/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image">
+                <h4 class="font-weight-normal mb-3">Factures en attente <i class="mdi mdi-file-document-outline mdi-24px float-right"></i>
+                </h4>
+                <h2 class="mb-5">8</h2>
+                <h6 class="card-text">
+                    <a href="{{ path('app_facture_index') }}" class="text-white">Gérer les factures</a>
+                </h6>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 stretch-card grid-margin">
+        <div class="card bg-gradient-danger card-img-holder text-white">
+            <div class="card-body">
+                <img src="{{ asset('UI/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image">
+                <h4 class="font-weight-normal mb-3">Paiements à vérifier <i class="mdi mdi-alert-circle-outline mdi-24px float-right"></i>
+                </h4>
+                <h2 class="mb-5">3</h2>
+                <h6 class="card-text">
+                    <a href="{{ path('app_paiement_index') }}" class="text-white">Voir les paiements</a>
+                </h6>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex flex-row justify-content-between">
+                    <h4 class="card-title mb-1">Factures récentes</h4>
+                    <p class="text-muted mb-1">Statut</p>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="preview-list">
+                            <div class="preview-item border-bottom">
+                                <div class="preview-thumbnail">
+                                    <div class="preview-icon bg-primary">
+                                        <i class="mdi mdi-file-document"></i>
+                                    </div>
+                                </div>
+                                <div class="preview-item-content d-sm-flex flex-grow">
+                                    <div class="flex-grow">
+                                        <h6 class="preview-subject">Facture #458</h6>
+                                        <p class="text-muted mb-0">Client: Entreprise ABC - 2,500 TND</p>
+                                    </div>
+                                    <div class="me-auto text-sm-right pt-2 pt-sm-0">
+                                        <p class="text-success">Payée</p>
+                                        <p class="text-muted mb-0">Aujourd'hui, 09:30</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="preview-item border-bottom">
+                                <div class="preview-thumbnail">
+                                    <div class="preview-icon bg-warning">
+                                        <i class="mdi mdi-file-document"></i>
+                                    </div>
+                                </div>
+                                <div class="preview-item-content d-sm-flex flex-grow">
+                                    <div class="flex-grow">
+                                        <h6 class="preview-subject">Facture #457</h6>
+                                        <p class="text-muted mb-0">Client: Société XYZ - 3,200 TND</p>
+                                    </div>
+                                    <div class="me-auto text-sm-right pt-2 pt-sm-0">
+                                        <p class="text-warning">En attente</p>
+                                        <p class="text-muted mb-0">Aujourd'hui, 08:15</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="preview-item border-bottom">
+                                <div class="preview-thumbnail">
+                                    <div class="preview-icon bg-success">
+                                        <i class="mdi mdi-file-document"></i>
+                                    </div>
+                                </div>
+                                <div class="preview-item-content d-sm-flex flex-grow">
+                                    <div class="flex-grow">
+                                        <h6 class="preview-subject">Facture #456</h6>
+                                        <p class="text-muted mb-0">Client: Tech Solutions - 1,800 TND</p>
+                                    </div>
+                                    <div class="me-auto text-sm-right pt-2 pt-sm-0">
+                                        <p class="text-success">Payée</p>
+                                        <p class="text-muted mb-0">Hier, 14:30</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="preview-item border-bottom">
+                                <div class="preview-thumbnail">
+                                    <div class="preview-icon bg-warning">
+                                        <i class="mdi mdi-file-document"></i>
+                                    </div>
+                                </div>
+                                <div class="preview-item-content d-sm-flex flex-grow">
+                                    <div class="flex-grow">
+                                        <h6 class="preview-subject">Facture #455</h6>
+                                        <p class="text-muted mb-0">Client: Global Services - 5,100 TND</p>
+                                    </div>
+                                    <div class="me-auto text-sm-right pt-2 pt-sm-0">
+                                        <p class="text-warning">En attente</p>
+                                        <p class="text-muted mb-0">Hier, 11:45</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Performance mensuelle</h4>
+                <canvas id="revenue-chart" style="height:250px"></canvas>
+                <div class="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3">
+                    <div class="text-md-center text-xl-left">
+                        <h6 class="mb-1">Transfert au département financier</h6>
+                        <p class="text-muted mb-0">17 Avril, 2025</p>
+                    </div>
+                    <div class="align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-0">
+                        <h6 class="font-weight-bold mb-0">32,500 TND</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Accès rapide</h4>
+                <div class="row mt-3">
+                    <div class="col-md-3 mb-4 stretch-card grid-margin">
+                        <div class="card card-tale">
+                            <div class="card-body">
+                                <p class="mb-4">Nouvelle facture</p>
+                                <button onclick="location.href='{{ path('app_facture_new') }}'" class="btn btn-outline-light btn-sm mt-3">
+                                    <i class="mdi mdi-plus-circle"></i> Créer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4 stretch-card grid-margin">
+                        <div class="card card-dark-blue">
+                            <div class="card-body">
+                                <p class="mb-4">Nouveau paiement</p>
+                                <button onclick="location.href='{{ path('app_paiement_new') }}'" class="btn btn-outline-light btn-sm mt-3">
+                                    <i class="mdi mdi-cash-plus"></i> Ajouter
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4 stretch-card grid-margin">
+                        <div class="card card-light-blue">
+                            <div class="card-body">
+                                <p class="mb-4">Rapports financiers</p>
+                                <button onclick="location.href='#'" class="btn btn-outline-light btn-sm mt-3">
+                                    <i class="mdi mdi-chart-bar"></i> Consulter
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4 stretch-card grid-margin">
+                        <div class="card card-light-danger">
+                            <div class="card-body">
+                                <p class="mb-4">Liste des entreprises</p>
+                                <button onclick="location.href='{{ path('app_entreprise_index') }}'" class="btn btn-outline-light btn-sm mt-3">
+                                    <i class="mdi mdi-office-building"></i> Voir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    if (document.getElementById('revenue-chart')) {
+        var ctx = document.getElementById('revenue-chart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+                datasets: [{
+                    label: 'Chiffre d\'affaires 2025',
+                    data: [28500, 32000, 25000, 32500, 30000, 0],
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 2,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value + ' TND';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
