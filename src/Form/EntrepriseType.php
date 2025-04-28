@@ -53,13 +53,7 @@ class EntrepriseType extends AbstractType
                     'pattern' => '[0-9]{8}'
                 ]
             ])
-            ->add('phone_verified', CheckboxType::class, [
-                'label' => 'Téléphone vérifié',
-                'required' => false,
-                'attr' => [
-                    'class' => 'form-check-input'
-                ]
-            ])
+ 
         ;
     }
 

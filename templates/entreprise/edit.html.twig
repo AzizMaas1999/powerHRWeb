@@ -168,6 +168,32 @@
             background: rgba(255, 255, 255, 0.08);
             border-color: rgba(255, 255, 255, 0.2);
         }
+        .input-group {
+            display: flex;
+            flex-wrap: nowrap !important;
+            align-items: stretch;
+            width: 100%;
+        }
+        .input-group .iti {
+            flex: 1 1 auto;
+            width: 1%;
+            min-width: 0;
+        }
+        .input-group .form-control.iti__tel-input {
+            width: 100%;
+            min-width: 0;
+        }
+        .input-group > .btn {
+            white-space: nowrap;
+            flex-shrink: 0;
+            width: 120px; /* Fixed width for the button */
+        }
+        .btn-verif-code {
+            padding: 0.25rem 0.7rem !important;
+            font-size: 0.82rem !important;
+            line-height: 1.2 !important;
+            min-width: 120px; /* Ensure minimum width */
+        }
     </style>
 {% endblock %}
 
@@ -247,23 +273,18 @@
                                     'type': 'tel'
                                 }
                             }) }}
-                            <button type="button" id="send-verification-btn" class="btn btn-sm btn-outline-primary btn-action" style="margin-left: 8px;">Envoyer le code</button>
+                            <button type="button" id="send-verification-btn" class="btn btn-sm btn-outline-primary btn-action btn-verif-code">Envoyer le code</button>
                         </div>
-                        <small class="help-text">Exactement 8 chiffres</small>
+                        <div id="send-status" style="margin-top: 5px; color: #0d6efd;"></div>
+                        <small class="help-text">Format: +XXX XXXXXXXXXX</small>
                         {% if form_errors(form.phone_number) %}
                             <div class="invalid-feedback" style="display: flex;">
                                 <i class="bi bi-exclamation-triangle-fill error-icon"></i>
                                 {{ form_errors(form.phone_number) }}
                             </div>
                         {% endif %}
-                        <div id="send-status" style="margin-top: 5px; color: #0d6efd;"></div>
                     </div>
                 </div>
-            </div>
-
-            <div class="form-group">
-                {{ form_widget(form.phone_verified, {'attr': {'class': 'form-check-input'}}) }}
-                {{ form_label(form.phone_verified, 'Téléphone vérifié', {'label_attr': {'class': 'form-check-label'}}) }}
             </div>
 
             <div class="actions-container">
@@ -495,6 +516,33 @@
             
             e.target.value = formatted;
         });
+
+        (function() {
+            function initIntlTelInput() {
+                const phoneInput = document.getElementById('entreprise_phone_number');
+                if (phoneInput && !phoneInput.classList.contains('iti-initialized')) {
+                    window.intlTelInput(phoneInput, {
+                        initialCountry: 'tn',
+                        preferredCountries: ['tn', 'fr', 'ma', 'dz'],
+                        separateDialCode: true,
+                        utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js"
+                    });
+                    phoneInput.classList.add('iti-initialized');
+                    setTimeout(function() {
+                        window.dispatchEvent(new Event('resize'));
+                    }, 100);
+                }
+            }
+
+            // Run on both direct page load and client-side navigation
+            document.addEventListener('DOMContentLoaded', initIntlTelInput);
+            document.addEventListener('turbo:load', initIntlTelInput);
+            document.addEventListener('turbo:render', initIntlTelInput);
+
+            // Watch for DOM changes
+            const observer = new MutationObserver(initIntlTelInput);
+            observer.observe(document.body, { childList: true, subtree: true });
+        })();
 
         document.addEventListener('DOMContentLoaded', function() {
             const phoneInput = document.getElementById('entreprise_phone_number');
