@@ -18,6 +18,35 @@
       <link rel="shortcut icon" href="{{ asset('UI/assets/images/favicon.png') }}" />
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emojionearea@4.0.0/dist/emojionearea.min.css">
 
+      <style>
+        /* Custom styles for scrollable sidebar */
+        .sidebar-scrollable {
+          height: 100vh;
+          overflow-y: auto;
+          scrollbar-width: thin;
+          scrollbar-color: #6c7293 #191c24;
+        }
+        
+        /* Customize scrollbar for webkit browsers (Chrome, Safari, Edge) */
+        .sidebar-scrollable::-webkit-scrollbar {
+          width: 6px;
+        }
+        
+        .sidebar-scrollable::-webkit-scrollbar-track {
+          background: #191c24;
+        }
+        
+        .sidebar-scrollable::-webkit-scrollbar-thumb {
+          background-color: #6c7293;
+          border-radius: 10px;
+        }
+        
+        /* Ensure sidebar content doesn't overflow */
+        .sidebar .nav {
+          padding-bottom: 60px;
+        }
+      </style>
+
       {% endblock %}
 
       {% block javascripts %}
@@ -50,20 +79,56 @@
           {% block importmap %}{{ importmap('app') }}{% endblock %}
       <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialiser les menus déroulants
+            // Handle menu clicks properly
             var menuItems = document.querySelectorAll('.nav-item.menu-items');
+            
             menuItems.forEach(function(item) {
                 var link = item.querySelector('.nav-link');
-                var collapse = item.querySelector('.collapse');
-                if (link && collapse) {
+                if (link) {
                     link.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        collapse.classList.toggle('show');
+                        // Only prevent default for dropdown toggles
+                        if (this.getAttribute('data-toggle') === 'collapse' || this.getAttribute('href').startsWith('#')) {
+                            e.preventDefault();
+                            
+                            var targetId = this.getAttribute('href');
+                            if (targetId && targetId.startsWith('#')) {
+                                var target = document.querySelector(targetId);
+                                
+                                // Close all other menus first
+                                document.querySelectorAll('.nav-item.menu-items .collapse.show').forEach(function(menu) {
+                                    if (menu.id !== targetId.substring(1)) {
+                                        menu.classList.remove('show');
+                                    }
+                                });
+                                
+                                // Toggle the clicked menu
+                                if (target) {
+                                    if (target.classList.contains('show')) {
+                                        target.classList.remove('show');
+                                    } else {
+                                        target.classList.add('show');
+                                    }
+                                }
+                            }
+                        }
                     });
                 }
             });
 
-            // Initialiser le chatbot si on est sur la page du chatbot
+            // Initialize active menu based on current URL
+            var currentPath = window.location.pathname;
+            document.querySelectorAll('.nav-item.menu-items .sub-menu a').forEach(function(link) {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                    // Open parent menu
+                    var parentCollapse = link.closest('.collapse');
+                    if (parentCollapse) {
+                        parentCollapse.classList.add('show');
+                    }
+                }
+            });
+
+            // Initializer le chatbot si on est sur la page du chatbot
             if (window.location.pathname.includes('/clfr/chat')) {
                 const messageInput = document.getElementById('messageInput');
                 const sendButton = document.querySelector('.chat-input button');
@@ -87,7 +152,7 @@
                 }
             }
         });
-    </script>
+      </script>
       {% endblock %}
   </head>
   <body>
@@ -110,7 +175,8 @@
             <a class="sidebar-brand brand-logo" href="#"><img src="{{ asset('UI/assets/images/Logo.png') }}" alt="logo" /></a>
             <a class="sidebar-brand brand-logo-mini" href="#"><img src="{{ asset('UI/assets/images/Logo.png') }}" alt="logo" /></a>
           </div>
-          <ul class="nav">
+          <div class="sidebar-scrollable">
+            <ul class="nav">
             <li class="nav-item nav-category">
               <span class="nav-link">Navigation</span>
             </li>
@@ -168,6 +234,7 @@
             </li>
             {% endif %}
               
+
             {% if app.user.poste == 'Directeur' %}
             <!-- Entreprise -->
             <li class="nav-item menu-items">
@@ -334,18 +401,18 @@
               </div>
             </li>  
             {% endif %}
-  
+
             {% if app.user.poste == 'Directeur' or app.user.poste == 'Ouvrier' or app.user.poste == 'Charges' %}
             <!-- Fiche Employe -->
             <li class="nav-item menu-items">
-              <a class="nav-link" data-toggle="collapse" href="#clfr-menu" aria-expanded="false" aria-controls="clfr-menu">
+              <a class="nav-link" data-toggle="collapse" href="#fiche-employe-menu" aria-expanded="false" aria-controls="fiche-employe-menu">
                 <span class="menu-icon">
                   <i class="mdi mdi-laptop"></i>
                 </span>
                 <span class="menu-title">Fiche Employe</span>
                 <i class="menu-arrow"></i>
               </a>
-              <div class="collapse" id="clfr-menu">
+              <div class="collapse" id="fiche-employe-menu">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <a class="nav-link" href="/fiche/employe/new">Ajouter Fiche</a></li>
                   <li class="nav-item"> <a class="nav-link" href="/fiche/employe">Afficher La Liste des fiches</a></li>
@@ -375,7 +442,8 @@
               </div>
             </li>
             {% endif %}
-          </ul>
+            </ul>
+          </div>
         </nav>
         <!-- partial -->
         <div class="container-fluid page-body-wrapper">
@@ -478,12 +546,92 @@
     <!-- container-scroller -->
     {# Tes autres scripts ici (par ex Bootstrap, etc.) #}
     
-   {# 1. Charger jQuery #}
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {# 1. Charger jQuery #}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-{# 2. Charger EmojioneArea CSS et JS #}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emojionearea@3.4.1/dist/emojionearea.min.css">
-<script src="https://cdn.jsdelivr.net/npm/emojionearea@3.4.1/dist/emojionearea.min.js"></script>
+    {# 2. Charger EmojioneArea CSS et JS #}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emojionearea@3.4.1/dist/emojionearea.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/emojionearea@3.4.1/dist/emojionearea.min.js"></script>
+
+    {# Script to fix sidebar menu behavior #}
+    <script>
+      // Wait for DOM to be fully loaded
+      document.addEventListener('DOMContentLoaded', function() {
+        // Initial setup for menu toggling - direct DOM approach
+        setupSidebarMenus();
+      });
+      
+      // Also use jQuery ready to ensure it runs after all other scripts
+      $(document).ready(function() {
+        // Reset event handlers to avoid conflicts
+        $('.nav-item.menu-items .nav-link[data-toggle="collapse"]').off('click');
+        
+        // Apply our own click handler to menu toggle items
+        $('.nav-item.menu-items .nav-link[data-toggle="collapse"]').on('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          var targetId = $(this).attr('href');
+          if (targetId && targetId.startsWith('#')) {
+            var $target = $(targetId);
+            
+            // Toggle behavior - close if already open, open if closed
+            if ($target.hasClass('show')) {
+              $target.removeClass('show');
+            } else {
+              // Close any other open menus first
+              $('.nav-item.menu-items .collapse.show').not(targetId).removeClass('show');
+              $target.addClass('show');
+              
+              // Scroll to make the menu visible if needed
+              var navItem = $(this).closest('.nav-item');
+              var sidebarScrollable = $('.sidebar-scrollable');
+              if (sidebarScrollable.length) {
+                var navItemPosition = navItem.position().top;
+                var sidebarScrollPosition = sidebarScrollable.scrollTop();
+                var sidebarHeight = sidebarScrollable.height();
+                
+                if (navItemPosition < 0 || navItemPosition > sidebarHeight) {
+                  sidebarScrollable.animate({
+                    scrollTop: sidebarScrollPosition + navItemPosition - 100
+                  }, 300);
+                }
+              }
+            }
+          }
+        });
+      });
+
+      // Function to set up sidebar menu toggling using plain JS
+      function setupSidebarMenus() {
+        var menuItems = document.querySelectorAll('.nav-item.menu-items .nav-link[data-toggle="collapse"]');
+        menuItems.forEach(function(menuItem) {
+          menuItem.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            var targetId = this.getAttribute('href');
+            if (targetId && targetId.startsWith('#')) {
+              var targetElement = document.querySelector(targetId);
+              
+              if (targetElement && targetElement.classList.contains('show')) {
+                targetElement.classList.remove('show');
+              } else if (targetElement) {
+                // Close all other open menus
+                document.querySelectorAll('.nav-item.menu-items .collapse.show').forEach(function(openMenu) {
+                  if (openMenu.id !== targetId.substring(1)) {
+                    openMenu.classList.remove('show');
+                  }
+                });
+                
+                // Open this menu
+                targetElement.classList.add('show');
+              }
+            }
+          }, true); // Use capturing phase to ensure our handler runs first
+        });
+      }
+    </script>
 
   </body>
 </html>
