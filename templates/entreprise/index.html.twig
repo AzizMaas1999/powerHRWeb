@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des Entreprises{% endblock %}
+{% block title %}Liste des entreprises{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -162,6 +162,15 @@
             background: rgba(220, 53, 69, 0.2);
             color: #dc3545;
         }
+        .btn-info {
+            background: rgba(13, 202, 240, 0.1);
+            color: #0dcaf0;
+            border-color: rgba(13, 202, 240, 0.1);
+        }
+        .btn-info:hover {
+            background: rgba(13, 202, 240, 0.2);
+            color: #0dcaf0;
+        }
         .modal-content {
             background: #191c24;
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -219,7 +228,6 @@
                 <table id="entreprisesTable" class="table table-hover">
                     <thead>
                         <tr>
-                            <th>ID</th>
                             <th>Nom</th>
                             <th>Secteur</th>
                             <th>Matricule Fiscale</th>
@@ -229,9 +237,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                    {% for entreprise in entreprises %}
+                    {% for entreprise in pagination %}
                         <tr>
-                            <td>{{ entreprise.id }}</td>
                             <td>{{ entreprise.nom }}</td>
                             <td>{{ entreprise.secteur }}</td>
                             <td>{{ entreprise.matriculeFiscale }}</td>
@@ -244,13 +251,18 @@
                                 {% endif %}
                             </td>
                             <td class="text-center">
-                                <a href="{{ path('app_entreprise_show', {'id': entreprise.id}) }}" class="btn btn-sm btn-outline-primary btn-action me-1">
+                                <a href="{{ path('app_entreprise_show', {'id': entreprise.id}) }}" class="btn btn-sm btn-view btn-action me-1">
                                     <i class="bi bi-eye"></i> Voir
                                 </a>
-                                <a href="{{ path('app_entreprise_edit', {'id': entreprise.id}) }}" class="btn btn-sm btn-outline-warning btn-action me-1">
+                                <a href="{{ path('app_entreprise_edit', {'id': entreprise.id}) }}" class="btn btn-sm btn-edit btn-action me-1">
                                     <i class="bi bi-pencil"></i> Modifier
                                 </a>
-                                <button type="button" class="btn btn-sm btn-outline-danger btn-action" data-bs-toggle="modal" data-bs-target="#deleteModal{{ entreprise.id }}">
+                                <a href="{{ path('app_entreprise_pdf', {'id': entreprise.id}) }}" 
+                                   class="btn btn-sm btn-info btn-action me-1" 
+                                   onclick="window.open(this.href, '_blank', 'noopener,noreferrer'); return false;">
+                                    <i class="bi bi-file-pdf"></i> PDF
+                                </a>
+                                <button type="button" class="btn btn-sm btn-delete btn-action" data-bs-toggle="modal" data-bs-target="#deleteModal{{ entreprise.id }}">
                                     <i class="bi bi-trash"></i> Supprimer
                                 </button>
 
@@ -287,6 +299,10 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+
+        <div class="navigation">
+            {{ knp_pagination_render(pagination) }}
         </div>
     </div>
 {% endblock %}

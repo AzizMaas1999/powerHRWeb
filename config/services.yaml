@@ -4,6 +4,12 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    # Add these parameters for Twilio configuration
+    twilio.account_sid: '%env(AC02f24d2f8cad4aafbb9726a6c9b2a204)%'
+    twilio.auth_token: '%env(beb68004c7e84c85f3c7b8b33817def6)%'
+    twilio.verify_sid: '%env(VA80782775f8b149d19748fdda1b30fdac)%'
+    twilio.from_number: '%env(TWILIO_FROM_NUMBER)%'
+    google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
     photos_directory: '%kernel.project_dir%/public/uploads/photos'
     rapidapi.key: '%env(RAPIDAPI_KEY)%'
     rapidapi.sender_email: '%env(RAPIDAPI_SENDER_EMAIL)%'
@@ -25,4 +31,12 @@ services:
             - '../src/Kernel.php'
 
     # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+    App\ApiBundle\Service\TwilioSmsVerificationService:
+        arguments:
+            $sid: '%env(TWILIO_ACCOUNT_SID)%'
+            $token: '%env(TWILIO_AUTH_TOKEN)%'
+            $from: '%env(TWILIO_FROM_NUMBER)%'
+            $verifySid: '%env(TWILIO_VERIFY_SID)%'
     # please note that last definitions always replace previous ones

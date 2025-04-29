@@ -6,19 +6,35 @@ use App\Entity\Departement;
 use App\Form\DepartementType;
 use App\Repository\DepartementRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/departement')]
 final class DepartementController extends AbstractController
 {
     #[Route('/', name: 'app_departement_index', methods: ['GET'])]
-    public function index(DepartementRepository $departementRepository): Response
+    public function index(DepartementRepository $departementRepository, PaginatorInterface $paginator, Request $request): Response
     {
+        $query = $departementRepository->searchDepartements($request->query->get('q'));
+        
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            4 // Items per page
+        );
+
+        if ($request->query->get('ajax')) {
+            return $this->render('departement/_list.html.twig', [
+                'pagination' => $pagination,
+            ]);
+        }
+
         return $this->render('departement/index.html.twig', [
-            'departements' => $departementRepository->findAll(),
+            'pagination' => $pagination,
         ]);
     }
 

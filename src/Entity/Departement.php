@@ -26,7 +26,7 @@ class Departement
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', nullable: false)]
-    #[Assert\NotBlank(message: 'Le nom du département est obligatoire.')]
+    #[Assert\NotBlank(message: 'Le nom du département est obligatoire ')]
     #[Assert\Length(
         min: 2,
         max: 30,
