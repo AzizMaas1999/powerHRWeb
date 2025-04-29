@@ -297,7 +297,7 @@ class Employe implements UserInterface, PasswordAuthenticatedUserInterface
         return match ($this->getPoste()) {
             'Admin' => ['ROLE_ADMIN'],
             'Directeur' => ['ROLE_DIRECTEUR'],
-            'Charges' => ['ROLE_CHARGE'],
+            'Charges' => ['ROLE_CHARGES'],
             'Facturation' => ['ROLE_FACTURATION'],
             'Ouvrier' => ['ROLE_OUVRIER'],
         };

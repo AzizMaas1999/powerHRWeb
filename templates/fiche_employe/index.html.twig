@@ -5,6 +5,7 @@
 {% block body %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
+<div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Liste des Fiches Employés</h1>
         <a href="{{ path('app_fiche_employe_new') }}" class="btn btn-success">
@@ -12,58 +13,87 @@
         </a>
     </div>
 
-                <table class="table table-striped">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>CIN</th>
-                            <th>Nom</th>
-                            <th>Prénom</th>
-                            <th>Email</th>
-                            <th>adresse</th>
-                            <th>Ville</th>
-                            <th>zip</th>
-                            <th>numTel</th>
-                            <th>CV</th>
-                            <th>Employé</th>
-                            <th class="text-center">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for fiche_employe in fiches %}
-                            <tr>
-                                <td>{{ fiche_employe.cin }}</td>
-                                <td>{{ fiche_employe.nom }}</td>
-                                <td>{{ fiche_employe.prenom }}</td>
-                                <td>{{ fiche_employe.email }}</td>
-                                <td>{{ fiche_employe.adresse }}</td>
-                                <td>{{ fiche_employe.city }}</td>
-                                <td>{{ fiche_employe.zip }}</td>
-                                <td>{{ fiche_employe.numTel}}</td>
-                                <td>{% if ficheEmploye.cvPdfUrl %}
-                                <a href="{{ asset('uploads/cv/' ~ ficheEmploye.cvPdfUrl) }}" target="_blank" class="btn btn-primary">
-                                    📄 Voir CV
-                                </a>
-                                {% else %}
-                                    <p>Aucun CV disponible.</p>
-                                {% endif %}</td>
-                                <td>{{ fiche_employe.employe ? fiche_employe.employe.username : 'Non assigné' }}</td>
-                                <td class="text-center">
-                                        <a href="{{ path('app_fiche_employe_show', {'id': fiche_employe.id}) }}" class="btn btn-outline-primary btn-sm" title="Afficher">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="{{ path('app_fiche_employe_edit', {'id': fiche_employe.id}) }}" class="btn btn-outline-secondary btn-sm" title="Modifier">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <a href="{{ path('app_fiche_employe_delete', {'id': fiche_employe.id}) }}" class="btn btn-outline-primary btn-sm me-1" title="delete">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                </td>
-                            </tr>
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control" placeholder="Rechercher une fiche employé..." value="{{ search }}">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fas fa-search"></i> Rechercher
+                        </button>
+                    </div>
+                </div>
+                {% if search %}
+                    <div class="col-md-4">
+                        <a href="{{ path('app_fiche_employe_index') }}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Effacer la recherche
+                        </a>
+                    </div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>CIN</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Email</th>
+                    <th>adresse</th>
+                    <th>Ville</th>
+                    <th>zip</th>
+                    <th>numTel</th>
+                    <th>CV</th>
+                    <th>Employé</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for fiche_employe in fiches %}
+                <tr>
+                    <td>{{ fiche_employe.cin }}</td>
+                    <td>{{ fiche_employe.nom }}</td>
+                    <td>{{ fiche_employe.prenom }}</td>
+                    <td>{{ fiche_employe.email }}</td>
+                    <td>{{ fiche_employe.adresse }}</td>
+                    <td>{{ fiche_employe.city }}</td>
+                    <td>{{ fiche_employe.zip }}</td>
+                    <td>{{ fiche_employe.numTel}}</td>
+                    <td>
+                        {% if fiche_employe.cvPdfUrl %}
+                            <a href="{{ asset('uploads/cv/' ~ fiche_employe.cvPdfUrl) }}" target="_blank" class="btn btn-sm btn-outline-info">
+                                <i class="fas fa-file-pdf"></i> Voir CV
+                            </a>
                         {% else %}
-                            <tr>
-                                <td colspan="9" class="text-center py-3">Aucune fiche employé trouvée</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                            <span class="badge bg-secondary">Non disponible</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ fiche_employe.employe ? fiche_employe.employe.username : 'Non assigné' }}</td>
+                    <td class="text-center">
+                        <div class="btn-group" role="group">
+                            <a href="{{ path('app_fiche_employe_show', {'id': fiche_employe.id}) }}" class="btn btn-outline-primary btn-sm" title="Afficher">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{{ path('app_fiche_employe_edit', {'id': fiche_employe.id}) }}" class="btn btn-outline-secondary btn-sm" title="Modifier">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{{ path('app_fiche_employe_delete', {'id': fiche_employe.id}) }}" class="btn btn-outline-primary btn-sm me-1" title="delete">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="11" class="text-center py-3">Aucune fiche employé trouvée</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

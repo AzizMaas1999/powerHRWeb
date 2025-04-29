@@ -7,14 +7,10 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Vich\UploaderBundle\Form\Type\VichFileType;
-
-
-
+use Symfony\Component\Validator\Constraints\File;
 
 class FicheEmployeType extends AbstractType
 {
@@ -46,30 +42,12 @@ class FicheEmployeType extends AbstractType
                 'attr' => ['class' => 'form-control']
             ])
             ->add('zip', TextType::class, [
-                'label' => 'Code Postal',
+                'label' => 'zip',
                 'attr' => ['class' => 'form-control']
             ])
             ->add('numTel', TextType::class, [
                 'label' => 'Téléphone',
                 'attr' => ['class' => 'form-control']
-            ])
-            ->add('cvPdfFile', VichFileType::class, [
-                'label' => 'Télécharger CV (PDF)',
-                'required' => false,
-                'allow_delete' => true,
-                'download_uri' => false,
-            ])
-            ->add('cv', FileType::class, [
-                'label' => 'Télécharger un CV (PDF)',
-                'required' => True,  // Make this field optional
-                'attr' => ['class' => 'form-control'],
-                'mapped' => false,  // We don't map this field to the Candidat entity directly
-                'constraints' => [
-                    new \Symfony\Component\Validator\Constraints\File([
-                        'mimeTypes' => ['application/pdf'],
-                        'mimeTypesMessage' => 'Veuillez télécharger un fichier PDF valide.',
-                    ])
-                ],
             ])
             ->add('employe', EntityType::class, [
                 'class' => Employe::class,
@@ -78,10 +56,25 @@ class FicheEmployeType extends AbstractType
                 'label' => 'Employé',
                 'attr' => ['class' => 'form-select']
             ])
-            ->add('save', SubmitType::class, [
-                'label' => 'Enregistrer',
-                'attr' => ['class' => 'btn btn-primary mt-3']
+            ->add('cvPdfFile', VichFileType::class, [
+                'label' => 'Télécharger CV (PDF)',
+                'required' => true,
+                'allow_delete' => true,
+                'download_uri' => true,
+                'asset_helper' => true,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '5M',
+                        'mimeTypes' => [
+                            'application/pdf',
+                            'application/x-pdf',
+                        ],
+                        'mimeTypesMessage' => 'Veuillez télécharger un fichier PDF valide.',
+                    ])
+                ],
+                'attr' => ['class' => 'form-control']
             ]);
+            
     }
 
     public function configureOptions(OptionsResolver $resolver): void

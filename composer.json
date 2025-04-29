@@ -7,8 +7,8 @@
         "php": ">=8.1",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "doctrine/dbal": "^2.13",
-        "doctrine/doctrine-bundle": "^2.13",
+        "doctrine/dbal": "*",
+        "doctrine/doctrine-bundle": "*",
         "doctrine/doctrine-migrations-bundle": "^3.4",
         "doctrine/orm": "^3.3",
         "phpdocumentor/reflection-docblock": "^5.6",
@@ -44,19 +44,8 @@
         "symfony/validator": "6.4.*",
         "symfony/web-link": "6.4.*",
         "symfony/yaml": "6.4.*",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "twbs/bootstrap": "*",
-=======
+        "symfonycasts/reset-password-bundle": "^1.23",
         "twbs/bootstrap": "5.0.2",
->>>>>>> origin/Mohamed
-=======
-        "twbs/bootstrap": "5.0.2",
->>>>>>> origin/Haifa
-=======
-        "twbs/bootstrap": "5.0.2",
->>>>>>> origin/yassine
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/twig": "^2.12|^3.0",
         "vich/uploader-bundle": "^2.6"

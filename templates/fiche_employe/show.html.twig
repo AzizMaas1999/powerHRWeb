@@ -1,59 +1,88 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Fiche employe{% endblock %}
+{% block title %}Fiche Employé{% endblock %}
 
 {% block body %}
-    <h1>Fiche employe</h1>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-    <table class="table">
-        <tbody>
-        <tr>
-                <th>CIN</th>
-                <td>{{ fiche_employe.CIN }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
-                <td>{{ fiche_employe.nom }}</td>
-            </tr>
-            
-            <tr>
-                <th>Prenom</th>
-                <td>{{ fiche_employe.prenom }}</td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td>{{ fiche_employe.email }}</td>
-            </tr>
-            <tr>
-                <th>Adresse</th>
-                <td>{{ fiche_employe.adresse }}</td>
-            </tr>
-            <tr>
-                <th>City</th>
-                <td>{{ fiche_employe.city }}</td>
-            </tr>
-            <tr>
-                <th>Zip</th>
-                <td>{{ fiche_employe.zip }}</td>
-            </tr>
-            <tr>
-                <th>Numero Telephone</th>
-                <td>{{ fiche_employe.numTel }}</td>
-            </tr>
-            <tr>
-                <th>CV</th>
-                <td>{{ fiche_employe.cvPdfUrl }}</td>
-            </tr>
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h1 class="h3 mb-0">Détails de la Fiche Employé</h1>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table">
+                            <tr>
+                                <th>CIN</th>
+                                <td>{{ fiche_employe.cin }}</td>
+                            </tr>
+                            <tr>
+                                <th>Nom</th>
+                                <td>{{ fiche_employe.nom }}</td>
+                            </tr>
+                            <tr>
+                                <th>Prénom</th>
+                                <td>{{ fiche_employe.prenom }}</td>
+                            </tr>
+                            <tr>
+                                <th>Email</th>
+                                <td>{{ fiche_employe.email }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table">
+                            <tr>
+                                <th>Adresse</th>
+                                <td>{{ fiche_employe.adresse }}</td>
+                            </tr>
+                            <tr>
+                                <th>Ville</th>
+                                <td>{{ fiche_employe.city }}</td>
+                            </tr>
+                            <tr>
+                                <th>Code Postal</th>
+                                <td>{{ fiche_employe.zip }}</td>
+                            </tr>
+                            <tr>
+                                <th>Téléphone</th>
+                                <td>{{ fiche_employe.numTel }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
 
-        </tbody>
-    </table>
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <h4>CV</h4>
+                        {% if fiche_employe.cvPdfUrl %}
+                            <a href="{{ asset('uploads/cv/' ~ fiche_employe.cvPdfUrl) }}" target="_blank" class="btn btn-outline-info">
+                                <i class="fas fa-file-pdf"></i> Voir CV
+                            </a>
+                        {% else %}
+                            <span class="badge bg-secondary">Non disponible</span>
+                        {% endif %}
+                    </div>
+                </div>
 
-    <a href="{{ path('app_fiche_employe_index') }}">back to list</a>
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <h4>Employé Associé</h4>
+                        <p>{{ fiche_employe.employe ? fiche_employe.employe.username : 'Non assigné' }}</p>
+                    </div>
+                </div>
 
-    <a href="{{ path('app_fiche_employe_edit', {'id': fiche_employe.id}) }}">edit</a>
-
-    <a href="{{ path('app_fiche_employe_delete', {'id': fiche_employe.id}) }}">delete</a>
-
-    
-    
+                <div class="mt-4">
+                    <a href="{{ path('app_fiche_employe_index') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Retour à la liste
+                    </a>
+                    <a href="{{ path('app_fiche_employe_edit', {'id': fiche_employe.id}) }}" class="btn btn-primary">
+                        <i class="fas fa-edit"></i> Modifier
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

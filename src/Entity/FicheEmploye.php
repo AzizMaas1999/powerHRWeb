@@ -12,10 +12,7 @@ use Symfony\Component\HttpFoundation\File\File;
 
 #[ORM\Entity(repositoryClass: FicheEmployeRepository::class)]
 #[ORM\Table(name: 'fiche_employe')]
-
-/**
- * @Vich\Uploadable()
- */
+#[Vich\Uploadable]
 class FicheEmploye
 {
     #[ORM\Id]
@@ -182,13 +179,22 @@ class FicheEmploye
         $this->numTel = $numTel;
         return $this;
     }
-    #[Vich\UploadableField(mapping: 'fiche_cv_pdf', fileNameProperty: 'cvPdfUrl')]
 
+    #[Vich\UploadableField(mapping: 'fiche_cv_pdf', fileNameProperty: 'cvPdfUrl')]
+    private ?File $cvPdfFile = null;
 
     #[ORM\Column(name: 'cvPdfUrl', type: 'string', nullable: true)]
-    #[Assert\NotBlank(message:'Le CV est requis.')]
-    
     private ?string $cvPdfUrl = null;
+
+    public function setCvPdfFile(?File $file = null): void
+    {
+        $this->cvPdfFile = $file;
+    }
+
+    public function getCvPdfFile(): ?File
+    {
+        return $this->cvPdfFile;
+    }
 
     public function getCvPdfUrl(): ?string
     {
@@ -200,26 +206,6 @@ class FicheEmploye
         $this->cvPdfUrl = $cvPdfUrl;
         return $this;
     }
-    #[Vich\Uploadable]
-    private ?File $cvPdfFile = null;
-
-public function setCvPdfFile(?File $file = null): void
-{
-    $this->cvPdfFile = $file;
-
-    // Force Vich to detect a change without updating DB
-    if ($file !== null) {
-        // Just change any existing property (for example: cvPdfUrl = itself)
-        $this->cvPdfUrl = $this->cvPdfUrl;
-    }
-}
-
-
-public function getCvPdfFile(): ?File
-{
-    return $this->cvPdfFile;
-}
-
 
     #[ORM\OneToOne(targetEntity: Employe::class, inversedBy: 'ficheEmploye')]
     #[ORM\JoinColumn(name: 'employe_id', referencedColumnName: 'id', unique: true)]
@@ -236,4 +222,8 @@ public function getCvPdfFile(): ?File
         return $this;
     }
 
+    public function __toString(): string
+    {
+        return $this->nom . ' ' . $this->prenom;
+    }
 }

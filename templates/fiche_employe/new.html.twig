@@ -1,13 +1,35 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nouveau Fiche employe{% endblock %}
+{% block title %}Nouveau Fiche employé{% endblock %}
 
 {% block body %}
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="text-white">Créer un nouveau fiche</h1>
+        <h1 class="text-white">Créer une nouvelle fiche employé</h1>
+        <a href="{{ path('app_fiche_employe_index') }}" class="btn btn-sm btn-primary">← Retour à la liste</a>
     </div>
 
-    {{ include('fiche_employe/_form.html.twig', { button_label: 'Enregistrer' }) }}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% for message in app.flashes('info') %}
+        <div class="alert alert-info">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {{ include('fiche_employe/_form.html.twig', { 
+        button_label: 'Enregistrer',
+        title: 'Ajouter une fiche employé'
+    }) }}
 </div>
 {% endblock %}

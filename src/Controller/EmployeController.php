@@ -19,10 +19,16 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class EmployeController extends AbstractController
 {
     #[Route(name: 'app_employe_index', methods: ['GET'])]
-    public function index(EmployeRepository $employeRepository): Response
+    public function index(Request $request, EmployeRepository $employeRepository): Response
     {
+        $search = $request->query->get('search');
+        $employes = $search 
+            ? $employeRepository->search($search)
+            : $employeRepository->findAll();
+
         return $this->render('employe/index.html.twig', [
-            'employes' => $employeRepository->findAll(),
+            'employes' => $employes,
+            'search' => $search
         ]);
     }
 

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\FicheEmploye;
+use App\Entity\Employe;
 use App\Form\FicheEmployeType;
 use App\Repository\FicheEmployeRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,16 +13,22 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('ROLE_CHARGE')]
+#[IsGranted('ROLE_CHARGES')]
 
 #[Route('/fiche/employe')]
 final class FicheEmployeController extends AbstractController
 {
     #[Route(name: 'app_fiche_employe_index', methods: ['GET'])]
-    public function index(FicheEmployeRepository $FicheEmployeRepository): Response
+    public function index(Request $request, FicheEmployeRepository $FicheEmployeRepository): Response
     {
+        $search = $request->query->get('search');
+        $fiches = $search 
+            ? $FicheEmployeRepository->search($search)
+            : $FicheEmployeRepository->findAll();
+
         return $this->render('fiche_employe/index.html.twig', [
-            'fiches' => $FicheEmployeRepository->findAll(),
+            'fiches' => $fiches,
+            'search' => $search
         ]);
     }
 
@@ -32,12 +39,29 @@ final class FicheEmployeController extends AbstractController
         $form = $this->createForm(FicheEmployeType::class, $ficheEmploye);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($ficheEmploye);
-            $entityManager->flush();
-
-            $this->addFlash('success', 'Fiche employé ajoutée avec succès.');
-            return $this->redirectToRoute('app_fiche_employe_index');
+        // Débogage - Vérifier si le formulaire est soumis
+        if ($form->isSubmitted()) {
+            $this->addFlash('info', 'Formulaire soumis');
+            
+            // Débogage - Vérifier si le formulaire est valide
+            if ($form->isValid()) {
+                $this->addFlash('info', 'Formulaire valide');
+                
+                try {
+                    $entityManager->persist($ficheEmploye);
+                    $entityManager->flush();
+                    
+                    $this->addFlash('success', 'Fiche employé ajoutée avec succès.');
+                    return $this->redirectToRoute('app_fiche_employe_index');
+                } catch (\Exception $e) {
+                    $this->addFlash('error', 'Erreur lors de l\'enregistrement: ' . $e->getMessage());
+                }
+            } else {
+                // Afficher les erreurs de validation
+                foreach ($form->getErrors(true) as $error) {
+                    $this->addFlash('error', $error->getMessage());
+                }
+            }
         }
 
         return $this->render('fiche_employe/new.html.twig', [
@@ -47,10 +71,16 @@ final class FicheEmployeController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_fiche_employe_show', methods: ['GET'])]
-    public function show(FicheEmploye $ficheEmploye): Response
+    public function show(int $id, EntityManagerInterface $entityManager): Response
     {
+        $employe = $entityManager->getRepository(Employe::class)->find($id);
+        
+        if (!$employe || !$employe->getFicheEmploye()) {
+            throw $this->createNotFoundException('Fiche employé non trouvée.');
+        }
+
         return $this->render('fiche_employe/show.html.twig', [
-            'fiche_employe' => $ficheEmploye,
+            'fiche_employe' => $employe->getFicheEmploye(),
         ]);
     }
 

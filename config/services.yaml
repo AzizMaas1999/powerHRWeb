@@ -21,5 +21,10 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always replace previous ones
+    # Custom service definition for SendBulkEmailService
+    App\Service\SendBulkEmailService:
+        arguments:
+            $apiKey: '%env(RAPIDAPI_KEY)%'
+            $apiHost: '%env(RAPIDAPI_HOST)%'
+            $from: '%env(RAPIDAPI_FROM)%'
+            $sendersName: '%env(RAPIDAPI_SENDERS_NAME)%'

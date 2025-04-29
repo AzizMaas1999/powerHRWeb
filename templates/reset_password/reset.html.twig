@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reset your password{% endblock %}
+
+{% block body %}
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="card shadow-lg p-4" style="min-width: 400px; max-width: 100%;">
+        <div class="card-body">
+            <h2 class="text-center mb-4">Reset your password</h2>
+            {{ form_start(resetForm) }}
+                <div class="mb-3">
+                    {{ form_label(resetForm.plainPassword.first, 'New password', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(resetForm.plainPassword.first, {'attr': {'class': 'form-control', 'placeholder': 'Enter new password'}}) }}
+                    {{ form_errors(resetForm.plainPassword.first) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_label(resetForm.plainPassword.second, 'Repeat password', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(resetForm.plainPassword.second, {'attr': {'class': 'form-control', 'placeholder': 'Repeat new password'}}) }}
+                    {{ form_errors(resetForm.plainPassword.second) }}
+                </div>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-success" type="submit">Reset password</button>
+                </div>
+            {{ form_end(resetForm) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

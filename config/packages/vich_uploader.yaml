@@ -4,3 +4,10 @@ vich_uploader:
         fiche_cv_pdf:
             uri_prefix: /uploads/cv
             upload_destination: '%kernel.project_dir%/public/uploads/cv'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+        candidat_cv:
+            uri_prefix: /uploads/candidats/cv
+            upload_destination: '%kernel.project_dir%/public/uploads/candidats/cv'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            delete_on_update: true
+            delete_on_remove: true
