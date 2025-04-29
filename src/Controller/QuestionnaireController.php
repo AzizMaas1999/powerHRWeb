@@ -17,34 +17,44 @@ final class QuestionnaireController extends AbstractController
     #[Route(name: 'app_questionnaire_index', methods: ['GET'])]
     public function index(QuestionnaireRepository $questionnaireRepository): Response
     {
+        $user = $this->getUser(); // employé connecté
+    
+        $questionnaires = $questionnaireRepository->findBy([
+            'employe' => $user,
+        ]);
+    
         return $this->render('questionnaire/index.html.twig', [
-            'questionnaires' => $questionnaireRepository->findAll(),
+            'questionnaires' => $questionnaires,
         ]);
     }
+    
 
     #[Route('/new', name: 'app_questionnaire_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $questionnaire = new Questionnaire();
-        $questionnaire->setDateCreation(new \DateTime());
+public function new(Request $request, EntityManagerInterface $entityManager): Response
+{
+    $user = $this->getUser(); // Récupère l'employé connecté
 
-        $form = $this->createForm(QuestionnaireType::class, $questionnaire);
-        $form->handleRequest($request);
+    $questionnaire = new Questionnaire();
+    $questionnaire->setDateCreation(new \DateTime());
+    $questionnaire->setEmploye($user); // Associe l'employé connecté
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($questionnaire);
-            $entityManager->flush();
+    $form = $this->createForm(QuestionnaireType::class, $questionnaire);
+    $form->handleRequest($request);
 
-            $this->addFlash('success', 'Questionnaire ajouté avec succès.');
+    if ($form->isSubmitted() && $form->isValid()) {
+        $entityManager->persist($questionnaire);
+        $entityManager->flush();
 
-            return $this->redirectToRoute('app_questionnaire_index', [], Response::HTTP_SEE_OTHER);
-        }
+        $this->addFlash('success', 'Questionnaire ajouté avec succès.');
 
-        return $this->render('questionnaire/new.html.twig', [
-            'questionnaire' => $questionnaire,
-            'form' => $form,
-        ]);
+        return $this->redirectToRoute('app_questionnaire_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    return $this->render('questionnaire/new.html.twig', [
+        'questionnaire' => $questionnaire,
+        'form' => $form,
+    ]);
+}
 
     #[Route('/{id}', name: 'app_questionnaire_show', methods: ['GET'])]
     public function show(Questionnaire $questionnaire): Response

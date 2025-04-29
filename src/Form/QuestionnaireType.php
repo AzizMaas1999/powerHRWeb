@@ -17,10 +17,10 @@ class QuestionnaireType extends AbstractType
             
             ->add('objet')
             ->add('description')
-           // ->add('employe', EntityType::class, [
-              //  'class' => Employe::class,
-              //  'choice_label' => 'id',
-           // ])
+            ->add('employe', EntityType::class, [
+                'class' => Employe::class,
+                'choice_label' => 'username',
+            ])
         ;
     }
 
