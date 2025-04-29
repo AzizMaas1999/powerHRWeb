@@ -1,0 +1,289 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Fiche de Paie - {{ employe.username }}{% endblock %}
+
+{% block body %}
+<div class="page-header d-print-none">
+    <h3 class="page-title">Fiche de Paie</h3>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_paie_index') }}">Paie</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_paie_fiche_employe') }}">Fiche de paie</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ employe.username }}</li>
+        </ol>
+    </nav>
+    <div class="btn-group">
+        <button type="button" class="btn btn-primary" onclick="window.print();">
+            <i class="mdi mdi-printer"></i> Imprimer
+        </button>
+        <a href="{{ path('app_paie_fiche_pdf', {'id': employe.id, 'mois': app.request.query.get('mois'), 'annee': app.request.query.get('annee')}) }}" class="btn btn-info">
+            <i class="mdi mdi-file-pdf"></i> Télécharger PDF
+        </a>
+        <a href="{{ path('app_paie_fiche_employe') }}" class="btn btn-secondary">Retour à la liste</a>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-10 col-xl-8">
+        <div class="card">
+            <div class="card-body">
+                <!-- Contenu à imprimer -->
+                <div class="fiche-paie-container">
+                    <div class="fiche-header text-center">
+                        <div class="row align-items-center">
+                            <div class="col-md-3">
+                                <div class="company-logo text-md-left text-center mb-3 mb-md-0">
+                                    <img src="{{ asset('UI/assets/images/Logo.png') }}" alt="PowerHR" width="150">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="fiche-title">
+                                    <h2 class="mb-2">BULLETIN DE PAIE</h2>
+                                    <h4 class="text-muted">{{ mois }} {{ annee }}</h4>
+                                </div>
+                            </div>
+                            <div class="col-md-3"></div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4 mt-4">
+                        <div class="col-md-6">
+                            <div class="border p-3 h-100">
+                                <h5 class="text-primary mb-3">EMPLOYEUR</h5>
+                                <div>PowerHR</div>
+                                <div>15 Rue des Ingénieurs</div>
+                                <div>1000 Tunis, Tunisie</div>
+                                <div>Code entreprise: PWHR-123456</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="border p-3 h-100">
+                                <h5 class="text-primary mb-3">SALARIÉ</h5>
+                                <div><strong>Nom:</strong> {{ employe.username }}</div>
+                                <div><strong>Poste:</strong> {{ employe.poste }}</div>
+                                <div><strong>Département:</strong> {% if employe.departement is not null and employe.departement.nom is defined %}{{ employe.departement.nom }}{% else %}Non assigné{% endif %}</div>
+                                <div><strong>Code CNSS:</strong> {{ employe.codeSociale }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>Élément</th>
+                                    <th>Base</th>
+                                    <th>Unité</th>
+                                    <th>Taux</th>
+                                    <th>Montant</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Salaire de base</td>
+                                    <td>{{ salaireBase|number_format(3, ',', ' ') }}</td>
+                                    <td>30</td>
+                                    <td>100%</td>
+                                    <td>{{ salaireBase|number_format(3, ',', ' ') }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Jours travaillés</td>
+                                    <td>{% if salaireBase is not null %}{{ (salaireBase / 30)|number_format(3, ',', ' ') }}{% else %}0,000{% endif %}</td>
+                                    <td>{{ paie.nbJour }}</td>
+                                    <td>100%</td>
+                                    <td>{{ paie.montant|number_format(3, ',', ' ') }}</td>
+                                </tr>
+                                <tr>
+                                    <td>CNSS (cotisation salariale)</td>
+                                    <td>{{ paie.montant|number_format(3, ',', ' ') }}</td>
+                                    <td>-</td>
+                                    <td>9,18%</td>
+                                    <td>-{{ (paie.montant * 0.0918)|number_format(3, ',', ' ') }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Assurance maladie</td>
+                                    <td>{{ paie.montant|number_format(3, ',', ' ') }}</td>
+                                    <td>-</td>
+                                    <td>3,50%</td>
+                                    <td>-{{ (paie.montant * 0.035)|number_format(3, ',', ' ') }}</td>
+                                </tr>
+                                {% set totalDeductions = (paie.montant * 0.0918) + (paie.montant * 0.035) %}
+                                {% set netAPayer = paie.montant - totalDeductions %}
+                                <tr class="bg-light">
+                                    <th colspan="4" class="text-right">Total des déductions :</th>
+                                    <td>{{ totalDeductions|number_format(3, ',', ' ') }}</td>
+                                </tr>
+                                <tr class="table-primary">
+                                    <th colspan="4" class="text-right">NET À PAYER :</th>
+                                    <th>{{ netAPayer|number_format(3, ',', ' ') }} DT</th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="row mt-5">
+                        <div class="col-md-6">
+                            <div class="payment-info">
+                                <h5 class="text-primary mb-3">Mode de paiement</h5>
+                                <div><strong>RIB:</strong> {{ employe.rib }}</div>
+                                <div><strong>Date de virement:</strong> {{ "now"|date("d/m/Y") }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <div class="signature">
+                                <p>Fait à Tunis, le {{ dateCreation|date('d/m/Y') }}</p>
+                                <div class="signature-line">
+                                    <p>Signature et cachet de l'employeur</p>
+                                    <div class="signature-space"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer text-center mt-5 pt-3 border-top">
+                        <p class="text-muted">PowerHR - Système de gestion des ressources humaines</p>
+                        <p class="text-muted small">Document généré automatiquement - Ne nécessite pas de signature manuscrite</p>
+                    </div>
+                </div>
+                <!-- Fin du contenu à imprimer -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @media print {
+        @page {
+            size: A4;
+            margin: 1.5cm;
+        }
+        
+        body * {
+            visibility: hidden;
+        }
+        
+        .card-body, .card-body * {
+            visibility: visible;
+        }
+        
+        .d-print-none {
+            display: none !important;
+        }
+        
+        .card {
+            border: none !important;
+            box-shadow: none !important;
+        }
+        
+        .card-body {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            background-color: white !important;
+            color: black !important;
+            padding: 0 !important;
+        }
+        
+        .fiche-paie-container {
+            padding: 0;
+            margin: 0 auto;
+            width: 100%;
+            max-width: none;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        
+        table, th, td {
+            border: 1px solid black !important;
+        }
+        
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        
+        .table-primary {
+            background-color: #f0f8ff !important;
+        }
+        
+        .row {
+            display: block;
+            width: 100%;
+        }
+        
+        .col-md-6 {
+            display: inline-block;
+            width: 48%;
+            vertical-align: top;
+        }
+        
+        .col-md-3 {
+            display: inline-block;
+            width: 24%;
+            vertical-align: top;
+        }
+        
+        .text-right {
+            text-align: right !important;
+        }
+        
+        .text-center {
+            text-align: center !important;
+        }
+        
+        /* Centre le logo et le titre */
+        .fiche-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .company-logo {
+            display: block;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .company-logo img {
+            display: inline-block;
+        }
+        
+        .fiche-title {
+            text-align: center;
+        }
+    }
+
+    .fiche-paie-container {
+        padding: 20px;
+        margin: 0 auto;
+        max-width: 100%;
+    }
+    
+    .fiche-header {
+        margin-bottom: 30px;
+    }
+    
+    .signature-line {
+        margin-top: 60px;
+    }
+    
+    .signature-space {
+        height: 50px;
+        border-bottom: 1px solid #ccc;
+        margin-top: 10px;
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+    }
+    
+    @media (min-width: 768px) {
+        .text-md-left {
+            text-align: left !important;
+        }
+    }
+</style>
+{% endblock %}

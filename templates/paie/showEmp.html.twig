@@ -5,54 +5,155 @@
 {% block body %}
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 text-dark">Liste Des Employés</h1>
+        <h1 class="h3 text-dark">Gestion des Paies</h1>
     </div>
 
-    <div class="table-responsive">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Nom d'utilisateur</th>
-                    <th>Nombre de pointages effectués</th>
-                    <th>Nombre de absences</th>
-                    <th>Salaire de base</th>
-                    <th>Salaire mensuel</th>
-                    <th class="text-center">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for employe in employes %}
-                    {% if employe.poste != "Admin" %}
-                        {% set nb = 0 %}
-                        {% set payed = false %}
-                        {% for pointage in pointages %}
-                            {% if pointage.employe == employe and pointage.date.format('Y-m') == "now"|date("Y-m") and pointage.heureSortie != null %}
-                                {% set nb = nb + 1 %}
-                            {% endif %}
-                            {% if pointage.paie != null and pointage.employe == employe and (pointage.date.format('Y-m') == "now"|date("Y-m")) %}
-                                {% set payed = true %}
-                            {% endif %}
-                        {% endfor %}
-                        {% if not payed %}
+    <!-- Système d'onglets -->
+    <ul class="nav nav-tabs mb-4" id="paieTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="current-tab" data-bs-toggle="tab" data-bs-target="#current" type="button" role="tab" aria-controls="current" aria-selected="true">Paies du mois en cours</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab" aria-controls="history" aria-selected="false">Historique des paies</button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="paieTabContent">
+        <!-- Onglet des paies du mois en cours -->
+        <div class="tab-pane fade show active" id="current" role="tabpanel" aria-labelledby="current-tab">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
                         <tr>
-                            <td>{{ employe.username }}</td>
-                            <td>{{ nb }}</td>
-                            <td>{{ "now"|date("d") - nb}}</td>
-                            <td>{{ employe.salaire }}</td>
-                            <td>{{ ((employe.salaire / 30) * nb)|round(0, 'floor') }}</td>
-                            <td class="text-center">
-                                <a href="{{ path('app_newEmployePaie', {'id': employe.id, 'nb': nb}) }}" class="btn btn-outline-dark btn-fw me-1">Ajouter Paie</a>
-                            </td>
+                            <th>Nom d'utilisateur</th>
+                            <th>Nombre de pointages effectués</th>
+                            <th>Nombre de absences</th>
+                            <th>Salaire de base</th>
+                            <th>Salaire mensuel</th>
+                            <th class="text-center">Actions</th>
                         </tr>
-                        {% endif %}
-                    {% endif %}
-                {% else %}
-                    <tr>
-                        <td colspan="3" class="text-center text-secondary">Aucun employé trouvé</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                    </thead>
+                    <tbody>
+                        {% for employe in employes %}
+                            {% if employe.poste != "Admin" %}
+                                {% set nb = 0 %}
+                                {% set payed = false %}
+                                {% for pointage in pointages %}
+                                    {% if pointage.heureSortie != null %}
+                                        {% set diff = pointage.heureEntree.diff(pointage.heureSortie) %}
+                                        {% if pointage.employe == employe and pointage.date.format('Y-m') == "now"|date("Y-m") and diff.h >= 8 %}
+                                            {% set nb = nb + 1 %}
+                                        {% endif %}
+                                    {% endif %}
+                                    {% if pointage.paie != null and pointage.employe == employe and (pointage.date.format('Y-m') == "now"|date("Y-m")) %}
+                                        {% set payed = true %}
+                                    {% endif %}
+                                {% endfor %}
+                                {% if not payed %}
+                                <tr>
+                                    <td>{{ employe.username }}</td>
+                                    <td>{{ nb }}</td>
+                                    <td>{{ "now"|date("d") - nb}}</td>
+                                    <td>{{ employe.salaire }}</td>
+                                    <td>{{ ((employe.salaire / 30) * nb)|round(0, 'floor') }}</td>
+                                    <td class="text-center">
+                                        <a href="{{ path('app_confirmEmployePaie', {'id': employe.id, 'nb': nb}) }}" class="btn btn-outline-dark btn-fw me-1">Ajouter Paie</a>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            {% endif %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center text-secondary">Aucun employé trouvé</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Onglet de l'historique des paies -->
+        <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nom d'utilisateur</th>
+                            <th>Nombre de pointages effectués</th>
+                            <th>Nombre de absences</th>
+                            <th>Mois</th>
+                            <th>Année</th>
+                            <th>Salaire de base</th>
+                            <th>Salaire mensuel</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for employe in employes %}
+                            {% if employe.poste != "Admin" %}
+                                {% set months = {} %}
+                                {% for pointage in pointages %}
+                                    {% if pointage.heureSortie != null and pointage.employe == employe %}
+                                        {% set month_key = pointage.date.format('Y-m') %}
+                                        {% set current_month = "now"|date("Y-m") %}
+                                        {% if month_key != current_month %}
+                                            {% set diff = pointage.heureEntree.diff(pointage.heureSortie) %}
+                                            {% if months[month_key] is not defined %}
+                                                {% set months = months|merge({
+                                                    (month_key): {
+                                                        'nb_pointages': 0,
+                                                        'month': pointage.date.format('m'),
+                                                        'year': pointage.date.format('Y'),
+                                                        'paid': false
+                                                    }
+                                                }) %}
+                                            {% endif %}
+                                            {% if diff.h >= 8 %}
+                                                {% set month_data = months[month_key] %}
+                                                {% set month_data = month_data|merge({'nb_pointages': month_data.nb_pointages + 1}) %}
+                                                {% set months = months|merge({(month_key): month_data}) %}
+                                            {% endif %}
+                                            
+                                            {% if pointage.paie != null %}
+                                                {% set month_data = months[month_key] %}
+                                                {% set month_data = month_data|merge({'paid': true}) %}
+                                                {% set months = months|merge({(month_key): month_data}) %}
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                                
+                                {% for month_key, month_data in months %}
+                                    {% if not month_data.paid %}
+                                        {% set days_in_month = month_data.month in ['04', '06', '09', '11'] ? 30 : (month_data.month == '02' ? 28 : 31) %}
+                                        {% if month_data.month == '02' and month_data.year % 4 == 0 and (month_data.year % 100 != 0 or month_data.year % 400 == 0) %}
+                                            {% set days_in_month = 29 %}
+                                        {% endif %}
+                                        
+                                        <tr>
+                                            <td>{{ employe.username }}</td>
+                                            <td>{{ month_data.nb_pointages }}</td>
+                                            <td>{{ days_in_month - month_data.nb_pointages }}</td>
+                                            <td>{{ month_data.month }}</td>
+                                            <td>{{ month_data.year }}</td>
+                                            <td>{{ employe.salaire }}</td>
+                                            <td>{{ ((employe.salaire / days_in_month) * month_data.nb_pointages)|round(0, 'floor') }}</td>
+                                            <td class="text-center">
+                                                <a href="{{ path('app_confirmEmployePaie', {'id': employe.id, 'nb': month_data.nb_pointages}) }}" class="btn btn-outline-dark btn-fw me-1">Ajouter Paie</a>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        {% else %}
+                            <tr>
+                                <td colspan="8" class="text-center text-secondary">Aucune paie trouvée</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

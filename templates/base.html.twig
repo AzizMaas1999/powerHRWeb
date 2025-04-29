@@ -35,6 +35,8 @@
       <script src="{{ asset('UI/assets/js/misc.js') }}"></script>
       <script src="{{ asset('UI/assets/js/settings.js') }}"></script>
       <script src="{{ asset('UI/assets/js/todolist.js') }}"></script>
+      <!-- Bootstrap 5 JS for tabs with data-bs-toggle -->
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
       <!-- endinject -->
       <!-- Custom js for this page -->
       <script src="{{ asset('UI/assets/js/dashboard.js') }}"></script>
@@ -162,8 +164,9 @@
               </a>
               <div class="collapse" id="menu-paie">
                 <ul class="nav flex-column sub-menu">
-                  <li class="nav-item"> <a class="nav-link" href="/paie/new">Ajouter Paie</a></li>
-                  <li class="nav-item"> <a class="nav-link" href="/paie/employe">Afficher La Liste</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="/paie/employe">Ajouter Paie</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="/paie">Afficher La Liste</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="{{ path('app_paie_fiche_employe') }}">Fiches de paie</a></li>
                 </ul>
               </div>
             </li>
@@ -339,29 +342,14 @@
                     {% endfor %}
                 {% endfor %}
                 <li class="nav-item nav-settings d-none d-lg-block border-right">
-                  {% set heure = "now"|date('H:i:s', 'Africa/Tunis') %}
-
-                  {% if heure >= '14:00:00' and heure <= '14:30:00' %}
                       <a class="nav-link" href="{{ path('app_pointageEntree') }}">
                         <button class="btn btn-primary btn-sm" >Pointage Entrée</button>
                       </a>
-                  {% else %}
-                      <a class="nav-link">
-                        <button class="btn btn-primary btn-sm" disabled >Pointage Entrée</button>
-                      </a>
-                  {% endif %}
                 </li>
                 <li class="nav-item nav-settings d-none d-lg-block border-right">
-                  {% if heure >= '16:50:00' and heure <= '17:00:00' %}
                       <a class="nav-link" href="{{ path('app_pointageSortie') }}">
                         <button class="btn btn-danger btn-sm">Pointage Sortie</button>
                       </a>
-                  {% else %}
-                      <a class="nav-link">
-                        <button class="btn btn-danger btn-sm" disabled>Pointage Sortie</button>
-                      </a>
-                  {% endif %}
-                  </a>
                 </li>
                 <li class="nav-item dropdown">
                   <a class="nav-link" id="profileDropdown" href="#" data-toggle="dropdown">

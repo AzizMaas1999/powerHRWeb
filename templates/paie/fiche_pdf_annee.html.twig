@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Récapitulatif Annuel - {{ employe.username }} - {{ annee }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            width: 100%;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .company-name {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .info-section {
+            width: 100%;
+            margin-bottom: 30px;
+            clear: both;
+        }
+        .info-box {
+            width: 45%;
+            border: 1px solid #ddd;
+            padding: 15px;
+            float: left;
+            margin-right: 5%;
+            margin-bottom: 20px;
+        }
+        .info-box:last-child {
+            margin-right: 0;
+        }
+        .info-box h3 {
+            color: #2c7be5;
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f5f5f5;
+        }
+        .total-row th, .total-row td {
+            font-weight: bold;
+            background-color: #f0f0f0;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #d1ecf1;
+            border-radius: 4px;
+            color: #0c5460;
+            background-color: #d1ecf1;
+        }
+        .summary-card {
+            width: 45%;
+            float: left;
+            border: 1px solid #ddd;
+            padding: 15px;
+            background-color: #f9f9f9;
+        }
+        .signature {
+            width: 45%;
+            float: right;
+            text-align: right;
+            margin-top: 30px;
+        }
+        .signature-line {
+            margin-top: 50px;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #777;
+            clear: both;
+        }
+        .clearfix {
+            clear: both;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <!-- Remplacé l'image par du texte pour éviter l'erreur GD -->
+            <div class="company-name">PowerHR</div>
+            <div class="title">RÉCAPITULATIF ANNUEL DES PAIES</div>
+            <div class="subtitle">Année {{ annee }}</div>
+        </div>
+
+        <div class="info-section">
+            <div class="info-box">
+                <h3>EMPLOYEUR</h3>
+                <div>PowerHR</div>
+                <div>15 Rue des Ingénieurs</div>
+                <div>1000 Tunis, Tunisie</div>
+                <div>Code entreprise: PWHR-123456</div>
+            </div>
+            
+            <div class="info-box">
+                <h3>SALARIÉ</h3>
+                <div><strong>Nom:</strong> {{ employe.username }}</div>
+                <div><strong>Poste:</strong> {{ employe.poste }}</div>
+                <div><strong>Département:</strong> {% if employe.departement is not null and employe.departement.nom is defined %}{{ employe.departement.nom }}{% else %}Non assigné{% endif %}</div>
+                <div><strong>Code CNSS:</strong> {{ employe.codeSociale }}</div>
+                <div><strong>RIB:</strong> {{ employe.rib }}</div>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="alert">
+            <strong>Récapitulatif de l'année {{ annee }}</strong> - {{ fichesTrouvees }} fiches de paie trouvées
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Mois</th>
+                    <th>Jours travaillés</th>
+                    <th>Salaire brut</th>
+                    <th>Déductions</th>
+                    <th>Salaire net</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for num, item in paies %}
+                <tr>
+                    <td>{{ item.mois_nom }}</td>
+                    <td>{{ item.paie.nbJour }}</td>
+                    <td>{{ item.paie.montant|number_format(3, ',', ' ') }} DT</td>
+                    <td>{{ item.deductions|number_format(3, ',', ' ') }} DT</td>
+                    <td>{{ item.net|number_format(3, ',', ' ') }} DT</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="total-row">
+                    <td>TOTAL</td>
+                    <td>{{ totalJours }}</td>
+                    <td>{{ totalMontant|number_format(3, ',', ' ') }} DT</td>
+                    <td>{{ totalDeductions|number_format(3, ',', ' ') }} DT</td>
+                    <td>{{ totalNet|number_format(3, ',', ' ') }} DT</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="summary-card">
+            <h4>Résumé annuel</h4>
+            <table>
+                <tr>
+                    <td>Salaire de base annuel:</td>
+                    <td>{{ (salaireBase * 12)|number_format(3, ',', ' ') }} DT</td>
+                </tr>
+                <tr>
+                    <td>Montant total versé:</td>
+                    <td>{{ totalMontant|number_format(3, ',', ' ') }} DT</td>
+                </tr>
+                <tr>
+                    <td>Total jours travaillés:</td>
+                    <td>{{ totalJours }} jours</td>
+                </tr>
+                <tr>
+                    <td>Moyenne mensuelle:</td>
+                    <td>{{ (totalNet / fichesTrouvees)|number_format(3, ',', ' ') }} DT</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="signature">
+            <p>Fait à Tunis, le {{ dateCreation|date('d/m/Y') }}</p>
+            <div class="signature-line">
+                <p>Signature et cachet de l'employeur</p>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="footer">
+            <p>PowerHR - Système de gestion des ressources humaines</p>
+            <p>Document généré automatiquement - Ne nécessite pas de signature manuscrite</p>
+        </div>
+    </div>
+</body>
+</html>

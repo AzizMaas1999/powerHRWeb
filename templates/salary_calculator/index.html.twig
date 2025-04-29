@@ -1,0 +1,120 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Calculateur de Salaire Tunisien{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card bg-dark text-white shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Calculateur de Salaire Tunisien</h3>
+                </div>
+                
+                <div class="card-body bg-dark text-white">
+                    <form id="salaryForm" onsubmit="return false;">
+                        <div class="mb-4">
+                            <label for="childrenCount" class="form-label">Nombre d'enfants</label>
+                            <input type="number" class="form-control bg-dark text-white" id="childrenCount" name="childrenCount" 
+                                   value="0" min="0" required>
+                            <div class="form-text text-muted">Indiquez le nombre d'enfants pour le calcul des allocations</div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="netSalary" class="form-label">Salaire Net (TND)</label>
+                            <input type="number" step="0.001" class="form-control bg-dark text-white" id="netSalary" name="netSalary" 
+                                   value="0" min="0" required>
+                            <div class="form-text text-muted">Entrez votre salaire net mensuel en TND</div>
+                        </div>
+                        
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" checked disabled id="cadreStatus">
+                            <label class="form-check-label" for="cadreStatus">
+                                Statut Cadre
+                            </label>
+                            <div class="form-text text-muted">Le calcul est effectué avec le statut cadre</div>
+                        </div>
+                        
+                        <button type="button" onclick="calculateSalary()" class="btn btn-primary px-4">Calculer</button>
+                    </form>
+                    
+                    <div class="mt-5">
+                        <h4 class="border-bottom pb-2 mb-4">Résultats du calcul</h4>
+                        
+                        <table class="table table-dark table-bordered">
+                            <tbody>
+                                <tr class="bg-primary text-white">
+                                    <th scope="row">Salaire Brut</th>
+                                    <td class="fw-bold" id="salaireBrutResult">Complétez le formulaire</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Retenues Totales</th>
+                                    <td id="retenueResult">Complétez le formulaire</td>
+                                </tr>
+                                <tr class="bg-success text-white">
+                                    <th scope="row">Salaire Net</th>
+                                    <td class="fw-bold" id="netSalaryResult">Complétez le formulaire</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <div class="alert alert-info mt-3">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Ces calculs sont basés sur une simulation des paramètres fiscaux tunisiens. Les résultats sont donnés à titre indicatif.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function calculateSalary() {
+        // Get input values
+        const childrenCount = parseInt(document.getElementById('childrenCount').value) || 0;
+        const netSalary = parseFloat(document.getElementById('netSalary').value) || 0;
+        
+        // Simple Tunisian salary calculation
+        // Base tax rates
+        const baseTaxRate = 0.18; // Base IRPP tax rate
+        const socialSecurityRate = 0.092; // CNSS rate for employees
+        
+        // Child benefits (reduce tax rate slightly)
+        const childBenefitRate = childrenCount * 0.01; // 1% reduction per child
+        
+        // Calculate effective tax rate
+        const effectiveTaxRate = Math.max(0.15, baseTaxRate + socialSecurityRate - childBenefitRate);
+        
+        // Calculate gross salary: Net = Gross - (Gross * taxRate)
+        // Therefore: Gross = Net / (1 - taxRate)
+        const grossSalary = netSalary / (1 - effectiveTaxRate);
+        const grossSalaryRounded = Math.round(grossSalary * 1000) / 1000;
+        
+        // Calculate deductions
+        const totalDeductions = grossSalaryRounded - netSalary;
+        const totalDeductionsRounded = Math.round(totalDeductions * 1000) / 1000;
+        
+        // Format results
+        const formattedGross = grossSalaryRounded.toLocaleString('fr-FR', {
+            minimumFractionDigits: 3,
+            maximumFractionDigits: 3
+        }) + ' TND';
+        
+        const formattedDeductions = totalDeductionsRounded.toLocaleString('fr-FR', {
+            minimumFractionDigits: 3,
+            maximumFractionDigits: 3
+        }) + ' TND';
+        
+        const formattedNet = netSalary.toLocaleString('fr-FR', {
+            minimumFractionDigits: 3, 
+            maximumFractionDigits: 3
+        }) + ' TND';
+        
+        // Update results in the table
+        document.getElementById('salaireBrutResult').textContent = formattedGross;
+        document.getElementById('retenueResult').textContent = formattedDeductions;
+        document.getElementById('netSalaryResult').textContent = formattedNet;
+    }
+</script>
+{% endblock %}

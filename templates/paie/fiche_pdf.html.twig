@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Fiche de paie - {{ employe.username }} - {{ mois }} {{ annee }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            width: 100%;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .company-name {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .info-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        .info-box {
+            border: 1px solid #ddd;
+            padding: 15px;
+            width: 45%;
+        }
+        .info-box h3 {
+            color: #2c7be5;
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f5f5f5;
+        }
+        .total-row th {
+            text-align: right;
+        }
+        .payment-info {
+            margin-bottom: 30px;
+        }
+        .signature {
+            margin-top: 30px;
+            text-align: right;
+        }
+        .signature-line {
+            margin-top: 50px;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 12px;
+            color: #777;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+        .net-pay {
+            background-color: #e8f4fc;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <!-- Remplacé l'image par du texte pour éviter l'erreur GD -->
+            <div class="company-name">PowerHR</div>
+            <div class="title">BULLETIN DE PAIE</div>
+            <div class="subtitle">{{ mois }} {{ annee }}</div>
+        </div>
+
+        <div class="info-section">
+            <div class="info-box">
+                <h3>EMPLOYEUR</h3>
+                <div>PowerHR</div>
+                <div>15 Rue des Ingénieurs</div>
+                <div>1000 Tunis, Tunisie</div>
+                <div>Code entreprise: PWHR-123456</div>
+            </div>
+            
+            <div class="info-box">
+                <h3>SALARIÉ</h3>
+                <div><strong>Nom:</strong> {{ employe.username }}</div>
+                <div><strong>Poste:</strong> {{ employe.poste }}</div>
+                <div><strong>Département:</strong> {% if employe.departement is not null and employe.departement.nom is defined %}{{ employe.departement.nom }}{% else %}Non assigné{% endif %}</div>
+                <div><strong>Code CNSS:</strong> {{ employe.codeSociale }}</div>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Élément</th>
+                    <th>Base</th>
+                    <th>Unité</th>
+                    <th>Taux</th>
+                    <th>Montant</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Salaire de base</td>
+                    <td>{{ salaireBase|number_format(3, ',', ' ') }}</td>
+                    <td>30</td>
+                    <td>100%</td>
+                    <td>{{ salaireBase|number_format(3, ',', ' ') }}</td>
+                </tr>
+                <tr>
+                    <td>Jours travaillés</td>
+                    <td>{% if salaireBase is not null %}{{ (salaireBase / 30)|number_format(3, ',', ' ') }}{% else %}0,000{% endif %}</td>
+                    <td>{{ paie.nbJour }}</td>
+                    <td>100%</td>
+                    <td>{{ paie.montant|number_format(3, ',', ' ') }}</td>
+                </tr>
+                <tr>
+                    <td>CNSS (cotisation salariale)</td>
+                    <td>{{ paie.montant|number_format(3, ',', ' ') }}</td>
+                    <td>-</td>
+                    <td>9,18%</td>
+                    <td>-{{ (paie.montant * 0.0918)|number_format(3, ',', ' ') }}</td>
+                </tr>
+                <tr>
+                    <td>Assurance maladie</td>
+                    <td>{{ paie.montant|number_format(3, ',', ' ') }}</td>
+                    <td>-</td>
+                    <td>3,50%</td>
+                    <td>-{{ (paie.montant * 0.035)|number_format(3, ',', ' ') }}</td>
+                </tr>
+                {% set totalDeductions = (paie.montant * 0.0918) + (paie.montant * 0.035) %}
+                {% set netAPayer = paie.montant - totalDeductions %}
+                <tr class="total-row">
+                    <th colspan="4">Total des déductions :</th>
+                    <td>{{ totalDeductions|number_format(3, ',', ' ') }}</td>
+                </tr>
+                <tr class="total-row net-pay">
+                    <th colspan="4">NET À PAYER :</th>
+                    <th>{{ netAPayer|number_format(3, ',', ' ') }} DT</th>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="info-section">
+            <div class="payment-info">
+                <h3>Mode de paiement</h3>
+                <div><strong>RIB:</strong> {{ employe.rib }}</div>
+                <div><strong>Date de virement:</strong> {{ "now"|date("d/m/Y") }}</div>
+            </div>
+            
+            <div class="signature">
+                <p>Fait à Tunis, le {{ dateCreation|date('d/m/Y') }}</p>
+                <div class="signature-line">
+                    <p>Signature et cachet de l'employeur</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>PowerHR - Système de gestion des ressources humaines</p>
+            <p>Document généré automatiquement - Ne nécessite pas de signature manuscrite</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,330 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Générer Fiche de Paie{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h3 class="page-title">Générer une fiche de paie</h3>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_paie_index') }}">Paie</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Fiche de paie</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Liste des employés</h4>
+                <p class="card-description">
+                    Sélectionnez un employé pour générer sa fiche de paie ou l'envoyer par email
+                </p>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input type="text" class="form-control bg-dark text-white" id="search" placeholder="Rechercher par nom...">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Nom d'utilisateur</th>
+                                <th>Email</th>
+                                <th>Poste</th>
+                                <th>Salaire</th>
+                                <th>Département</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employeTable">
+                            {% for employe in employes %}
+                                {% if employe.poste != "Admin" %}
+                                    <tr class="employe-row">
+                                        <td>{{ employe.username }}</td>
+                                        <td>
+                                            {% if employe.ficheEmploye and employe.ficheEmploye.email %}
+                                                <span class="text-success">{{ employe.ficheEmploye.email }}</span>
+                                            {% else %}
+                                                <span class="text-danger">Email non défini</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ employe.poste }}</td>
+                                        <td>{{ employe.salaire|number_format(2, ',', ' ') }} DT</td>
+                                        <td>{% if employe.departement is not null and employe.departement.nom is defined %}{{ employe.departement.nom }}{% else %}Non assigné{% endif %}</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button type="button" 
+                                                        class="btn btn-primary btn-sm btn-generer-fiche" 
+                                                        data-id="{{ employe.id }}" 
+                                                        data-toggle="modal" 
+                                                        data-target="#ficheModal">
+                                                    <i class="mdi mdi-file-document-box"></i> Générer fiche
+                                                </button>
+                                                {% if employe.ficheEmploye and employe.ficheEmploye.email %}
+                                                <button type="button" 
+                                                        class="btn btn-info btn-sm btn-email-fiche" 
+                                                        data-id="{{ employe.id }}" 
+                                                        data-toggle="modal" 
+                                                        data-target="#emailModal">
+                                                    <i class="mdi mdi-email"></i> Envoyer par email
+                                                </button>
+                                                {% else %}
+                                                <button type="button" class="btn btn-info btn-sm" disabled>
+                                                    <i class="mdi mdi-email"></i> Envoyer par email
+                                                </button>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center">Aucun employé trouvé</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal pour choisir période pour génération de fiche -->
+<div class="modal fade" id="ficheModal" tabindex="-1" role="dialog" aria-labelledby="ficheModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ficheModalLabel">Générer fiche de paie</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="ficheForm">
+                    <input type="hidden" id="employeId" name="employeId">
+                    
+                    <div class="form-group">
+                        <label for="typeFiche">Type de fiche</label>
+                        <select class="form-control bg-dark text-white" id="typeFiche" name="typeFiche" required>
+                            <option value="mensuel">Fiche mensuelle</option>
+                            <option value="annuel">Fiche annuelle</option>
+                        </select>
+                    </div>
+                    
+                    <div id="moisGroup" class="form-group">
+                        <label for="mois">Mois</label>
+                        <select class="form-control bg-dark text-white" id="mois" name="mois" required>
+                            <option value="1">Janvier</option>
+                            <option value="2">Février</option>
+                            <option value="3">Mars</option>
+                            <option value="4">Avril</option>
+                            <option value="5">Mai</option>
+                            <option value="6">Juin</option>
+                            <option value="7">Juillet</option>
+                            <option value="8">Août</option>
+                            <option value="9">Septembre</option>
+                            <option value="10">Octobre</option>
+                            <option value="11">Novembre</option>
+                            <option value="12">Décembre</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="annee">Année</label>
+                        <select class="form-control bg-dark text-white" id="annee" name="annee" required>
+                            {% set currentYear = "now"|date("Y") %}
+                            {% for year in range(currentYear-10, currentYear) %}
+                                <option value="{{ year }}" {% if year == currentYear %}selected{% endif %}>{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-primary" id="confirmGenerer">Générer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal pour choisir période pour envoi de fiche par email -->
+<div class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="emailModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="emailModalLabel">Envoyer la fiche de paie par email</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="emailForm">
+                    <input type="hidden" id="emailEmployeId" name="emailEmployeId">
+                    
+                    <div class="form-group">
+                        <label for="emailTypeFiche">Type de fiche</label>
+                        <select class="form-control bg-dark text-white" id="emailTypeFiche" name="emailTypeFiche" required>
+                            <option value="mensuel">Fiche mensuelle</option>
+                            <option value="annuel">Récapitulatif annuel</option>
+                        </select>
+                    </div>
+                    
+                    <div id="emailMoisGroup" class="form-group">
+                        <label for="emailMois">Mois</label>
+                        <select class="form-control bg-dark text-white" id="emailMois" name="emailMois" required>
+                            <option value="1">Janvier</option>
+                            <option value="2">Février</option>
+                            <option value="3">Mars</option>
+                            <option value="4">Avril</option>
+                            <option value="5">Mai</option>
+                            <option value="6">Juin</option>
+                            <option value="7">Juillet</option>
+                            <option value="8">Août</option>
+                            <option value="9">Septembre</option>
+                            <option value="10">Octobre</option>
+                            <option value="11">Novembre</option>
+                            <option value="12">Décembre</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="emailAnnee">Année</label>
+                        <select class="form-control bg-dark text-white" id="emailAnnee" name="emailAnnee" required>
+                            {% set currentYear = "now"|date("Y") %}
+                            {% for year in range(currentYear-10, currentYear) %}
+                                <option value="{{ year }}" {% if year == currentYear %}selected{% endif %}>{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-info" id="confirmEmail">
+                    <i class="mdi mdi-email-outline"></i> Envoyer par email
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Recherche
+    document.getElementById('search').addEventListener('keyup', function() {
+        var input = this.value.toLowerCase();
+        var rows = document.querySelectorAll('.employe-row');
+        
+        rows.forEach(function(row) {
+            var username = row.querySelector('td:first-child').textContent.toLowerCase();
+            if (username.includes(input)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+    
+    // Gestion du modal de génération
+    var ficheModal = document.getElementById('ficheModal');
+    var buttons = document.querySelectorAll('.btn-generer-fiche');
+    var employeIdInput = document.getElementById('employeId');
+    var moisSelect = document.getElementById('mois');
+    var typeFicheSelect = document.getElementById('typeFiche');
+    var moisGroup = document.getElementById('moisGroup');
+    
+    // Gérer l'affichage du sélecteur de mois selon le type de fiche
+    typeFicheSelect.addEventListener('change', function() {
+        if (this.value === 'annuel') {
+            moisGroup.style.display = 'none';
+        } else {
+            moisGroup.style.display = 'block';
+        }
+    });
+    
+    buttons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            var id = this.getAttribute('data-id');
+            employeIdInput.value = id;
+            
+            // Définir le mois par défaut sur le mois actuel
+            var currentMonth = new Date().getMonth() + 1; // Les mois en JS sont 0-indexés
+            moisSelect.value = currentMonth;
+            
+            // Réinitialiser le type de fiche à mensuel et afficher le sélecteur de mois
+            typeFicheSelect.value = 'mensuel';
+            moisGroup.style.display = 'block';
+        });
+    });
+    
+    // Gestion de la génération
+    document.getElementById('confirmGenerer').addEventListener('click', function() {
+        var employeId = document.getElementById('employeId').value;
+        var typeFiche = document.getElementById('typeFiche').value;
+        var annee = document.getElementById('annee').value;
+        
+        if (typeFiche === 'annuel') {
+            // Rediriger vers la page de génération annuelle
+            window.location.href = '{{ path('app_paie_fiche_generer_annee', {'id': 'EMPLOYE_ID'}) }}'.replace('EMPLOYE_ID', employeId) + '?annee=' + annee;
+        } else {
+            // Rediriger vers la page de génération mensuelle
+            var mois = document.getElementById('mois').value;
+            window.location.href = '{{ path('app_paie_fiche_generer', {'id': 'EMPLOYE_ID'}) }}'.replace('EMPLOYE_ID', employeId) + '?mois=' + mois + '&annee=' + annee;
+        }
+    });
+    
+    // Gestion du modal d'email
+    var emailButtons = document.querySelectorAll('.btn-email-fiche');
+    var emailEmployeIdInput = document.getElementById('emailEmployeId');
+    var emailMoisSelect = document.getElementById('emailMois');
+    var emailTypeFicheSelect = document.getElementById('emailTypeFiche');
+    var emailMoisGroup = document.getElementById('emailMoisGroup');
+    
+    // Gérer l'affichage du sélecteur de mois selon le type de fiche pour l'email
+    emailTypeFicheSelect.addEventListener('change', function() {
+        if (this.value === 'annuel') {
+            emailMoisGroup.style.display = 'none';
+        } else {
+            emailMoisGroup.style.display = 'block';
+        }
+    });
+    
+    emailButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            var id = this.getAttribute('data-id');
+            emailEmployeIdInput.value = id;
+            
+            // Définir le mois par défaut sur le mois actuel
+            var currentMonth = new Date().getMonth() + 1; // Les mois en JS sont 0-indexés
+            emailMoisSelect.value = currentMonth;
+            
+            // Réinitialiser le type de fiche à mensuel et afficher le sélecteur de mois
+            emailTypeFicheSelect.value = 'mensuel';
+            emailMoisGroup.style.display = 'block';
+        });
+    });
+    
+    // Gestion de l'envoi d'email
+    document.getElementById('confirmEmail').addEventListener('click', function() {
+        var employeId = document.getElementById('emailEmployeId').value;
+        var typeFiche = document.getElementById('emailTypeFiche').value;
+        var annee = document.getElementById('emailAnnee').value;
+        
+        if (typeFiche === 'annuel') {
+            // Rediriger vers la route pour envoyer le récapitulatif annuel par email
+            window.location.href = '{{ path('app_paie_fiche_email_annee', {'id': 'EMPLOYE_ID'}) }}'.replace('EMPLOYE_ID', employeId) + '?annee=' + annee;
+        } else {
+            // Rediriger vers la route pour envoyer la fiche mensuelle par email
+            var mois = document.getElementById('emailMois').value;
+            window.location.href = '{{ path('app_paie_fiche_email', {'id': 'EMPLOYE_ID'}) }}'.replace('EMPLOYE_ID', employeId) + '?mois=' + mois + '&annee=' + annee;
+        }
+    });
+});
+</script>
+{% endblock %}

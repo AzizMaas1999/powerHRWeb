@@ -1,0 +1,38 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Nombre de jours</th>
+            <th>Montant</th>
+            <th>Mois</th>
+            <th>Année</th>
+            <th class="text-center">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for paie in paies %}
+            <tr>
+                <td>
+                    {% set printed = false %}
+                    {% for pointage in pointages %}
+                        {% if not printed and pointage.paie is not null and pointage.paie.id == paie.id %}
+                            {{ pointage.employe.username }}
+                            {% set printed = true %}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{ paie.nbJour }}</td>
+                <td>{{ paie.montant }}</td>
+                <td>{{ paie.mois }}</td>
+                <td>{{ paie.annee }}</td>
+                <td class="text-center">
+                    <a href="{{ path('app_paie_show', {'id': paie.id}) }}" class="btn btn-sm btn-outline-primary me-1">Afficher</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6" class="text-center text-muted">Aucune paie trouvée.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

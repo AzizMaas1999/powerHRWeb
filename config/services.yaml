@@ -5,6 +5,9 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     photos_directory: '%kernel.project_dir%/public/uploads/photos'
+    rapidapi.key: '%env(RAPIDAPI_KEY)%'
+    rapidapi.sender_email: '%env(RAPIDAPI_SENDER_EMAIL)%'
+    rapidapi.senders_name: '%env(RAPIDAPI_SENDERS_NAME)%'
 
 services:
     # default configuration for services in this file

@@ -9,6 +9,7 @@ use App\Repository\PointageRepository;
 use App\Repository\EmployeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -18,10 +19,29 @@ use Symfony\Component\Routing\Attribute\Route;
 final class PointageController extends AbstractController
 {
     #[Route(name: 'app_pointage_index', methods: ['GET'])]
-    public function index(PointageRepository $pointageRepository): Response
+    public function index(PointageRepository $pointageRepository, Request $request): Response
     {
+        // Récupérer le paramètre de recherche de date
+        $searchDate = $request->query->get('search_date');
+        
+        if ($searchDate) {
+            // Recherche par date spécifique
+            try {
+                $date = new \DateTime($searchDate);
+                $pointages = $pointageRepository->findBy(['date' => $date], ['date' => 'DESC']);
+            } catch (\Exception $e) {
+                // En cas d'erreur de format de date, ne rien filtrer
+                $this->addFlash('warning', 'Format de date invalide. Utilisez le format YYYY-MM-DD.');
+                $pointages = $pointageRepository->findBy([], ['date' => 'DESC']);
+            }
+        } else {
+            // Sans filtre, afficher tous les pointages triés par date
+            $pointages = $pointageRepository->findBy([], ['date' => 'DESC']);
+        }
+        
         return $this->render('pointage/index.html.twig', [
-            'pointages' => $pointageRepository->findAll(),
+            'pointages' => $pointages,
+            'search_date' => $searchDate,
         ]);
     }
 
@@ -59,16 +79,22 @@ final class PointageController extends AbstractController
         $pointageexiste = $pointageRepository->findOneBy([
             'employe' => $this->getUser(),
             'date' => new \DateTime('now', new \DateTimeZone('Africa/Tunis')),
-            'heureSortie' => null,
         ]);
         if ($pointageexiste) {
-            $pointageexiste->setHeureSortie(new \DateTime('now', new \DateTimeZone('Africa/Tunis')));
-            $entityManager->flush();
-            $this->addFlash('success', 'Pointage de sortie enregistré avec succès!');
-            return $this->redirect($request->headers->get('referer'), Response::HTTP_SEE_OTHER);
+            if ($pointageexiste->getHeureSortie() === null) {
+                $pointageexiste->setHeureSortie(new \DateTime('now', new \DateTimeZone('Africa/Tunis')));
+                $entityManager->flush();
+                $this->addFlash('success', 'Pointage de sortie enregistré avec succès!');
+                return $this->redirect($request->headers->get('referer'), Response::HTTP_SEE_OTHER);
+            }
+            else {
+                $this->addFlash('danger', 'Vous avez déjà pointé votre sortie aujourd\'hui!');
+                return $this->redirect($request->headers->get('referer'), Response::HTTP_SEE_OTHER);
+            }
+            
         }
         else {
-            $this->addFlash('danger', 'Vous avez déjà pointé votre sortie aujourd\'hui!');
+            $this->addFlash('danger', 'Vous n\'avez pas encore pointé votre entrée aujourd\'hui!');
             return $this->redirect($request->headers->get('referer'), Response::HTTP_SEE_OTHER);
         }
     }

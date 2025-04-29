@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+        .content {
+            padding: 20px 0;
+        }
+        .footer {
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #007bff;
+            color: #fff !important;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>PowerHR</h2>
+            <h3>Fiche de paie - {{ mois }} {{ annee }}</h3>
+        </div>
+        
+        <div class="content">
+            <p>Bonjour {% if employe.ficheEmploye %}{{ employe.ficheEmploye.prenom }} {{ employe.ficheEmploye.nom }}{% else %}{{ employe.username }}{% endif %},</p>
+            
+            <p>Veuillez trouver ci-joint votre fiche de paie pour le mois de {{ mois }} {{ annee }}.</p>
+            
+            <p>Ce document contient les informations détaillées concernant votre salaire, ainsi que les diverses retenues et cotisations sociales applicables.</p>
+            
+            <p>Pour toute question concernant votre paie, n'hésitez pas à contacter le service des ressources humaines.</p>
+            
+            <p>Cordialement,<br>
+            L'équipe des Ressources Humaines<br>
+            PowerHR</p>
+        </div>
+        
+        <div class="footer">
+            <p>Ce message est généré automatiquement, merci de ne pas y répondre.</p>
+            <p>&copy; {{ "now"|date("Y") }} PowerHR. Tous droits réservés.</p>
+        </div>
+    </div>
+</body>
+</html>

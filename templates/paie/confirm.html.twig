@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Confirmation de paie{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-light">
+                    <h2 class="h4 mb-0 text-center">Confirmation de paie pour {{ employe.username }}</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <div class="alert alert-info">
+                                Veuillez vérifier les détails de paiement ci-dessous avant de confirmer.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-1">Nom d'utilisateur:</p>
+                            <p class="fw-bold">{{ employe.username }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-muted mb-1">Poste:</p>
+                            <p>{{ employe.poste }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-1">Jours travaillés:</p>
+                            <p>{{ nb_jours }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-muted mb-1">Jours d'absence:</p>
+                            <p>{{ absences }}</p>
+                        </div>
+                    </div>
+                    
+                    {% if not isCurrentMonth %}
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-1">Mois:</p>
+                            <p>{{ mois }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-muted mb-1">Année:</p>
+                            <p>{{ annee }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-1">Salaire de base:</p>
+                            <p>{{ employe.salaire }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-muted mb-1 fw-bold">Montant à payer:</p>
+                            <p class="fw-bold text-success">{{ montant|round(0, 'floor') }}</p>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <form method="post">
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ path('app_showEmployePaie_index') }}" class="btn btn-secondary">Annuler</a>
+                            <button type="submit" class="btn btn-primary">Confirmer le paiement</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

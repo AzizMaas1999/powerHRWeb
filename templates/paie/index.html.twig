@@ -6,47 +6,85 @@
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="text-dark">Liste des paies</h1>
+        <div>
+            <a href="{{ path('app_paie_generate_current_month') }}" class="btn btn-primary me-2">Générer paies du mois en cours</a>
+            <a href="{{ path('app_paie_generate_all_previous') }}" class="btn btn-info">Générer toutes les paies antérieures</a>
+        </div>
+    </div>
+    
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <!-- Search form -->
+    <div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="mdi mdi-account-search"></i></span>
+                        <input type="text" id="search_username" class="form-control" placeholder="Rechercher par username..." value="{{ search_username }}">
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="table-responsive">
-        <table class="table">
-            <thead >
-                <tr>
-                    <th>Username</th>
-                    <th>Nombre de jours</th>
-                    <th>Montant</th>
-                    <th>Mois</th>
-                    <th>Année</th>
-                    <th class="text-center">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for paie in paies %}
-                    <tr>
-                        <td>
-                            {% set printed = false %}
-                            {% for pointage in pointages %}
-                                {% if not printed and pointage.paie is not null and pointage.paie.id == paie.id %}
-                                    {{ pointage.employe.username }}
-                                    {% set printed = true %}
-                                {% endif %}
-                            {% endfor %}
-                        </td>
-                        <td>{{ paie.nbJour }}</td>
-                        <td>{{ paie.montant }}</td>
-                        <td>{{ paie.mois }}</td>
-                        <td>{{ paie.annee }}</td>
-                        <td class="text-center">
-                            <a href="{{ path('app_paie_show', {'id': paie.id}) }}" class="btn btn-sm btn-outline-primary me-1">Afficher</a>
-                        </td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="6" class="text-center text-muted">Aucune paie trouvée.</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="table-responsive" id="paie-table-container">
+        {% include 'paie/_table.html.twig' %}
     </div>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('search_username');
+        const tableContainer = document.getElementById('paie-table-container');
+        let typingTimer;
+        const doneTypingInterval = 500; // wait 500ms after user stops typing
+        
+        searchInput.addEventListener('input', function() {
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(performSearch, doneTypingInterval);
+        });
+        
+        function performSearch() {
+            const query = searchInput.value.trim();
+            const url = '{{ path('app_paie_index') }}' + (query ? '?search_username=' + encodeURIComponent(query) : '');
+            
+            // Show loading indicator
+            tableContainer.innerHTML = '<div class="text-center p-4"><div class="spinner-border text-primary" role="status"></div></div>';
+            
+            // Fetch results
+            fetch(url, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.text())
+            .then(html => {
+                tableContainer.innerHTML = html;
+                
+                // Update URL without page reload
+                const newUrl = new URL(window.location.href);
+                if (query) {
+                    newUrl.searchParams.set('search_username', query);
+                } else {
+                    newUrl.searchParams.delete('search_username');
+                }
+                window.history.pushState({}, '', newUrl);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                tableContainer.innerHTML = '<div class="alert alert-danger">Une erreur est survenue lors de la recherche.</div>';
+            });
+        }
+    });
+</script>
 {% endblock %}

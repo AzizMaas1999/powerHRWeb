@@ -1,0 +1,228 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Fiche de Paie Annuelle - {{ employe.username }} - {{ annee }}{% endblock %}
+
+{% block body %}
+<div class="page-header d-print-none">
+    <h3 class="page-title">Récapitulatif Annuel des Fiches de Paie</h3>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_paie_index') }}">Paie</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_paie_fiche_employe') }}">Fiche de paie</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ employe.username }} - {{ annee }}</li>
+        </ol>
+    </nav>
+    <div class="btn-group">
+        <button type="button" class="btn btn-primary" onclick="window.print();">
+            <i class="mdi mdi-printer"></i> Imprimer
+        </button>
+        <a href="{{ path('app_paie_fiche_pdf_annee', {'id': employe.id, 'annee': annee}) }}" class="btn btn-info">
+            <i class="mdi mdi-file-pdf"></i> Télécharger PDF
+        </a>
+        <a href="{{ path('app_paie_fiche_employe') }}" class="btn btn-secondary">Retour à la liste</a>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <!-- Contenu à imprimer -->
+                <div class="fiche-paie-container">
+                    <div class="fiche-header text-center mb-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-3">
+                                <div class="company-logo text-md-left text-center mb-3 mb-md-0">
+                                    <img src="{{ asset('UI/assets/images/Logo.png') }}" alt="PowerHR" width="150">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="fiche-title">
+                                    <h2 class="mb-2">RÉCAPITULATIF ANNUEL</h2>
+                                    <h3 class="text-muted">{{ annee }}</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-3"></div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="border p-3 h-100">
+                                <h5 class="text-primary mb-3">EMPLOYEUR</h5>
+                                <div>PowerHR</div>
+                                <div>15 Rue des Ingénieurs</div>
+                                <div>1000 Tunis, Tunisie</div>
+                                <div>Code entreprise: PWHR-123456</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="border p-3 h-100">
+                                <h5 class="text-primary mb-3">SALARIÉ</h5>
+                                <div><strong>Nom:</strong> {{ employe.username }}</div>
+                                <div><strong>Poste:</strong> {{ employe.poste }}</div>
+                                <div><strong>Département:</strong> {% if employe.departement is not null and employe.departement.nom is defined %}{{ employe.departement.nom }}{% else %}Non assigné{% endif %}</div>
+                                <div><strong>Code CNSS:</strong> {{ employe.codeSociale }}</div>
+                                <div><strong>RIB:</strong> {{ employe.rib }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <strong>Récapitulatif de l'année {{ annee }}</strong> - {{ fichesTrouvees }} fiches de paie trouvées
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead class="bg-primary text-white">
+                                <tr>
+                                    <th>Mois</th>
+                                    <th>Jours travaillés</th>
+                                    <th>Salaire brut</th>
+                                    <th>Déductions</th>
+                                    <th>Salaire net</th>
+                                    <th class="d-print-none">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for num, item in paies %}
+                                <tr>
+                                    <td>{{ item.mois_nom }}</td>
+                                    <td>{{ item.paie.nbJour }}</td>
+                                    <td>{{ item.paie.montant|number_format(3, ',', ' ') }} DT</td>
+                                    <td>{{ item.deductions|number_format(3, ',', ' ') }} DT</td>
+                                    <td>{{ item.net|number_format(3, ',', ' ') }} DT</td>
+                                    <td class="d-print-none">
+                                        <a href="{{ path('app_paie_fiche_generer', {'id': employe.id, 'mois': item.mois_num, 'annee': annee}) }}" class="btn btn-sm btn-outline-info">
+                                            <i class="mdi mdi-eye"></i> Détails
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot class="bg-light">
+                                <tr class="font-weight-bold">
+                                    <td>TOTAL</td>
+                                    <td>{{ totalJours }}</td>
+                                    <td>{{ totalMontant|number_format(3, ',', ' ') }} DT</td>
+                                    <td>{{ totalDeductions|number_format(3, ',', ' ') }} DT</td>
+                                    <td>{{ totalNet|number_format(3, ',', ' ') }} DT</td>
+                                    <td class="d-print-none"></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div class="row mt-5">
+                        <div class="col-md-6">
+                            <div class="card bg-light p-3">
+                                <h5>Résumé annuel</h5>
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td>Salaire de base annuel:</td>
+                                        <td>{{ (salaireBase * 12)|number_format(3, ',', ' ') }} DT</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Montant total versé:</td>
+                                        <td>{{ totalMontant|number_format(3, ',', ' ') }} DT</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total jours travaillés:</td>
+                                        <td>{{ totalJours }} jours</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Moyenne mensuelle:</td>
+                                        <td>{{ (totalNet / fichesTrouvees)|number_format(3, ',', ' ') }} DT</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <div class="signature mt-5">
+                                <p>Fait à Tunis, le {{ dateCreation|date('d/m/Y') }}</p>
+                                <div class="signature-line">
+                                    <p>Signature et cachet de l'employeur</p>
+                                    <div class="signature-space"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer text-center mt-5 pt-3 border-top">
+                        <p class="text-muted">PowerHR - Système de gestion des ressources humaines</p>
+                        <p class="text-muted small">Document généré automatiquement - Ne nécessite pas de signature manuscrite</p>
+                    </div>
+                </div>
+                <!-- Fin du contenu à imprimer -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @media print {
+        @page {
+            size: A4 landscape;
+            margin: 1cm;
+        }
+        
+        body * {
+            visibility: hidden;
+        }
+        
+        .card-body, .card-body * {
+            visibility: visible;
+        }
+        
+        .d-print-none {
+            display: none !important;
+        }
+        
+        .card {
+            border: none !important;
+            box-shadow: none !important;
+        }
+        
+        .card-body {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            background-color: white !important;
+            color: black !important;
+            padding: 0 !important;
+        }
+        
+        .bg-primary {
+            background-color: #f0f0f0 !important;
+            color: #000 !important;
+        }
+        
+        .text-white {
+            color: #000 !important;
+        }
+        
+        .table th, .table td {
+            padding: 0.5rem;
+        }
+    }
+
+    .fiche-paie-container {
+        padding: 20px;
+    }
+    
+    .signature-line {
+        margin-top: 60px;
+    }
+    
+    .signature-space {
+        height: 50px;
+        border-bottom: 1px solid #ccc;
+        margin-top: 10px;
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+    }
+</style>
+{% endblock %}
