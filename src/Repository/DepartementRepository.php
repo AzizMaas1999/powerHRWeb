@@ -16,6 +16,22 @@ class DepartementRepository extends ServiceEntityRepository
         parent::__construct($registry, Departement::class);
     }
 
+    public function searchDepartements(?string $query)
+    {
+        $qb = $this->createQueryBuilder('d')
+            ->leftJoin('d.entreprise', 'e')
+            ->orderBy('d.id', 'DESC');
+
+        if ($query) {
+            $qb->where('d.nom LIKE :query')
+               ->orWhere('d.description LIKE :query')
+               ->orWhere('e.nom LIKE :query')
+               ->setParameter('query', '%' . $query . '%');
+        }
+
+        return $qb;
+    }
+
     //    /**
     //     * @return Departement[] Returns an array of Departement objects
     //     */

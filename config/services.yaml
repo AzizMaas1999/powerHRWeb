@@ -9,6 +9,7 @@ parameters:
     twilio.auth_token: '%env(beb68004c7e84c85f3c7b8b33817def6)%'
     twilio.verify_sid: '%env(VA80782775f8b149d19748fdda1b30fdac)%'
     twilio.from_number: '%env(TWILIO_FROM_NUMBER)%'
+    google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
 
 services:
     # default configuration for services in *this* file

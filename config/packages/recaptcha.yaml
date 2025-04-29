@@ -1,0 +1,7 @@
+services:
+    ReCaptcha\ReCaptcha:
+        arguments:
+            $secret: '%env(GOOGLE_RECAPTCHA_SECRET)%'
+ 
+parameters:
+    google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%' 

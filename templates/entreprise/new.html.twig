@@ -6,11 +6,24 @@
     {{ parent() }}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/css/intlTelInput.css">
     <style>
+        .container {
+            margin-top: 3rem !important;
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .page-title {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.75rem;
+            margin: 0;
+        }
         .form-container {
             background: rgba(255, 255, 255, 0.02);
             border-radius: 10px;
             padding: 25px;
-            margin-top: 20px;
             box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
         }
         .form-title {
@@ -103,15 +116,36 @@
             font-size: 0.875rem;
             border-radius: 6px;
             transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
         .btn-action i {
-            margin-right: 0.5rem;
+            font-size: 16px;
         }
-        .iti { width: 100%; }
-        .iti__flag-container { z-index: 4; }
-        .form-control.iti__tel-input { padding-left: 90px; }
-        .iti__selected-flag { background: rgba(255,255,255,0.05); border-right: 1px solid rgba(255,255,255,0.1); border-radius: 6px 0 0 6px; }
-        .iti__country-list { background: rgba(30,34,54,0.95); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.9); }
+        .iti { 
+            width: 100%; 
+            display: block;
+        }
+        .iti__flag-container { 
+            z-index: 4; 
+        }
+        .form-control.iti__tel-input { 
+            padding-left: 90px !important;
+            display: block !important;
+            visibility: visible !important;
+            width: 100% !important;
+        }
+        .iti__selected-flag { 
+            background: rgba(255,255,255,0.05); 
+            border-right: 1px solid rgba(255,255,255,0.1); 
+            border-radius: 6px 0 0 6px; 
+        }
+        .iti__country-list { 
+            background: rgba(30,34,54,0.95); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            color: rgba(255,255,255,0.9); 
+        }
         .iti__country:hover { background: rgba(255,255,255,0.1); }
         .iti__active { background: rgba(255,255,255,0.15); }
         .iti__selected-flag:hover { background: rgba(255,255,255,0.1); }
@@ -122,42 +156,84 @@
         .iti__country.iti__preferred { background: rgba(255,255,255,0.05); }
         .iti__country.iti__preferred:hover { background: rgba(255,255,255,0.1); }
         .iti__divider { border-bottom-color: rgba(255,255,255,0.1); }
-        .iti__search-input { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.9); border: 1px solid rgba(255,255,255,0.1); }
+        .iti__search-input { 
+            background: rgba(255,255,255,0.05); 
+            color: rgba(255,255,255,0.9); 
+            border: 1px solid rgba(255,255,255,0.1); 
+        }
         .iti__search-input::placeholder { color: rgba(255,255,255,0.5); }
-        .iti__search-input:focus { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); }
-        /* Ensure phone input and button stay on the same line */
+        .iti__search-input:focus { 
+            background: rgba(255,255,255,0.08); 
+            border-color: rgba(255,255,255,0.2); 
+        }
         .input-group {
-            display: flex;
+            display: flex !important;
             flex-wrap: nowrap !important;
-            align-items: stretch;
+            align-items: stretch !important;
         }
         .input-group .iti {
-            flex: 1 1 auto;
-            width: 1%;
-            min-width: 0;
-        }
-        .input-group .form-control.iti__tel-input {
-            width: 100%;
-            min-width: 0;
+            flex: 1 1 auto !important;
+            width: 1% !important;
+            min-width: 0 !important;
         }
         .input-group > .btn {
-            white-space: nowrap;
-            flex-shrink: 0;
+            white-space: nowrap !important;
+            flex-shrink: 0 !important;
         }
         .btn-verif-code {
-            padding: 0.25rem 0.7rem !important;
-            font-size: 0.82rem !important;
-            line-height: 1.2 !important;
+            margin-left: 5px !important;
+            height: auto !important;
+            align-self: stretch !important;
+        }
+        .recaptcha-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .modal-content {
+            background: rgba(30, 34, 54, 0.92);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1.5px solid rgba(255,255,255,0.12);
+            color: #e6eaff;
+            border-radius: 22px;
+        }
+        .modal-header {
+            border-bottom: none;
+            padding: 24px 0 6px 0;
+        }
+        .modal-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #6cf6ff;
+        }
+        .modal-body .form-control {
+            background: rgba(255,255,255,0.09);
+            border: 1.5px solid #6cf6ff44;
+            border-radius: 12px;
+            color: #e6eaff;
+        }
+        .modal-footer {
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #6cf6ff 0%, #3fbbff 100%);
+            border: none;
+            color: #232b3b;
+            font-weight: 600;
         }
     </style>
 {% endblock %}
 
 {% block body %}
-    <div class="container mt-5">
-        <div class="form-container">
-            <h1 class="form-title">Nouvelle Entreprise</h1>
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Nouvelle Entreprise</h1>
+        </div>
 
-            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+        <div class="form-container">
+            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate', 'id': 'entreprise-form'}}) }}
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
@@ -210,10 +286,18 @@
                         <small class="help-text">Format exemple: 1234567/A/B/C/000</small>
                         {% if form_errors(form.matricule_fiscale) %}
                             <div class="invalid-feedback" style="display: flex;">
-                            <i class="bi bi-exclamation-triangle-fill error-icon"></i>
+                                <i class="bi bi-exclamation-triangle-fill error-icon"></i>
                                 {{ form_errors(form.matricule_fiscale) }}
-                        </div>
+                            </div>
                         {% endif %}
+                        <div class="recaptcha-container">
+                            <div class="g-recaptcha" data-sitekey="{{ google_recaptcha_site_key }}"></div>
+                            <div id="recaptcha-error" class="invalid-feedback" style="display: none;">
+                                <i class="bi bi-exclamation-triangle-fill error-icon"></i>
+                                Veuillez cocher la case reCAPTCHA
+                            </div>
+                            <small class="help-text">Cette page est protégée par reCAPTCHA et les <a href="https://policies.google.com/privacy" target="_blank">règles de confidentialité</a> et les <a href="https://policies.google.com/terms" target="_blank">conditions d'utilisation</a> de Google s'appliquent.</small>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -255,38 +339,274 @@
             {{ form_end(form) }}
         </div>
     </div>
+
+    <!-- Code Verification Modal -->
+    <div class="modal fade" id="codeVerificationModal" tabindex="-1" role="dialog" aria-labelledby="codeVerificationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="codeVerificationModalLabel">Vérification du code</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="verification-code-input">Entrez le code reçu :</label>
+                        <input type="text" class="form-control" id="verification-code-input" maxlength="8" autocomplete="one-time-code">
+                        <div id="code-verification-feedback"></div>
+                        <div id="code-verification-success">
+                            <i class="mdi mdi-check-circle-outline"></i> Code vérifié !
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    <button type="button" id="verify-code-btn" class="btn btn-primary">Vérifier</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block javascripts %}
 {{ parent() }}
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/intlTelInput.min.js"></script>
 <script>
-(function() {
-    function initIntlTelInput() {
+document.addEventListener('DOMContentLoaded', function() {
+    let iti;
+    let verifyBtnInitialized = false;
+    
+    // Form validation
+    const form = document.getElementById('entreprise-form');
+    const recaptchaError = document.getElementById('recaptcha-error');
+    
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent form submission initially
+            
+            // Check reCAPTCHA
+            const response = grecaptcha.getResponse();
+            if (!response) {
+                recaptchaError.style.display = 'flex';
+                // Scroll to the reCAPTCHA error
+                recaptchaError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return false;
+            }
+            
+            // Hide error if reCAPTCHA is checked
+            recaptchaError.style.display = 'none';
+            
+            // If all validations pass, submit the form
+            form.submit();
+        });
+    }
+    
+    // Reset reCAPTCHA error when the user interacts with reCAPTCHA
+    window.recaptchaCallback = function() {
+        if (recaptchaError) {
+            recaptchaError.style.display = 'none';
+        }
+    };
+    
+    function initPhoneInput() {
         const phoneInput = document.getElementById('entreprise_phone_number');
         if (phoneInput && !phoneInput.classList.contains('iti-initialized')) {
-            window.intlTelInput(phoneInput, {
+            iti = window.intlTelInput(phoneInput, {
                 initialCountry: 'tn',
                 preferredCountries: ['tn', 'fr', 'ma', 'dz'],
                 separateDialCode: true,
-                utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js"
+                utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js",
+                customContainer: "w-100",
+                formatOnDisplay: true,
+                autoFormat: true,
+                nationalMode: false
             });
+            
+            // Remove any input restrictions
+            phoneInput.removeAttribute('maxlength');
+            phoneInput.setAttribute('pattern', '[0-9]+');
+            
+            phoneInput.addEventListener('input', function(e) {
+                // Allow only numbers
+                let value = e.target.value.replace(/\D/g, '');
+                // Don't restrict the length here
+                e.target.value = value;
+            });
+            
             phoneInput.classList.add('iti-initialized');
-            setTimeout(function() {
+            
+            // Force reflow to ensure proper display
+            setTimeout(() => {
                 window.dispatchEvent(new Event('resize'));
+                phoneInput.style.visibility = 'visible';
+                phoneInput.style.display = 'block';
             }, 100);
+            
+            initVerification();
         }
     }
+    
+    function initVerification() {
+        if (verifyBtnInitialized) return;
+        verifyBtnInitialized = true;
+        
+        // Modal elements
+        const modal = document.getElementById('codeVerificationModal');
+        const sendBtn = document.getElementById('send-verification-btn');
+        const verifyBtn = document.getElementById('verify-code-btn');
+        const codeInput = document.getElementById('verification-code-input');
+        const feedback = document.getElementById('code-verification-feedback');
+        const successDiv = document.getElementById('code-verification-success');
+        const sendStatus = document.getElementById('send-status');
+        let phoneValue = '';
 
-    // Run on both direct page load and client-side navigation
-    document.addEventListener('DOMContentLoaded', initIntlTelInput);
-    document.addEventListener('turbo:load', initIntlTelInput);
-    document.addEventListener('turbo:render', initIntlTelInput);
+        // Remove any existing event listeners
+        const newVerifyBtn = verifyBtn.cloneNode(true);
+        verifyBtn.parentNode.replaceChild(newVerifyBtn, verifyBtn);
+        const newSendBtn = sendBtn.cloneNode(true);
+        sendBtn.parentNode.replaceChild(newSendBtn, sendBtn);
 
-    // Watch for DOM changes
-    const observer = new MutationObserver(initIntlTelInput);
-    observer.observe(document.body, { childList: true, subtree: true });
-})();
+        // Show/Hide Modal functions
+        function showModal() {
+            if (typeof $ !== 'undefined' && $(modal).modal) {
+                $(modal).modal('show');
+            } else {
+                modal.style.display = 'block';
+                modal.classList.add('show');
+            }
+            codeInput.value = '';
+            feedback.style.display = 'none';
+            successDiv.style.display = 'none';
+        }
+
+        function hideModal() {
+            if (typeof $ !== 'undefined' && $(modal).modal) {
+                $(modal).modal('hide');
+            } else {
+                modal.style.display = 'none';
+                modal.classList.remove('show');
+            }
+        }
+
+        // Send verification code
+        if (newSendBtn) {
+            newSendBtn.addEventListener('click', function() {
+                if (!iti.isValidNumber()) {
+                    sendStatus.textContent = "Numéro de téléphone invalide";
+                    sendStatus.style.color = "#ff4d4d";
+                    return;
+                }
+
+                phoneValue = iti.getNumber();
+                sendStatus.textContent = "Envoi du code...";
+                sendStatus.style.color = "#0d6efd";
+
+                fetch('/api/sms/send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ to: phoneValue })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        sendStatus.textContent = "Code envoyé !";
+                        sendStatus.style.color = "#28a745";
+                        showModal();
+                    } else {
+                        sendStatus.textContent = data.error || "Erreur lors de l'envoi";
+                        sendStatus.style.color = "#ff4d4d";
+                    }
+                })
+                .catch(error => {
+                    sendStatus.textContent = "Erreur réseau";
+                    sendStatus.style.color = "#ff4d4d";
+                });
+            });
+        }
+
+        // Verify code
+        if (newVerifyBtn) {
+            let isVerifying = false; // Add flag to prevent duplicate requests
+            
+            newVerifyBtn.addEventListener('click', function() {
+                if (isVerifying) return; // Prevent duplicate requests
+                
+                const code = codeInput.value.trim();
+                if (!code || code.length < 4) {
+                    feedback.textContent = "Code invalide";
+                    feedback.style.display = "block";
+                    successDiv.style.display = "none";
+                    return;
+                }
+
+                isVerifying = true; // Set flag before making request
+                feedback.textContent = "Vérification en cours...";
+                feedback.style.display = "block";
+
+                fetch('/api/sms/verify', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: JSON.stringify({ to: phoneValue, code: code })
+                })
+                .then(r => r.json())
+                .then(data => {
+                    isVerifying = false; // Reset flag after response
+                    if (data.success) {
+                        feedback.style.display = "none";
+                        successDiv.style.display = "block";
+                        // Update the hidden phone_verified field
+                        const verifiedInput = document.querySelector('input[name="entreprise[phone_verified]"]');
+                        if (verifiedInput) {
+                            verifiedInput.value = "1";
+                        }
+                        setTimeout(hideModal, 1500);
+                    } else {
+                        feedback.textContent = "Code incorrect ou déjà utilisé. Veuillez demander un nouveau code.";
+                        feedback.style.display = "block";
+                        successDiv.style.display = "none";
+                        // Clear the input for a new attempt
+                        codeInput.value = '';
+                        // Show a message about requesting a new code
+                        if (newSendBtn) {
+                            newSendBtn.style.animation = 'pulse 1s infinite';
+                        }
+                    }
+                })
+                .catch(() => {
+                    isVerifying = false; // Reset flag on error
+                    feedback.textContent = "Erreur réseau. Veuillez réessayer.";
+                    feedback.style.display = "block";
+                    successDiv.style.display = "none";
+                });
+            });
+        }
+
+        // Close modal on backdrop click
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                hideModal();
+            }
+        });
+
+        // Close modal on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.classList.contains('show')) {
+                hideModal();
+            }
+        });
+    }
+
+    // Initialize on page load
+    initPhoneInput();
+});
 </script>
 {% endblock %}
 

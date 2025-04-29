@@ -1,0 +1,53 @@
+{% for departement in pagination %}
+    <tr>
+        <td>{{ departement.id }}</td>
+        <td>{{ departement.nom }}</td>
+        <td>
+            {% if departement.description|length > 60 %}
+                {{ departement.description|slice(0, 60) ~ '...' }}
+            {% else %}
+                {{ departement.description }}
+            {% endif %}
+        </td>
+        <td>{{ departement.entreprise.nom }}</td>
+        <td class="text-center">
+            <a href="{{ path('app_departement_show', {'id': departement.id}) }}" class="btn btn-sm btn-view btn-action me-1">
+                <i class="bi bi-eye"></i> Voir
+            </a>
+            <a href="{{ path('app_departement_edit', {'id': departement.id}) }}" class="btn btn-sm btn-edit btn-action me-1">
+                <i class="bi bi-pencil"></i> Modifier
+            </a>
+            <button type="button" class="btn btn-sm btn-delete btn-action" data-bs-toggle="modal" data-bs-target="#deleteModal{{ departement.id }}">
+                <i class="bi bi-trash"></i> Supprimer
+            </button>
+
+            <!-- Delete Modal -->
+            <div class="modal fade" id="deleteModal{{ departement.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ departement.id }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalLabel{{ departement.id }}">Confirmation de suppression</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Êtes-vous sûr de vouloir supprimer ce département ?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Annuler</button>
+                            <form method="post" action="{{ path('app_departement_delete', {'id': departement.id}) }}" style="display:inline-block;">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ departement.id) }}">
+                                <button class="btn btn-confirm-delete">Confirmer la suppression</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+{% else %}
+    <tr>
+        <td colspan="5" class="text-center py-4" style="color: rgba(255, 255, 255, 0.5);">
+            Aucun département trouvé.
+        </td>
+    </tr>
+{% endfor %} 
