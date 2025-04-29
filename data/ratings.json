@@ -82,5 +82,23 @@
         "rating": 1,
         "comment": null,
         "date": "2025-04-28 10:48:21"
+    },
+    {
+        "clfrId": 41,
+        "rating": 4,
+        "comment": null,
+        "date": "2025-04-28 12:51:29"
+    },
+    {
+        "clfrId": 48,
+        "rating": 4,
+        "comment": null,
+        "date": "2025-04-28 12:59:07"
+    },
+    {
+        "clfrId": 47,
+        "rating": 4,
+        "comment": null,
+        "date": "2025-04-28 15:50:49"
     }
 ]
