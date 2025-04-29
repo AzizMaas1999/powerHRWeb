@@ -3,47 +3,111 @@
 {% block title %}Nouveau Paiement{% endblock %}
 
 {% block body %}
-{% block javascripts %}
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const factureSelect = document.querySelector('select[name$="[factures][]"]');
-        const montantInput = document.querySelector('input[name$="[montant]"]');
-
-        if (factureSelect && montantInput) {
-            factureSelect.addEventListener('change', function () {
-                let total = 0;
-                const selectedOptions = factureSelect.selectedOptions;
-
-                for (let i = 0; i < selectedOptions.length; i++) {
-                    const montant = parseFloat(selectedOptions[i].dataset.total);
-                    if (!isNaN(montant)) {
-                        total += montant;
-                    }
-                }
-
-                montantInput.value = total.toFixed(2);
-            });
-        }
-    });
-</script>
-{% endblock %}
-
 <div class="container mt-5">
     <div class="card shadow-lg rounded border-0 bg-dark text-white">
         <div class="card-body">
             <h1 class="card-title mb-4 text-white">Créer un nouveau Paiement</h1>
 
-            {# ✅ Affichage des messages d'erreur flash #}
+            {# ✅ Affichage des messages flash #}
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success">{{ message }}</div>
+            {% endfor %}
             {% for message in app.flashes('error') %}
                 <div class="alert alert-danger">{{ message }}</div>
             {% endfor %}
+            {% for message in app.flashes('warning') %}
+                <div class="alert alert-warning">{{ message }}</div>
+            {% endfor %}
 
+            {# ✅ Formulaire #}
             {{ include('paiement/_form.html.twig') }}
 
-            <a href="{{ path('app_paiement_index') }}" class="btn btn-outline-light mt-3">
+            {# ✅ Labels personnalisés #}
+            
+
+            <a href="{{ path('app_paiement_index') }}" class="btn btn-outline-light mt-4">
                 ← Retour à la liste
             </a>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Sélecteurs corrigés pour correspondre aux noms de champs
+    const factureSelect = document.querySelector('select[name="paiement[factures][]"]');
+    const montantInput = document.querySelector('input[name="paiement[montant]"]');
+    const deviseSelect = document.querySelector('select[name="paiement[devise]"]');
+
+    const montantAffiche = document.getElementById('montant-affiche');
+    const montantConverti = document.getElementById('montant-converti');
+
+    async function updateConvertedMontant() {
+        if (!montantInput || !deviseSelect || !montantAffiche || !montantConverti) {
+            console.error('Certains éléments sont manquants.');
+            return;
+        }
+
+        const montant = parseFloat(montantInput.value || "0");
+        const devise = deviseSelect.value;
+
+        montantAffiche.value = isNaN(montant) ? '' : montant.toFixed(2) + ' TND';
+
+        if (!isNaN(montant) && devise && montant > 0 && devise !== 'TND') {
+            try {
+                // URL corrigée pour correspondre à la route dans ton contrôleur
+                const response = await fetch(`/paiement/convert?amount=${montant}&currency=${devise}`);
+                const data = await response.json();
+
+                if (data.converted) {
+                    montantConverti.value = data.converted.toFixed(2) + ' ' + devise;
+                } else {
+                    montantConverti.value = 'Erreur de conversion';
+                }
+            } catch (error) {
+                console.error('Erreur API', error);
+                montantConverti.value = 'Erreur API';
+            }
+        } else if (devise === 'TND') {
+            montantConverti.value = montant.toFixed(2) + ' TND (pas de conversion nécessaire)';
+        } else {
+            montantConverti.value = '';
+        }
+    }
+
+    // Quand on change la sélection de facture
+    if (factureSelect && montantInput) {
+        factureSelect.addEventListener('change', function () {
+            let total = 0;
+            const selectedOptions = Array.from(factureSelect.selectedOptions);
+
+            for (let i = 0; i < selectedOptions.length; i++) {
+                const montant = parseFloat(selectedOptions[i].dataset.total);
+                if (!isNaN(montant)) {
+                    total += montant;
+                }
+            }
+
+            montantInput.value = total.toFixed(2);
+
+            // ➡️ Mettre à jour affichage après avoir changé montant
+            updateConvertedMontant();
+        });
+    }
+
+    // Quand on modifie montant ou devise
+    if (montantInput) {
+        montantInput.addEventListener('input', updateConvertedMontant);
+    }
+    if (deviseSelect) {
+        deviseSelect.addEventListener('change', updateConvertedMontant);
+    }
+
+    // Appeler au démarrage pour afficher directement
+    updateConvertedMontant();
+});
+</script>
 {% endblock %}

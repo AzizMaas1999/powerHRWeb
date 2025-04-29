@@ -45,6 +45,25 @@ class PaiementType extends AbstractType
                 'label' => 'Montant',
                 'attr' => ['class' => 'form-control', 'min' => 0, 'step' => '0.01']
             ])
+            
+            ->add('devise', ChoiceType::class, [  // 👈 ici devise au lieu de currency
+                'choices' => [
+                    'USD' => 'USD',
+                    'EUR' => 'EUR',
+                    'TND' => 'TND',
+                    'GBP' => 'GBP',
+                ],
+                'label' => 'Devise',
+                'required' => true,
+                'mapped' => false,
+                'attr' => ['class' => 'form-control']
+
+            ])
+            
+
+            
+            
+            
 
             ->add('factures', EntityType::class, [
                 'class' => Facture::class,

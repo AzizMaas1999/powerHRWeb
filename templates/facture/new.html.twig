@@ -35,7 +35,7 @@
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label text-light fw-bold">💶 Total</label>
-                    {{ form_widget(form.total, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_widget(form.total, {'attr': {'class': 'form-control bg-dark text-warning fw-bold', 'id': form.total.vars.id }}) }}
                     {{ form_errors(form.total) }}
                 </div>
             </div>
@@ -46,14 +46,21 @@
                     <thead class="table-primary text-dark">
                         <tr>
                             <th style="width: 50px;">✔</th>
-                            <th>Nom de l'article</th>
+                            <th>Nom</th>
+                            <th>Prix Unitaire</th>
+                            <th>Quantité</th>
+                            <th>TVA</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for choice in form.articles %}
+                            {% set id = choice.vars.value %}
                             <tr>
                                 <td>{{ form_widget(choice) }}</td>
-                                <td>{{ form_label(choice, null, {'label_attr': {'class': 'text-white'}}) }}</td>
+                                <td>{{ articlesList[id].description }}</td>
+                                <td>{{ articlesList[id].prixUni }}</td>
+                                <td>{{ articlesList[id].quantity }}</td>
+                                <td>{{ articlesList[id].tva }} %</td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -68,6 +75,53 @@
 
             {{ form_end(form) }}
         </div>
+
+        
     </div>
 </div>
+
+{# 🔥 Script pour le calcul automatique du total #}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="facture[articles]"]');
+        const totalField = document.getElementById('{{ form.total.vars.id }}');
+
+
+        const articleData = {
+            {% for id, article in articlesList %}
+                '{{ id }}': {
+                    prixUni: {{ article.prixUni|default(0) }},
+                    quantity: {{ article.quantity|default(1) }},
+                    tva: {{ article.tva|default(0) }}
+                },
+            {% endfor %}
+        };
+
+        function updateTotal() {
+            let total = 0;
+
+            checkboxes.forEach(function (checkbox) {
+                if (checkbox.checked) {
+                    const articleId = checkbox.value;
+                    const data = articleData[articleId];
+
+                    if (data) {
+                        let montantHT = data.prixUni * data.quantity;
+                        let montantTVA = montantHT * (data.tva / 100);
+                        total += montantHT + montantTVA;
+                    }
+                }
+            });
+
+            totalField.value = total.toFixed(2);
+        }
+
+        checkboxes.forEach(function (checkbox) {
+            checkbox.addEventListener('change', updateTotal);
+        });
+
+        updateTotal();
+        
+    });
+</script>
 {% endblock %}

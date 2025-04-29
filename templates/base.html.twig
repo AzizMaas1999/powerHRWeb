@@ -16,6 +16,7 @@
       <link rel="stylesheet" href="{{ asset('UI/assets/vendors/owl-carousel-2/owl.theme.default.min.css') }}">
       <link rel="stylesheet" href="{{ asset('UI/assets/css/style.css') }}">
       <link rel="shortcut icon" href="{{ asset('UI/assets/images/favicon.png') }}" />
+      <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
       {% endblock %}
 
       {% block javascripts %}
@@ -39,6 +40,7 @@
       <!-- Custom js for this page -->
       <script src="{{ asset('UI/assets/js/dashboard.js') }}"></script>
       <!-- End custom js for this page -->
+      
           {% block importmap %}{{ importmap('app') }}{% endblock %}
       {% endblock %}
   </head>

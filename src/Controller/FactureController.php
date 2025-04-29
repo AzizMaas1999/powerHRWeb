@@ -14,6 +14,12 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
+use App\Repository\ArticleRepository;
+use App\Entity\Article;
+use App\Form\ArticleType;
+use Dompdf\Dompdf;
+use Dompdf\Options;
+
 
 #[Route('/facture')]
 final class FactureController extends AbstractController
@@ -34,6 +40,16 @@ final class FactureController extends AbstractController
         $facture = new Facture();
         $form = $this->createForm(FactureType::class, $facture);
         $form->handleRequest($request);
+        $articles = $entityManager->getRepository(Article::class)->findAll();
+
+        // Créer un tableau clé = ID, valeur = Article
+        $articlesArray = [];
+        foreach ($articles as $article) {
+            $articlesArray[$article->getId()] = $article;
+        }
+        
+
+
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Calculer le total des articles associés à la facture
@@ -48,6 +64,8 @@ final class FactureController extends AbstractController
         return $this->render('facture/new.html.twig', [
             'facture' => $facture,
             'form' => $form,
+            'articlesList' => $articlesArray, // <-- pas $articles simple
+
         ]);
     }
 
@@ -119,5 +137,40 @@ final class FactureController extends AbstractController
 
         // Rediriger l'utilisateur vers la page Stripe pour le paiement
         return new RedirectResponse($checkoutSession->url);
+    }
+
+
+    #[Route('/facture/{id}/pdf', name: 'app_facture_pdf')]
+    public function generatePdf(Facture $facture): Response
+    {
+        // Configuration de base
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'Arial');
+    
+        // Instancier Dompdf avec les options
+        $dompdf = new Dompdf($pdfOptions);
+    
+        // Générer le HTML
+        $html = $this->renderView('facture/pdf.html.twig', [
+            'facture' => $facture,
+        ]);
+    
+        $dompdf->loadHtml($html);
+    
+        // (optionnel) Format du papier : A4 portrait
+        $dompdf->setPaper('A4', 'portrait');
+    
+        // Génération du PDF
+        $dompdf->render();
+    
+        // Envoi du PDF au navigateur
+        return new Response(
+            $dompdf->output(),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="facture_'.$facture->getNum().'.pdf"',
+            ]
+        );
     }
 }

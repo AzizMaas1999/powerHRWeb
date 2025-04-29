@@ -12,8 +12,11 @@
         </a>
     </div>
 
+    {# Champ de recherche #}
+    <input type="text" id="searchInput" class="form-control mb-3" placeholder="Rechercher un paiement...">
+
     <div class="table-responsive">
-        <table class="table table-dark table-hover table-bordered align-middle shadow-sm rounded">
+        <table class="table">
             <thead class="table-light text-dark text-center">
                 <tr>
                     <th scope="col">Date</th>
@@ -23,7 +26,7 @@
                     <th scope="col">Actions</th>
                 </tr>
             </thead>
-            <tbody class="text-center">
+            <tbody class="text-center" id="paiementsTable">
             {% for paiement in paiements %}
                 <tr>
                     <td>{{ paiement.date ? paiement.date|date('d/m/Y') : '—' }}</td>
@@ -32,7 +35,7 @@
                     <td>{{ paiement.montant }} €</td>
                     <td>
                         <div class="btn-group" role="group">
-                            <a href="{{ path('app_paiement_show', {'id': paiement.id}) }}" class="btn btn-outline-light btn-sm">Voir</a>
+                            <a href="{{ path('app_paiement_show', {'id': paiement.id}) }}" class="btn btn-outline-primary btn-sm">Voir</a>
                             <a href="{{ path('app_paiement_edit', {'id': paiement.id}) }}" class="btn btn-outline-info btn-sm">Modifier</a>
                         </div>
                     </td>
@@ -46,4 +49,21 @@
         </table>
     </div>
 </div>
+
+{# Script de recherche JavaScript #}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('searchInput');
+        const rows = document.querySelectorAll('#paiementsTable tr');
+
+        searchInput.addEventListener('keyup', function () {
+            const filter = this.value.toLowerCase();
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(filter) ? '' : 'none';
+            });
+        });
+    });
+</script>
 {% endblock %}
