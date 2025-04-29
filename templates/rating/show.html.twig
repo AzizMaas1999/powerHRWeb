@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Évaluations{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Évaluations</h1>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Statistiques</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p>Note moyenne : {{ averageRating|number_format(1) }}/5</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p>Nombre d'évaluations : {{ ratingCount }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="list-group">
+            {% for rating in ratings %}
+                <div class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">Note : {{ rating.rating }}/5</h5>
+                        <small>{{ rating.createdAt|date('d/m/Y H:i') }}</small>
+                    </div>
+                    {% if rating.comment %}
+                        <p class="mb-1">{{ rating.comment }}</p>
+                    {% endif %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    Aucune évaluation pour le moment.
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="mt-4">
+            <a href="{{ path('app_rating_new', {'clfrId': clfrId}) }}" class="btn btn-primary">Ajouter une évaluation</a>
+        </div>
+    </div>
+{% endblock %} 

@@ -46,5 +46,16 @@
 
     <a href="{{ path('app_feedback_index') }}" class="btn btn-link mt-3">← Retour à la liste</a>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $("#feedback_description").emojioneArea({
+            pickerPosition: "bottom"
+        });
+    });
+</script>
+
+
+
 {% endblock %}
 

@@ -16,12 +16,18 @@
       <link rel="stylesheet" href="{{ asset('UI/assets/vendors/owl-carousel-2/owl.theme.default.min.css') }}">
       <link rel="stylesheet" href="{{ asset('UI/assets/css/style.css') }}">
       <link rel="shortcut icon" href="{{ asset('UI/assets/images/favicon.png') }}" />
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emojionearea@4.0.0/dist/emojionearea.min.css">
+
       {% endblock %}
 
       {% block javascripts %}
       <!-- plugins:js -->
       <script src="{{ asset('UI/assets/vendors/js/vendor.bundle.base.js') }}"></script>
       <!-- endinject -->
+      <!-- Emoji library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/emojify.js/1.1.0/js/emojify.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/emojionearea@4.0.0/dist/emojionearea.min.js"></script>
+
       <!-- Plugin js for this page -->
       <script src="{{ asset('UI/assets/vendors/chart.js/Chart.min.js') }}"></script>
       <script src="{{ asset('UI/assets/vendors/progressbar.js/progressbar.min.js') }}"></script>
@@ -42,6 +48,46 @@
       <script src="{{ asset('UI/assets/js/dashboard.js') }}"></script>
       <!-- End custom js for this page -->
           {% block importmap %}{{ importmap('app') }}{% endblock %}
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialiser les menus déroulants
+            var menuItems = document.querySelectorAll('.nav-item.menu-items');
+            menuItems.forEach(function(item) {
+                var link = item.querySelector('.nav-link');
+                var collapse = item.querySelector('.collapse');
+                if (link && collapse) {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        collapse.classList.toggle('show');
+                    });
+                }
+            });
+
+            // Initialiser le chatbot si on est sur la page du chatbot
+            if (window.location.pathname.includes('/clfr/chat')) {
+                const messageInput = document.getElementById('messageInput');
+                const sendButton = document.querySelector('.chat-input button');
+                
+                if (messageInput && sendButton) {
+                    sendButton.addEventListener('click', function() {
+                        const message = messageInput.value.trim();
+                        if (message) {
+                            sendMessage();
+                        }
+                    });
+
+                    messageInput.addEventListener('keypress', function(e) {
+                        if (e.key === 'Enter') {
+                            const message = messageInput.value.trim();
+                            if (message) {
+                                sendMessage();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    </script>
       {% endblock %}
   </head>
   <body>
@@ -74,10 +120,15 @@
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-pointage" aria-expanded="false" aria-controls="menu-pointage">
                 <span class="menu-icon"><i class="mdi mdi-calendar-clock"></i></span>
+              <a class="nav-link" data-toggle="collapse" href="#pointage-menu" aria-expanded="false" aria-controls="pointage-menu">
+                <span class="menu-icon">
+                  <i class="mdi mdi-laptop"></i>
+                </span>
                 <span class="menu-title">Pointage</span>
                 <i class="menu-arrow"></i>
               </a>
               <div class="collapse" id="menu-pointage">
+              <div class="collapse" id="pointage-menu">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <a class="nav-link" href="/pointage/employe">Ajouter Pointage</a></li>
                   <li class="nav-item"> <a class="nav-link" href="/pointage/csv">Ajouter Pointage Par CSV</a></li>
@@ -269,14 +320,14 @@
             {% if app.user.poste == 'Directeur' or app.user.poste == 'Charges' %}
             <!-- Employe -->
             <li class="nav-item menu-items">
-              <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+              <a class="nav-link" data-toggle="collapse" href="#paie-menu" aria-expanded="false" aria-controls="paie-menu">
                 <span class="menu-icon">
                   <i class="mdi mdi-laptop"></i>
                 </span>
                 <span class="menu-title">Employe</span>
                 <i class="menu-arrow"></i>
               </a>
-              <div class="collapse" id="ui-basic">
+              <div class="collapse" id="paie-menu">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <a class="nav-link" href="/employe/new">Ajouter Employe</a></li>
                   <li class="nav-item"> <a class="nav-link" href="/employe">Afficher La Liste Employe</a></li>
@@ -288,17 +339,20 @@
             {% if app.user.poste == 'Directeur' or app.user.poste == 'Ouvrier' or app.user.poste == 'Charges' %}
             <!-- Fiche Employe -->
             <li class="nav-item menu-items">
-              <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+              <a class="nav-link" data-toggle="collapse" href="#clfr-menu" aria-expanded="false" aria-controls="clfr-menu">
                 <span class="menu-icon">
                   <i class="mdi mdi-laptop"></i>
                 </span>
                 <span class="menu-title">Fiche Employe</span>
                 <i class="menu-arrow"></i>
               </a>
-              <div class="collapse" id="ui-basic">
+              <div class="collapse" id="clfr-menu">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <a class="nav-link" href="/fiche/employe/new">Ajouter Fiche</a></li>
                   <li class="nav-item"> <a class="nav-link" href="/fiche/employe">Afficher La Liste des fiches</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="/clfr/new">Ajouter client Fournisseur </a></li>
+                  <li class="nav-item"> <a class="nav-link" href="/clfr">Afficher La Liste</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="/clfr/chat"><i class="mdi mdi-chat"></i> Assistant CLFR</a></li>
                 </ul>
               </div>
             </li>
@@ -423,5 +477,14 @@
         <!-- page-body-wrapper ends -->
     </div>
     <!-- container-scroller -->
+    {# Tes autres scripts ici (par ex Bootstrap, etc.) #}
+    
+   {# 1. Charger jQuery #}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+{# 2. Charger EmojioneArea CSS et JS #}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emojionearea@3.4.1/dist/emojionearea.min.css">
+<script src="https://cdn.jsdelivr.net/npm/emojionearea@3.4.1/dist/emojionearea.min.js"></script>
+
   </body>
 </html>
