@@ -5,6 +5,7 @@
 {% block body %}
     <h1>Demande index</h1>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
     <div class="d-flex justify-content-end mb-3">
         <a href="{{ path('app_demandeadmin_new') }}" class="btn btn-success">➕ Create new</a>
@@ -36,18 +37,21 @@
                 <td>{{ demande.cause }}</td>
                 <td>{{ demande.status }}</td>
                 <td>
+    <form method="post" action="{{ path('app_demandeadmin_delete', {'id': demande.id}) }}" style="display:inline;" onsubmit="return confirm('Supprimer cette demande ?');">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ demande.id) }}">
+        <button type="submit" style="background: none; border: none;" title="Supprimer">
+            <i class="bi bi-trash-fill text-danger icon-size"></i>
+        </button>
+    </form>
 
+    <a href="{{ path('app_demandeadmin_edit', {'id': demande.id}) }}"
+   class="btn btn-sm btn-link text-primary"
+   title="Modifier">
+    <i class="bi bi-pencil-square fs-5"></i>
+</a>
 
-                   <form method="post" action="{{ path('app_demandeadmin_delete', {'id': demande.id}) }}" style="display:inline;" onsubmit="return confirm('Supprimer cette demande ?');">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ demande.id) }}">
-                        <button type="submit" style="background: none; border: none;" title="Supprimer">
-                            <i class="bi bi-trash-fill text-danger icon-size"></i>
-                        </button>
-                    </form>
-                    <a href="{{ path('app_demandeadmin_edit', {'id': demande.id}) }}" class="icon-link edit-icon text-primary" title="Modifier">
-                     <i class="bi bi-pencil-square text-primary icon-size"></i>
-                    </a>
-                </td>
+</td>
+
             </tr>
             
         {% else %}
@@ -57,4 +61,4 @@
         {% endfor %}
         </tbody>
     </table>
-{% endblock %}
+{% endblock %}  

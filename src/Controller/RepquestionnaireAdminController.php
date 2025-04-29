@@ -15,7 +15,7 @@ use App\Repository\QuestionnaireRepository;
 #[Route('/repquestionnaireadmin')]
 final class RepquestionnaireAdminController extends AbstractController
 {
-    #[Route(name: 'app_repquestionnaireadmin_index', methods: ['GET'])]
+    #[Route('/', name: 'app_repquestionnaireadmin_index', methods: ['GET'])]
     public function index(RepquestionnaireRepository $repquestionnaireRepository): Response
     {
         return $this->render('repquestionnaireadmin/index.html.twig', [
@@ -28,7 +28,10 @@ final class RepquestionnaireAdminController extends AbstractController
     {
         $repQuestionnaire = new RepQuestionnaire();
         $repQuestionnaire->setDateCreation(new \DateTime());
-
+    
+        $user = $this->getUser();
+        $repQuestionnaire->setEmploye($user);
+    
         $questionnaire = $questionnaireRepository->find($questionnaireId);
         if (!$questionnaire) {
             throw $this->createNotFoundException('Questionnaire non trouvé');
@@ -49,10 +52,10 @@ final class RepquestionnaireAdminController extends AbstractController
         return $this->render('repquestionnaireadmin/new.html.twig', [
             'rep_questionnaire' => $repQuestionnaire,
             'form' => $form->createView(),
-            'questionnaire' => $questionnaire, // On passe l'objet à la vue
+            'questionnaire' => $questionnaire,
         ]);
     }
-
+    
     #[Route('/{id}', name: 'app_repquestionnaireadmin_show', methods: ['GET'])]
     public function show(Repquestionnaire $repquestionnaire): Response
     {

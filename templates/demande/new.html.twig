@@ -5,7 +5,11 @@
 {% block body %}
     <h1>Create new Demande</h1>
 
-    
+
+<a href="{{ path('generate_qr_code') }}" class="btn btn-info mb-3">
+    Générer un QR Code pour les jours fériés
+</a>
+
     {{ include('demande/_form.html.twig', { button_label: 'Enregistrer' }) }}
 
 {% endblock %}

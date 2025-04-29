@@ -3,17 +3,26 @@
 {% block title %}Demande index{% endblock %}
 
 {% block body %}
-    <h1 class="h1 text-dark">Demande index</h1>
 
+    <!-- Affichage total des jours de congé déjà pris pour l'employé -->
+    <div class="alert alert-info mb-4">
+        <strong>Total des jours de congé déjà pris :</strong> {{ totalJoursConges }} jours
+    </div>
+
+    <form method="get" action="{{ path('app_demande_index') }}" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="type" class="form-control" placeholder="Rechercher par type" value="{{ typeRecherche }}">
+            <button class="btn btn-primary" type="submit">🔍 Rechercher</button>
+        </div>
+    </form>
 
     <div class="d-flex justify-content-end mb-3">
         <a href="{{ path('app_demande_new') }}" class="btn btn-success">➕ Create new</a>
     </div>
 
-    <table class="table ">
+    <table class="table">
         <thead>
             <tr>
-         
                 <th>DateCreation</th>
                 <th>Type</th>
                 <th>DateDebut</th>
@@ -29,26 +38,23 @@
             <tr>
                 <td>{{ demande.dateCreation ? demande.dateCreation|date('Y-m-d') : '' }}</td>
                 <td>{{ demande.type }}</td>
-                <td>{{ demande.dateDebut ? demande.dateDebut|date('Y-m-d') : '' }}</td>
-                <td>{{ demande.dateFin ? demande.dateFin|date('Y-m-d') : '' }}</td>
-                <td>{{ demande.salaire }}</td>
+                <td>{{ demande.dateDebut ? demande.dateDebut|date('Y-m-d') : 'N/A' }}</td>
+                <td>{{ demande.dateFin ? demande.dateFin|date('Y-m-d') : 'N/A' }}</td>
+                <td>{{ demande.salaire == 0 ? '0' : demande.salaire }}</td>
                 <td>{{ demande.cause }}</td>
                 <td>{{ demande.status }}</td>
                 <td>
-
-
-                   <form method="post" action="{{ path('app_demande_delete', {'id': demande.id}) }}" style="display:inline;" onsubmit="return confirm('Supprimer cette demande ?');">
+                    <form method="post" action="{{ path('app_demande_delete', {'id': demande.id}) }}" style="display:inline;" onsubmit="return confirm('Supprimer cette demande ?');">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ demande.id) }}">
                         <button type="submit" style="background: none; border: none;" title="Supprimer">
                             <i class="bi bi-trash-fill text-danger icon-size"></i>
                         </button>
                     </form>
                     <a href="{{ path('app_demande_edit', {'id': demande.id}) }}" class="icon-link edit-icon text-primary" title="Modifier">
-                     <i class="bi bi-pencil-square text-primary icon-size"></i>
+                        <i class="bi bi-pencil-square text-primary icon-size"></i>
                     </a>
                 </td>
             </tr>
-            
         {% else %}
             <tr>
                 <td colspan="9" class="text-center">No records found</td>

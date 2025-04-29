@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Controller;
+use App\Entity\Employe;
+use App\Repository\EmployeRepository;
 
 use App\Entity\Repquestionnaire;
 use App\Form\RepquestionnaireType;
@@ -28,10 +30,14 @@ final class RepquestionnaireController extends AbstractController
     {
         $repQuestionnaire = new RepQuestionnaire();
         $repQuestionnaire->setDateCreation(new \DateTime());
+    
+        $user = $this->getUser();
+        $repQuestionnaire->setEmployeId($user->getId());
 
+    
         $questionnaire = $questionnaireRepository->find($questionnaireId);
         if (!$questionnaire) {
-            throw $this->createNotFoundException('Questionnaire not found');
+            throw $this->createNotFoundException('Questionnaire non trouvé');
         }
     
         $repQuestionnaire->setQuestionnaireId($questionnaire->getId());
@@ -42,9 +48,6 @@ final class RepquestionnaireController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($repQuestionnaire);
             $entityManager->flush();
-
-            $this->addFlash('success', 'Reponse Questionnaire ajouté avec succès.');
-
     
             return $this->redirectToRoute('app_repquestionnaire_index');
         }
@@ -52,7 +55,7 @@ final class RepquestionnaireController extends AbstractController
         return $this->render('repquestionnaire/new.html.twig', [
             'rep_questionnaire' => $repQuestionnaire,
             'form' => $form->createView(),
-            'questionnaire' => $questionnaire, // 👈 On envoie l'objet à la vue
+            'questionnaire' => $questionnaire,
         ]);
     }
     
