@@ -120,15 +120,10 @@
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-pointage" aria-expanded="false" aria-controls="menu-pointage">
                 <span class="menu-icon"><i class="mdi mdi-calendar-clock"></i></span>
-              <a class="nav-link" data-toggle="collapse" href="#pointage-menu" aria-expanded="false" aria-controls="pointage-menu">
-                <span class="menu-icon">
-                  <i class="mdi mdi-laptop"></i>
-                </span>
                 <span class="menu-title">Pointage</span>
                 <i class="menu-arrow"></i>
               </a>
               <div class="collapse" id="menu-pointage">
-              <div class="collapse" id="pointage-menu">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <a class="nav-link" href="/pointage/employe">Ajouter Pointage</a></li>
                   <li class="nav-item"> <a class="nav-link" href="/pointage/csv">Ajouter Pointage Par CSV</a></li>
@@ -293,15 +288,18 @@
             {% if app.user.poste == 'Directeur' or app.user.poste == 'Facturation' %}
             <!-- Client/Fournisseur -->
             <li class="nav-item menu-items">
-              <a class="nav-link" data-toggle="collapse" href="#menu-clfr" aria-expanded="false" aria-controls="menu-clfr">
-                <span class="menu-icon"><i class="mdi mdi-account-multiple-outline"></i></span>
+              <a class="nav-link" data-toggle="collapse" href="#clfr-menu" aria-expanded="false" aria-controls="clfr-menu">
+                <span class="menu-icon">
+                  <i class="mdi mdi-anchor"></i>
+                </span>
                 <span class="menu-title">Client/Fournisseur</span>
                 <i class="menu-arrow"></i>
               </a>
-              <div class="collapse" id="menu-clfr">
+              <div class="collapse" id="clfr-menu">
                 <ul class="nav flex-column sub-menu">
-                  <li class="nav-item"> <a class="nav-link" href="/clfr/new">Ajouter client Fournisseur</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="/clfr/new">Ajouter client Fournisseur </a></li>
                   <li class="nav-item"> <a class="nav-link" href="/clfr">Afficher La Liste</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="/clfr/chat"><i class="mdi mdi-chat"></i> Assistant CLFR</a></li>
                 </ul>
               </div>
             </li>
