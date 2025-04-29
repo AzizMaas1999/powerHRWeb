@@ -114,11 +114,13 @@ final class FactureController extends AbstractController
     #[Route('/{id}/payer', name: 'app_facture_paiement', methods: ['GET'])]
     public function payerFacture(Facture $facture): Response
     {
-        // Initialiser Stripe
-        Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
+        // Assurez-vous que la clé API Stripe est chargée correctement depuis les variables d'environnement
+        $key = getenv('STRIPE_SECRET_KEY');
+Stripe::setApiKey($key);
 
-        // Créer une session de paiement Stripe
-        $checkoutSession = Session::create([
+        
+        // Initialiser Stripe
+        $checkoutSession = \Stripe\Checkout\Session::create([
             'payment_method_types' => ['card'],
             'line_items' => [[
                 'price_data' => [
@@ -126,7 +128,7 @@ final class FactureController extends AbstractController
                     'product_data' => [
                         'name' => 'Facture #'.$facture->getNum(),
                     ],
-                    'unit_amount' => $facture->getTotal() * 100,  // Le montant est en centimes
+                    'unit_amount' => $facture->getTotal() * 100,
                 ],
                 'quantity' => 1,
             ]],
@@ -134,6 +136,10 @@ final class FactureController extends AbstractController
             'success_url' => $this->generateUrl('app_facture_index', [], UrlGeneratorInterface::ABSOLUTE_URL),
             'cancel_url' => $this->generateUrl('app_facture_show', ['id' => $facture->getId()], UrlGeneratorInterface::ABSOLUTE_URL),
         ]);
+        
+        // Ajouter un log pour l'ID de session
+        error_log('Stripe session ID: ' . $checkoutSession->id);
+        
 
         // Rediriger l'utilisateur vers la page Stripe pour le paiement
         return new RedirectResponse($checkoutSession->url);
