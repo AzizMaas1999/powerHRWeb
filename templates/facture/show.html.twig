@@ -48,6 +48,11 @@
                 <a href="{{ path('app_facture_paiement', {'id': facture.id}) }}" class="btn btn-success btn-lg">
                     💳 Payer cette facture
                 </a>
+
+                <a href="{{ path('app_facture_pdf', {id: facture.id}) }}" target="_blank" class="btn btn-primary">
+                   Voir la Facture PDF
+                </a>
+
             </div>
         </div>
     </div>

@@ -16,37 +16,7 @@
       <link rel="stylesheet" href="{{ asset('UI/assets/vendors/owl-carousel-2/owl.theme.default.min.css') }}">
       <link rel="stylesheet" href="{{ asset('UI/assets/css/style.css') }}">
       <link rel="shortcut icon" href="{{ asset('UI/assets/images/favicon.png') }}" />
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emojionearea@4.0.0/dist/emojionearea.min.css">
-
-      <style>
-        /* Custom styles for scrollable sidebar */
-        .sidebar-scrollable {
-          height: 100vh;
-          overflow-y: auto;
-          scrollbar-width: thin;
-          scrollbar-color: #6c7293 #191c24;
-        }
-        
-        /* Customize scrollbar for webkit browsers (Chrome, Safari, Edge) */
-        .sidebar-scrollable::-webkit-scrollbar {
-          width: 6px;
-        }
-        
-        .sidebar-scrollable::-webkit-scrollbar-track {
-          background: #191c24;
-        }
-        
-        .sidebar-scrollable::-webkit-scrollbar-thumb {
-          background-color: #6c7293;
-          border-radius: 10px;
-        }
-        
-        /* Ensure sidebar content doesn't overflow */
-        .sidebar .nav {
-          padding-bottom: 60px;
-        }
-      </style>
-
+      <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
       {% endblock %}
 
       {% block javascripts %}
@@ -76,6 +46,7 @@
       <!-- Custom js for this page -->
       <script src="{{ asset('UI/assets/js/dashboard.js') }}"></script>
       <!-- End custom js for this page -->
+      
           {% block importmap %}{{ importmap('app') }}{% endblock %}
       <script>
         document.addEventListener('DOMContentLoaded', function() {

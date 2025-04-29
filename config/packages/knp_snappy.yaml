@@ -1,0 +1,11 @@
+knp_snappy:
+    pdf:
+        enabled: true
+        binary: C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe
+ # Chemin vers wkhtmltopdf sur ton serveur
+        options: []
+
+    image:
+        enabled:    true
+        binary:     '%C:\Program Files\wkhtmltopdf\bin\wkhtmltoimage.exe'
+        options:    []

@@ -18,10 +18,7 @@ class ArticleType extends AbstractType
             ->add('quantity')
             ->add('prixUni')
             ->add('TVA')
-            ->add('facture', EntityType::class, [
-                'class' => Facture::class,
-                'choice_label' => 'id',
-            ])
+            
         ;
     }
 

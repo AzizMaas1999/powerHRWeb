@@ -3,20 +3,125 @@
 {% block title %}Nouvelle Facture{% endblock %}
 
 {% block body %}
-<div class="container py-5 text-white">
+<div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="display-6 fw-semibold">
-            🧾 Créer une <span class="text-info">Nouvelle Facture</span>
+        <h1 class="display-6 fw-semibold text-light">
+            🧾 Créer une <span class="text-primary">Nouvelle Facture</span>
         </h1>
-        <a href="{{ path('app_facture_index') }}" class="btn btn-outline-info rounded-pill px-4">
+        <a href="{{ path('app_facture_index') }}" class="btn btn-outline-primary rounded-pill px-4">
             ← Retour à la liste
         </a>
     </div>
 
-    <div class="card bg-gradient bg-dark border border-info shadow-lg rounded-4">
+    <div class="card bg-dark border border-primary shadow-lg rounded-4">
         <div class="card-body p-4">
-            {{ include('facture/_form.html.twig') }}
+            {{ form_start(form) }}
+
+            <div class="row mb-4">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-light fw-bold">📅 Date</label>
+                    {{ form_widget(form.date, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.date) }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-light fw-bold">🧾 Type</label>
+                    {{ form_widget(form.typeFact, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.typeFact) }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-light fw-bold">🔢 Numéro</label>
+                    {{ form_widget(form.num, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.num) }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-light fw-bold">💶 Total</label>
+                    {{ form_widget(form.total, {'attr': {'class': 'form-control bg-dark text-warning fw-bold', 'id': form.total.vars.id }}) }}
+                    {{ form_errors(form.total) }}
+                </div>
+            </div>
+
+            <h4 class="text-light mb-3">📦 Articles Disponibles</h4>
+            <div class="table-responsive rounded-3 overflow-hidden">
+                <table class="table table-dark table-striped border border-secondary">
+                    <thead class="table-primary text-dark">
+                        <tr>
+                            <th style="width: 50px;">✔</th>
+                            <th>Nom</th>
+                            <th>Prix Unitaire</th>
+                            <th>Quantité</th>
+                            <th>TVA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for choice in form.articles %}
+                            {% set id = choice.vars.value %}
+                            <tr>
+                                <td>{{ form_widget(choice) }}</td>
+                                <td>{{ articlesList[id].description }}</td>
+                                <td>{{ articlesList[id].prixUni }}</td>
+                                <td>{{ articlesList[id].quantity }}</td>
+                                <td>{{ articlesList[id].tva }} %</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="text-end mt-4">
+                <button class="btn btn-primary rounded-pill px-4 py-2 fw-bold">
+                    💾 Enregistrer la facture
+                </button>
+            </div>
+
+            {{ form_end(form) }}
         </div>
+
+        
     </div>
 </div>
+
+{# 🔥 Script pour le calcul automatique du total #}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="facture[articles]"]');
+        const totalField = document.getElementById('{{ form.total.vars.id }}');
+
+
+        const articleData = {
+            {% for id, article in articlesList %}
+                '{{ id }}': {
+                    prixUni: {{ article.prixUni|default(0) }},
+                    quantity: {{ article.quantity|default(1) }},
+                    tva: {{ article.tva|default(0) }}
+                },
+            {% endfor %}
+        };
+
+        function updateTotal() {
+            let total = 0;
+
+            checkboxes.forEach(function (checkbox) {
+                if (checkbox.checked) {
+                    const articleId = checkbox.value;
+                    const data = articleData[articleId];
+
+                    if (data) {
+                        let montantHT = data.prixUni * data.quantity;
+                        let montantTVA = montantHT * (data.tva / 100);
+                        total += montantHT + montantTVA;
+                    }
+                }
+            });
+
+            totalField.value = total.toFixed(2);
+        }
+
+        checkboxes.forEach(function (checkbox) {
+            checkbox.addEventListener('change', updateTotal);
+        });
+
+        updateTotal();
+        
+    });
+</script>
 {% endblock %}
