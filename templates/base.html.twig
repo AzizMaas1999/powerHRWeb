@@ -79,14 +79,6 @@
               <span class="nav-link">Navigation</span>
             </li>
 
-            <!-- Salary Calculator - Available to everyone -->
-            <li class="nav-item menu-items">
-              <a class="nav-link" href="{{ path('app_salary_calculator') }}">
-                <span class="menu-icon"><i class="mdi mdi-calculator"></i></span>
-                <span class="menu-title">Calculateur de Salaire</span>
-              </a>
-            </li>
-
             {% if app.user.poste == 'Charges' or app.user.poste == 'Directeur' %}
             <!-- Pointage -->
             <li class="nav-item menu-items">
