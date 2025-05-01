@@ -5,6 +5,10 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     photos_directory: '%kernel.project_dir%/public/uploads/photos'
+    app.rapidapi.key: '%env(RAPIDAPI_KEY)%'
+    app.rapidapi.host: '%env(RAPIDAPI_HOST)%'
+    app.rapidapi.from: '%env(RAPIDAPI_FROM)%'
+    app.rapidapi.senders_name: '%env(RAPIDAPI_SENDERS_NAME)%'
 
 services:
     # default configuration for services in this file
@@ -24,7 +28,5 @@ services:
     # Custom service definition for SendBulkEmailService
     App\Service\SendBulkEmailService:
         arguments:
-            $apiKey: '%env(RAPIDAPI_KEY)%'
-            $apiHost: '%env(RAPIDAPI_HOST)%'
-            $from: '%env(RAPIDAPI_FROM)%'
-            $sendersName: '%env(RAPIDAPI_SENDERS_NAME)%'
+            $client: '@http_client'
+            $params: '@parameter_bag'

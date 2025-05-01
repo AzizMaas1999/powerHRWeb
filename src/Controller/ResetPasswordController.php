@@ -7,13 +7,10 @@ use App\Entity\FicheEmploye;
 use App\Form\ChangePasswordFormType;
 use App\Form\ResetPasswordRequestFormType;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -36,7 +33,7 @@ class ResetPasswordController extends AbstractController
      * Display & process form to request a password reset.
      */
     #[Route('', name: 'app_forgot_password_request')]
-    public function request(Request $request, MailerInterface $mailer, TranslatorInterface $translator): Response
+    public function request(Request $request, TranslatorInterface $translator): Response
     {
         $form = $this->createForm(ResetPasswordRequestFormType::class);
         $form->handleRequest($request);
@@ -129,22 +126,19 @@ class ResetPasswordController extends AbstractController
         ]);
     }
 
-    private function processSendingPasswordResetEmail(string $emailFormData, TranslatorInterface $translator): RedirectResponse
+    private function processSendingPasswordResetEmail(string $emailFormData, TranslatorInterface $translator): Response
     {
-        // Lookup the fiche by email on the owning side, then get the associated Employe
-        $fiche = $this->entityManager->getRepository(FicheEmploye::class)->findOneBy([
+        // First find the FicheEmploye by email
+        $ficheEmploye = $this->entityManager->getRepository(FicheEmploye::class)->findOneBy([
             'email' => $emailFormData,
         ]);
-        if (!$fiche || !$fiche->getEmploye()) {
-            // Redirect silently to avoid exposing whether account exists
-            return $this->redirectToRoute('app_check_email');
-        }
-        $user = $fiche->getEmploye();
 
-        // Do not reveal whether a user account was found or not.
-        if (!$user) {
+        // If no FicheEmploye found or no associated Employe, redirect silently
+        if (!$ficheEmploye || !$ficheEmploye->getEmploye()) {
             return $this->redirectToRoute('app_check_email');
         }
+
+        $user = $ficheEmploye->getEmploye();
 
         try {
             $resetToken = $this->resetPasswordHelper->generateResetToken($user);
@@ -152,23 +146,32 @@ class ResetPasswordController extends AbstractController
             return $this->redirectToRoute('app_check_email');
         }
 
-        $resetUrl = $this->generateUrl('app_reset_password', [
-            'token' => $resetToken->getToken(),
-        ], \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_URL);
+        $body = $this->renderView('reset_password/email.html.twig', [
+            'resetToken' => $resetToken,
+        ]);
 
-        $body = "Click this link to reset your password: <a href=\"$resetUrl\">Reset Password</a>";
+        try {
+            $response = $this->sendBulkEmailService->sendOtpEmail(
+                $ficheEmploye->getEmail(),
+                'Your password reset request',
+                $body
+            );
 
-        $response = $this->sendBulkEmailService->sendOtpEmail(
-            $user->getFicheEmploye()->getEmail(),
-            'Your password reset request',
-            $body
-        );
+            if (!isset($response['success']) || !$response['success']) {
+                throw new \Exception('Failed to send email: ' . ($response['message'] ?? 'Unknown error'));
+            }
 
-        dump($response); die();
+            // Store the token object in session for retrieval in check-email route.
+            $this->setTokenObjectInSession($resetToken);
 
-        // Store the token object in session for retrieval in check-email route.
-        $this->setTokenObjectInSession($resetToken);
+            return $this->redirectToRoute('app_check_email');
+        } catch (\Exception $e) {
+            $this->addFlash('reset_password_error', sprintf(
+                'There was a problem sending your password reset email - %s',
+                $e->getMessage()
+            ));
 
-        return $this->redirectToRoute('app_check_email');
+            return $this->redirectToRoute('app_forgot_password_request');
+        }
     }
 }

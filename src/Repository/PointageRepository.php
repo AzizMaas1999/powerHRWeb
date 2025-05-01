@@ -8,12 +8,47 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Pointage>
+ *
+ * @method Pointage|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Pointage|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Pointage[]    findAll()
+ * @method Pointage[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class PointageRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Pointage::class);
+    }
+
+    public function countPresences(\DateTimeInterface $startDate, \DateTimeInterface $endDate): int
+    {
+        return $this->createQueryBuilder('p')
+            ->select('COUNT(DISTINCT p.date)')
+            ->where('p.date BETWEEN :start AND :end')
+            ->andWhere('p.heureEntree IS NOT NULL')
+            ->setParameter('start', $startDate)
+            ->setParameter('end', $endDate)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function save(Pointage $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(Pointage $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
     }
 
     //    /**

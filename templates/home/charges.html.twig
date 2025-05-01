@@ -21,7 +21,7 @@
                 <img src="{{ asset('UI/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image">
                 <h4 class="font-weight-normal mb-3">Employés actifs <i class="mdi mdi-account-multiple mdi-24px float-right"></i>
                 </h4>
-                <h2 class="mb-5">45</h2>
+                <h2 class="mb-5">{{ activeEmployees }}</h2>
                 <h6 class="card-text">
                     <a href="{{ path('app_employe_index') }}" class="text-white">Gérer les employés</a>
                 </h6>
@@ -34,7 +34,7 @@
                 <img src="{{ asset('UI/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image">
                 <h4 class="font-weight-normal mb-3">Fiches à traiter <i class="mdi mdi-clipboard-text mdi-24px float-right"></i>
                 </h4>
-                <h2 class="mb-5">12</h2>
+                <h2 class="mb-5">{{ pendingForms }}</h2>
                 <h6 class="card-text">
                     <a href="{{ path('app_fiche_employe_index') }}" class="text-white">Voir les fiches</a>
                 </h6>
@@ -47,7 +47,7 @@
                 <img src="{{ asset('UI/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image">
                 <h4 class="font-weight-normal mb-3">Questionnaires <i class="mdi mdi-clipboard-check mdi-24px float-right"></i>
                 </h4>
-                <h2 class="mb-5">7</h2>
+                <h2 class="mb-5">{{ questionnaires }}</h2>
                 <h6 class="card-text">
                     <a href="{{ path('app_questionnaire_index') }}" class="text-white">Gérer les questionnaires</a>
                 </h6>
@@ -65,13 +65,13 @@
                 <div class="row mt-4">
                     <div class="col-md-6">
                         <div class="text-center bg-light p-3 rounded">
-                            <h5>65%</h5>
+                            <h5>{{ ((presenceData|last / (presenceData|last + absenceData|last)) * 100)|round }}%</h5>
                             <p class="text-muted mb-0">Taux de présence</p>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="text-center bg-light p-3 rounded">
-                            <h5>12%</h5>
+                            <h5>{{ ((absenceData|last / (presenceData|last + absenceData|last)) * 100)|round }}%</h5>
                             <p class="text-muted mb-0">Taux d'absence</p>
                         </div>
                     </div>
@@ -93,26 +93,25 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Ahmed B.</td>
-                                <td>{{ "now"|date("d/m/Y") }}</td>
-                                <td><label class="badge badge-success">Présent</label></td>
-                            </tr>
-                            <tr>
-                                <td>Samia K.</td>
-                                <td>{{ "now"|date("d/m/Y") }}</td>
-                                <td><label class="badge badge-success">Présente</label></td>
-                            </tr>
-                            <tr>
-                                <td>Mohamed F.</td>
-                                <td>{{ "now"|date("d/m/Y") }}</td>
-                                <td><label class="badge badge-danger">Absent</label></td>
-                            </tr>
-                            <tr>
-                                <td>Amina H.</td>
-                                <td>{{ "now"|date("d/m/Y") }}</td>
-                                <td><label class="badge badge-warning">Retard</label></td>
-                            </tr>
+                            {% for checkIn in recentCheckIns %}
+                                <tr>
+                                    <td>{{ checkIn.employe.username }}</td>
+                                    <td>{{ checkIn.date|date('d/m/Y') }}</td>
+                                    <td>
+                                        {% if checkIn.heureEntree is not null and checkIn.heureSortie is not null %}
+                                            <label class="badge badge-success">Présent</label>
+                                        {% elseif checkIn.heureEntree is not null %}
+                                            <label class="badge badge-warning">En cours</label>
+                                        {% else %}
+                                            <label class="badge badge-danger">Absent</label>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="3" class="text-center">Aucun pointage récent</td>
+                                </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -248,16 +247,16 @@ document.addEventListener('DOMContentLoaded', function() {
         var myChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+                labels: {{ months|json_encode|raw }},
                 datasets: [{
                     label: 'Présence',
-                    data: [38, 42, 40, 45, 43, 0],
+                    data: {{ presenceData|json_encode|raw }},
                     backgroundColor: 'rgba(54, 162, 235, 0.8)',
                     borderColor: 'rgba(54, 162, 235, 1)',
                     borderWidth: 1
                 }, {
                     label: 'Absence',
-                    data: [5, 3, 6, 4, 2, 0],
+                    data: {{ absenceData|json_encode|raw }},
                     backgroundColor: 'rgba(255, 99, 132, 0.8)',
                     borderColor: 'rgba(255, 99, 132, 1)',
                     borderWidth: 1
@@ -280,9 +279,9 @@ document.addEventListener('DOMContentLoaded', function() {
         var myChart = new Chart(ctx, {
             type: 'pie',
             data: {
-                labels: ['Technique', 'Marketing', 'RH', 'Finance', 'Administration'],
+                labels: {{ departmentData|map(d => d.name)|json_encode|raw }},
                 datasets: [{
-                    data: [12, 8, 5, 10, 10],
+                    data: {{ departmentData|map(d => d.count)|json_encode|raw }},
                     backgroundColor: [
                         'rgba(75, 192, 192, 0.8)',
                         'rgba(54, 162, 235, 0.8)',

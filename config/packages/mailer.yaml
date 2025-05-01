@@ -1,3 +1,4 @@
-framework:
-    mailer:
-        dsn: '%env(MAILER_DSN)%'
+# Remove or comment out the entire mailer configuration:
+# framework:
+#     mailer:
+#         dsn: '%env(MAILER_DSN)%'
