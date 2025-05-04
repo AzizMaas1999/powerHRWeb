@@ -6,6 +6,11 @@
 parameters:
 
     photos_directory: '%kernel.project_dir%/public/uploads/photos'
+    parameters:
+    flouci_app_token: '%env(FLOUCI_APP_TOKEN)%'
+    flouci_app_secret: '%env(FLOUCI_APP_SECRET)%'
+    flouci_api_url: 'https://developers.flouci.com/api'
+
 
 
 
