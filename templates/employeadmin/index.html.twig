@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administration des Employés{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h3 class="page-title text-white">
+        <span class="page-title-icon bg-gradient-danger text-white me-2">
+            <i class="mdi mdi-shield-account"></i>
+        </span> Administration des Employés
+    </h3>
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">
+                <a href="{{ path('charges_admin_home') }}" class="text-decoration-none">
+                    <i class="mdi mdi-home"></i> Dashboard Admin
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Liste des Employés</h4>
+                <div class="d-flex justify-content-between mb-3">
+                    <p class="card-description">Gestion complète des employés</p>
+                    <a href="{{ path('app_employeadmin_new') }}" class="btn btn-primary">
+                        <i class="mdi mdi-plus"></i> Nouvel Employé
+                    </a>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Prénom</th>
+                                <th>Nom</th>
+                                <th>Poste</th>
+                                <th>Salaire</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for employe in employes %}
+                            <tr>
+                                <td>{{ employe.id }}</td>
+                                <td>{{ employe.username }}</td>
+                                <td>{{ employe.email }}</td>
+                                <td>{{ employe.prenom }}</td>
+                                <td>{{ employe.nom }}</td>
+                                <td>
+                                    <span class="badge badge-primary">{{ employe.poste }}</span>
+                                </td>
+                                <td>{{ employe.salaire|number_format(2, ',', ' ') }} TND</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="{{ path('app_employeadmin_show', {'id': employe.id}) }}" class="btn btn-info btn-sm">
+                                            <i class="mdi mdi-eye"></i>
+                                        </a>
+                                        <a href="{{ path('app_employeadmin_edit', {'id': employe.id}) }}" class="btn btn-warning btn-sm">
+                                            <i class="mdi mdi-pencil"></i>
+                                        </a>
+                                        <form method="post" action="{{ path('app_employeadmin_delete', {'id': employe.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet employé?');" style="display: inline-block;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ employe.id) }}">
+                                            <button class="btn btn-danger btn-sm">
+                                                <i class="mdi mdi-delete"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="8" class="text-center">Aucun employé trouvé</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Facture #{{ facture.reference }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .invoice-header {
+            padding-bottom: 20px;
+            border-bottom: 2px solid #2c3e50;
+            margin-bottom: 30px;
+        }
+        .company-logo {
+            max-width: 200px;
+            height: auto;
+        }
+        .invoice-title {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .invoice-number {
+            font-size: 18px;
+            color: #7f8c8d;
+        }
+        .invoice-parties {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        .invoice-from, .invoice-to {
+            width: 48%;
+        }
+        .party-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2c3e50;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+        .party-details p {
+            margin: 0 0 5px 0;
+        }
+        .invoice-meta {
+            margin-bottom: 30px;
+        }
+        .meta-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .meta-table td {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+        }
+        .meta-table .meta-label {
+            font-weight: bold;
+            background-color: #f9f9f9;
+            width: 150px;
+        }
+        .invoice-items {
+            margin-bottom: 30px;
+        }
+        table.items-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table.items-table th {
+            background-color: #2c3e50;
+            color: white;
+            padding: 10px;
+            font-weight: normal;
+            text-align: left;
+        }
+        table.items-table td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .quantity, .price, .line-total {
+            text-align: right;
+        }
+        .invoice-totals {
+            margin-left: auto;
+            width: 350px;
+        }
+        .totals-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .totals-table td {
+            padding: 5px 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .totals-table .total-label {
+            text-align: right;
+            font-weight: bold;
+        }
+        .grand-total {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .invoice-notes {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .notes-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .payment-info {
+            margin-top: 30px;
+        }
+        .payment-info-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .status-paid {
+            color: #27ae60;
+            font-weight: bold;
+            border: 2px solid #27ae60;
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 4px;
+            transform: rotate(-15deg);
+            position: absolute;
+            top: 120px;
+            right: 40px;
+            font-size: 24px;
+            opacity: 0.8;
+        }
+        .status-overdue {
+            color: #e74c3c;
+            font-weight: bold;
+            border: 2px solid #e74c3c;
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 4px;
+            transform: rotate(-15deg);
+            position: absolute;
+            top: 120px;
+            right: 40px;
+            font-size: 24px;
+            opacity: 0.8;
+        }
+        footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #7f8c8d;
+            text-align: center;
+        }
+        .page-break {
+            page-break-after: always;
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <div class="invoice-header">
+            <img src="{{ absolute_url(asset('uploads/logo_powerhr.png')) }}" class="company-logo" alt="PowerHR Logo">
+            <div style="position: relative; float: right; text-align: right;">
+                <div class="invoice-title">FACTURE</div>
+                <div class="invoice-number">#{{ facture.reference }}</div>
+                
+                {% if facture.status == 'Payée' %}
+                <div class="status-paid">PAYÉE</div>
+                {% elseif facture.status == 'En retard' %}
+                <div class="status-overdue">EN RETARD</div>
+                {% endif %}
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+        
+        <div class="invoice-parties">
+            <div class="invoice-from">
+                <div class="party-title">De</div>
+                <div class="party-details">
+                    <p><strong>PowerHR Solutions</strong></p>
+                    <p>123, Avenue de la Liberté</p>
+                    <p>2083 Tunis, Tunisie</p>
+                    <p>Tél: +216 71 123 456</p>
+                    <p>Email: contact@powerhr.tn</p>
+                    <p>Matricule fiscal: 123456789</p>
+                </div>
+            </div>
+            
+            <div class="invoice-to">
+                <div class="party-title">À</div>
+                <div class="party-details">
+                    <p><strong>{{ facture.entreprise.nom }}</strong></p>
+                    <p>{{ facture.entreprise.adresse }}</p>
+                    {% if facture.entreprise.codePostal and facture.entreprise.ville %}
+                    <p>{{ facture.entreprise.codePostal }}, {{ facture.entreprise.ville }}</p>
+                    {% endif %}
+                    <p>Tél: {{ facture.entreprise.telephone }}</p>
+                    <p>Email: {{ facture.entreprise.email }}</p>
+                    <p>Matricule fiscal: {{ facture.entreprise.matriculeFiscal }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="invoice-meta">
+            <table class="meta-table">
+                <tr>
+                    <td class="meta-label">Numéro de facture</td>
+                    <td>{{ facture.reference }}</td>
+                    <td class="meta-label">Date d'émission</td>
+                    <td>{{ facture.dateCreation|date('d/m/Y') }}</td>
+                </tr>
+                <tr>
+                    <td class="meta-label">Date d'échéance</td>
+                    <td>{{ facture.dateEcheance|date('d/m/Y') }}</td>
+                    <td class="meta-label">Statut</td>
+                    <td>{{ facture.status }}</td>
+                </tr>
+                {% if facture.status == 'Payée' and facture.datePaiement %}
+                <tr>
+                    <td class="meta-label">Date de paiement</td>
+                    <td colspan="3">{{ facture.datePaiement|date('d/m/Y') }}</td>
+                </tr>
+                {% endif %}
+            </table>
+        </div>
+        
+        <div class="invoice-items">
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th class="price">Prix Unitaire (HT)</th>
+                        <th class="quantity">Quantité</th>
+                        <th class="line-total">Total (HT)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in facture.items %}
+                    <tr>
+                        <td>{{ item.description }}</td>
+                        <td class="price">{{ item.prixUnitaire|number_format(3, '.', ' ') }} TND</td>
+                        <td class="quantity">{{ item.quantite }}</td>
+                        <td class="line-total">{{ (item.prixUnitaire * item.quantite)|number_format(3, '.', ' ') }} TND</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="invoice-totals">
+            <table class="totals-table">
+                <tr>
+                    <td class="total-label">Total HT</td>
+                    <td class="total-value">{{ facture.montant|number_format(3, '.', ' ') }} TND</td>
+                </tr>
+                <tr>
+                    <td class="total-label">TVA ({{ (facture.tva / facture.montant * 100)|round }}%)</td>
+                    <td class="total-value">{{ facture.tva|number_format(3, '.', ' ') }} TND</td>
+                </tr>
+                <tr>
+                    <td class="total-label grand-total">Total TTC</td>
+                    <td class="total-value grand-total">{{ (facture.montant + facture.tva)|number_format(3, '.', ' ') }} TND</td>
+                </tr>
+            </table>
+        </div>
+        
+        {% if facture.notes %}
+        <div class="invoice-notes">
+            <div class="notes-title">Notes</div>
+            <div>{{ facture.notes|nl2br }}</div>
+        </div>
+        {% endif %}
+        
+        <div class="payment-info">
+            <div class="payment-info-title">Informations de paiement</div>
+            <div>
+                <p>Veuillez effectuer votre paiement sur le compte bancaire suivant:</p>
+                <p><strong>Banque:</strong> BIAT</p>
+                <p><strong>IBAN:</strong> TN59 01 123 0123456789012 34</p>
+                <p><strong>BIC/SWIFT:</strong> BIATTNTT</p>
+                <p><strong>Référence:</strong> {{ facture.reference }}</p>
+            </div>
+        </div>
+        
+        <footer>
+            <p>PowerHR Solutions - Société au capital de 100 000 TND - RC: B 123456 - MF: 123456789</p>
+            <p>123, Avenue de la Liberté, 2083 Tunis, Tunisie | Tel: +216 71 123 456 | Email: contact@powerhr.tn</p>
+        </footer>
+    </div>
+</body>
+</html>

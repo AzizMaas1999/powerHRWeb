@@ -1,0 +1,321 @@
+{{ form_start(form, {'attr': {'class': 'form', 'novalidate': 'novalidate'}}) }}
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <div class="form-group">
+                {{ form_label(form.entreprise, 'Entreprise', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.entreprise, {'attr': {'class': 'form-control' ~ (form.entreprise.vars.valid ? '' : ' is-invalid')}}) }}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.entreprise) }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-3">
+            <div class="form-group">
+                {{ form_label(form.reference, 'Référence', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.reference, {'attr': {'class': 'form-control' ~ (form.reference.vars.valid ? '' : ' is-invalid'), 'placeholder': 'Ex: FACT-2025-00123'}}) }}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.reference) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <div class="form-group">
+                {{ form_label(form.dateCreation, 'Date d\'émission', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.dateCreation, {'attr': {'class': 'form-control' ~ (form.dateCreation.vars.valid ? '' : ' is-invalid')}}) }}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.dateCreation) }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-3">
+            <div class="form-group">
+                {{ form_label(form.dateEcheance, 'Date d\'échéance', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.dateEcheance, {'attr': {'class': 'form-control' ~ (form.dateEcheance.vars.valid ? '' : ' is-invalid')}}) }}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.dateEcheance) }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-3">
+            <div class="form-group">
+                {{ form_label(form.status, 'Statut', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.status, {'attr': {'class': 'form-control' ~ (form.status.vars.valid ? '' : ' is-invalid')}}) }}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.status) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if form.datePaiement is defined %}
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <div class="form-group">
+                {{ form_label(form.datePaiement, 'Date de paiement', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.datePaiement, {'attr': {'class': 'form-control' ~ (form.datePaiement.vars.valid ? '' : ' is-invalid')}}) }}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.datePaiement) }}
+                </div>
+                <small class="form-text text-muted">Laisser vide si non applicable</small>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-3">
+            <div class="form-group">
+                {{ form_label(form.methodePaiement, 'Méthode de paiement', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.methodePaiement, {'attr': {'class': 'form-control' ~ (form.methodePaiement.vars.valid ? '' : ' is-invalid')}}) }}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.methodePaiement) }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <div class="form-group">
+                {{ form_label(form.montantHT, 'Montant HT', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.montantHT, {'attr': {'class': 'form-control' ~ (form.montantHT.vars.valid ? '' : ' is-invalid'), 'step': '0.01'}}) }}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.montantHT) }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-3">
+            <div class="form-group">
+                {{ form_label(form.tauxTVA, 'Taux TVA', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.tauxTVA, {'attr': {'class': 'form-control' ~ (form.tauxTVA.vars.valid ? '' : ' is-invalid')}}) }}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.tauxTVA) }}
+                </div>
+                <small class="form-text text-muted">Exemple: 0.19 pour 19%</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 mb-3">
+            <div class="form-group">
+                {{ form_label(form.notes, 'Notes', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.notes, {'attr': {'class': 'form-control' ~ (form.notes.vars.valid ? '' : ' is-invalid'), 'rows': 3}}) }}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.notes) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h5 class="mt-4 mb-3">Lignes de facturation</h5>
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="lignes-facture-collection" 
+                 data-prototype="{{ form_widget(form.lignes.vars.prototype)|e('html_attr') }}"
+                 data-index="{{ form.lignes|length }}">
+                
+                <table class="table table-bordered table-sm">
+                    <thead>
+                        <tr>
+                            <th style="width: 45%">Description</th>
+                            <th style="width: 20%">Prix unitaire (TND)</th>
+                            <th style="width: 15%">Quantité</th>
+                            <th style="width: 15%">Total (TND)</th>
+                            <th style="width: 5%"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="lignes-container">
+                        {% for ligneForm in form.lignes %}
+                            <tr class="ligne-item">
+                                <td>
+                                    {{ form_widget(ligneForm.description, {'attr': {'class': 'form-control'}}) }}
+                                </td>
+                                <td>
+                                    {{ form_widget(ligneForm.prixUnitaire, {'attr': {'class': 'form-control prix-unitaire', 'step': '0.01'}}) }}
+                                </td>
+                                <td>
+                                    {{ form_widget(ligneForm.quantite, {'attr': {'class': 'form-control quantite', 'min': '1'}}) }}
+                                </td>
+                                <td class="ligne-total text-end"></td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm remove-ligne">
+                                        <i class="ti ti-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+                <button type="button" class="btn btn-info add-ligne-button mt-2">
+                    <i class="ti ti-plus"></i> Ajouter une ligne
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group mt-4">
+        <button class="btn btn-primary">
+            <i class="ti ti-device-floppy"></i> {{ button_label|default('Enregistrer') }}
+        </button>
+        <a href="{{ path('app_factureadmin_index') }}" class="btn btn-secondary">
+            <i class="ti ti-arrow-left"></i> Retour
+        </a>
+    </div>
+{{ form_end(form) }}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const container = document.querySelector('.lignes-facture-collection');
+    const addLigneButton = document.querySelector('.add-ligne-button');
+    
+    // Add new item
+    addLigneButton.addEventListener('click', function() {
+        const prototype = container.dataset.prototype;
+        const index = parseInt(container.dataset.index);
+        
+        const newForm = prototype.replace(/__name__/g, index);
+        container.dataset.index = index + 1;
+        
+        const lignesContainer = document.querySelector('.lignes-container');
+        const tr = document.createElement('tr');
+        tr.classList.add('ligne-item');
+        
+        // Create cells
+        const td1 = document.createElement('td');
+        const td2 = document.createElement('td');
+        const td3 = document.createElement('td');
+        const td4 = document.createElement('td');
+        const td5 = document.createElement('td');
+        
+        // Parse the new form HTML
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = newForm;
+        
+        const description = tempDiv.querySelector('[id$="_description"]');
+        const prixUnitaire = tempDiv.querySelector('[id$="_prixUnitaire"]');
+        const quantite = tempDiv.querySelector('[id$="_quantite"]');
+        
+        // Add classes
+        if (description) {
+            description.classList.add('form-control');
+            td1.appendChild(description);
+        }
+        
+        if (prixUnitaire) {
+            prixUnitaire.classList.add('form-control', 'prix-unitaire');
+            prixUnitaire.setAttribute('step', '0.01');
+            td2.appendChild(prixUnitaire);
+            
+            prixUnitaire.addEventListener('input', updateTotal);
+        }
+        
+        if (quantite) {
+            quantite.classList.add('form-control', 'quantite');
+            quantite.setAttribute('min', '1');
+            td3.appendChild(quantite);
+            
+            quantite.addEventListener('input', updateTotal);
+        }
+        
+        // Total cell
+        td4.classList.add('ligne-total', 'text-end');
+        
+        // Remove button
+        const removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.classList.add('btn', 'btn-danger', 'btn-sm', 'remove-ligne');
+        removeButton.innerHTML = '<i class="ti ti-trash"></i>';
+        removeButton.addEventListener('click', function() {
+            tr.remove();
+            updateTotalFacture();
+        });
+        td5.appendChild(removeButton);
+        
+        // Append cells to row
+        tr.appendChild(td1);
+        tr.appendChild(td2);
+        tr.appendChild(td3);
+        tr.appendChild(td4);
+        tr.appendChild(td5);
+        
+        // Add the new row to the table
+        lignesContainer.appendChild(tr);
+        
+        // Add any other hidden inputs that need to be preserved
+        const hiddenInputs = tempDiv.querySelectorAll('input[type="hidden"]');
+        hiddenInputs.forEach(input => tr.appendChild(input));
+        
+        // Initialize total calculation
+        updateTotal.call(prixUnitaire);
+    });
+    
+    // Remove item
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-ligne') || e.target.closest('.remove-ligne')) {
+            const button = e.target.classList.contains('remove-ligne') ? e.target : e.target.closest('.remove-ligne');
+            const row = button.closest('.ligne-item');
+            if (row) {
+                row.remove();
+                updateTotalFacture();
+            }
+        }
+    });
+    
+    // Initialize existing rows
+    document.querySelectorAll('.ligne-item').forEach(initLigneItem);
+    
+    function initLigneItem(row) {
+        const prixUnitaire = row.querySelector('.prix-unitaire');
+        const quantite = row.querySelector('.quantite');
+        
+        if (prixUnitaire) {
+            prixUnitaire.addEventListener('input', updateTotal);
+        }
+        
+        if (quantite) {
+            quantite.addEventListener('input', updateTotal);
+        }
+        
+        updateTotal.call(prixUnitaire || quantite);
+    }
+    
+    function updateTotal() {
+        const row = this.closest('.ligne-item');
+        const prixUnitaire = parseFloat(row.querySelector('.prix-unitaire').value) || 0;
+        const quantite = parseInt(row.querySelector('.quantite').value) || 0;
+        const totalCell = row.querySelector('.ligne-total');
+        
+        const total = prixUnitaire * quantite;
+        totalCell.textContent = total.toFixed(2) + ' TND';
+        
+        updateTotalFacture();
+    }
+    
+    function updateTotalFacture() {
+        // If needed, update global totals here
+        const montantHT = document.getElementById('facture_montantHT');
+        if (montantHT) {
+            let total = 0;
+            document.querySelectorAll('.ligne-item').forEach(row => {
+                const prixUnitaire = parseFloat(row.querySelector('.prix-unitaire').value) || 0;
+                const quantite = parseInt(row.querySelector('.quantite').value) || 0;
+                total += prixUnitaire * quantite;
+            });
+            montantHT.value = total.toFixed(2);
+        }
+    }
+    
+    // Update totals on form submission
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', updateTotalFacture);
+    }
+});
+</script>

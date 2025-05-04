@@ -1,0 +1,121 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Détails du département{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h3 class="page-title">
+        <span class="page-title-icon bg-gradient-danger text-white me-2">
+            <i class="ti ti-building"></i>
+        </span> Détails du département
+    </h3>
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('charges_admin_home') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_departementadmin_index') }}">Départements</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Détails</li>
+        </ul>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-4">
+                    <h4 class="card-title">Informations du département</h4>
+                    <div>
+                        <a href="{{ path('app_departementadmin_edit', {'id': departement.id}) }}" class="btn btn-warning">
+                            <i class="ti ti-edit"></i> Modifier
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="card bg-gradient-primary text-white">
+                            <div class="card-body">
+                                <h5 class="card-title text-white">{{ departement.nom }}</h5>
+                                <p class="mb-1"><i class="ti ti-users me-2"></i> {{ departement.employes|length }} employés</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-8">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th style="width: 30%">ID</th>
+                                        <td>{{ departement.id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Nom</th>
+                                        <td>{{ departement.nom }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Description</th>
+                                        <td>{{ departement.description }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <h5>Employés dans ce département</h5>
+                    
+                    {% if departement.employes|length > 0 %}
+                        <div class="table-responsive mt-3">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nom</th>
+                                        <th>Email</th>
+                                        <th>Poste</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for employe in departement.employes %}
+                                        <tr>
+                                            <td>{{ employe.id }}</td>
+                                            <td>{{ employe.prenom }} {{ employe.nom }}</td>
+                                            <td>{{ employe.email }}</td>
+                                            <td>{{ employe.poste }}</td>
+                                            <td>
+                                                <a href="{{ path('app_employeadmin_show', {'id': employe.id}) }}" class="btn btn-info btn-sm">
+                                                    <i class="ti ti-eye"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info mt-3">
+                            <i class="ti ti-info-circle me-2"></i> Aucun employé dans ce département
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mt-4">
+                    <a href="{{ path('app_departementadmin_index') }}" class="btn btn-secondary">
+                        <i class="ti ti-arrow-left"></i> Retour à la liste
+                    </a>
+                    
+                    <form method="post" action="{{ path('app_departementadmin_delete', {'id': departement.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce département?');" class="d-inline-block">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ departement.id) }}">
+                        <button class="btn btn-danger">
+                            <i class="ti ti-trash"></i> Supprimer
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

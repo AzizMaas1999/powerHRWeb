@@ -1,0 +1,45 @@
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Nombre d'employés</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for departement in pagination %}
+            <tr>
+                <td>{{ departement.id }}</td>
+                <td>{{ departement.nom }}</td>
+                <td>{{ departement.description|length > 50 ? departement.description|slice(0, 50) ~ '...' : departement.description }}</td>
+                <td>
+                    <span class="badge bg-primary">{{ departement.employes|length }}</span>
+                </td>
+                <td class="text-nowrap">
+                    <a href="{{ path('app_departementadmin_show', {'id': departement.id}) }}" class="btn btn-info btn-sm">
+                        <i class="ti ti-eye"></i>
+                    </a>
+                    <a href="{{ path('app_departementadmin_edit', {'id': departement.id}) }}" class="btn btn-warning btn-sm">
+                        <i class="ti ti-edit"></i>
+                    </a>
+                    <form method="post" action="{{ path('app_departementadmin_delete', {'id': departement.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce département?');" style="display: inline-block;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ departement.id) }}">
+                        <button class="btn btn-danger btn-sm">
+                            <i class="ti ti-trash"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5" class="text-center">Aucun département trouvé</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="navigation mt-3 d-flex justify-content-center">
+    {{ knp_pagination_render(pagination) }}
+</div>

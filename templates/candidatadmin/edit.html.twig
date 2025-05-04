@@ -1,0 +1,124 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Modifier Candidat{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h3 class="page-title">
+        <span class="page-title-icon bg-gradient-danger text-white me-2">
+            <i class="ti ti-edit"></i>
+        </span> Modifier un candidat
+    </h3>
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('charges_admin_home') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_candidatadmin_index') }}">Candidats</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Modifier</li>
+        </ul>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Modifier les informations de {{ candidat.prenom }} {{ candidat.nom }}</h4>
+
+                {{ form_start(form, {'attr': {'class': 'form', 'enctype': 'multipart/form-data'}}) }}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                {{ form_label(form.prenom, 'Prénom', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.prenom, {'attr': {'class': 'form-control', 'placeholder': 'Prénom'}}) }}
+                                <small class="text-danger">{{ form_errors(form.prenom) }}</small>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                {{ form_label(form.nom, 'Nom', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Nom'}}) }}
+                                <small class="text-danger">{{ form_errors(form.nom) }}</small>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                {{ form_label(form.email, 'Email', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.email, {'attr': {'class': 'form-control', 'placeholder': 'Email'}}) }}
+                                <small class="text-danger">{{ form_errors(form.email) }}</small>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                {{ form_label(form.telephone, 'Téléphone', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.telephone, {'attr': {'class': 'form-control', 'placeholder': 'Téléphone'}}) }}
+                                <small class="text-danger">{{ form_errors(form.telephone) }}</small>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                {{ form_label(form.posteConvoite, 'Poste convoité', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.posteConvoite, {'attr': {'class': 'form-control', 'placeholder': 'Poste convoité'}}) }}
+                                <small class="text-danger">{{ form_errors(form.posteConvoite) }}</small>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                {{ form_label(form.datePostulation, 'Date de postulation', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.datePostulation, {'attr': {'class': 'form-control', 'data-provide': 'datepicker'}}) }}
+                                <small class="text-danger">{{ form_errors(form.datePostulation) }}</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group mb-3">
+                                {{ form_label(form.cvFile, 'CV (PDF)', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.cvFile, {'attr': {'class': 'form-control'}}) }}
+                                <small class="text-danger">{{ form_errors(form.cvFile) }}</small>
+                                <small class="text-muted">Formats acceptés: PDF, DOC, DOCX (max 2MB)</small>
+                                
+                                {% if candidat.cv %}
+                                <div class="mt-2">
+                                    <p>CV actuel: <a href="{{ asset('uploads/cv/' ~ candidat.cv) }}" target="_blank">{{ candidat.cv }}</a></p>
+                                    <div class="form-check">
+                                        {{ form_widget(form.deleteCV, {'attr': {'class': 'form-check-input'}}) }}
+                                        {{ form_label(form.deleteCV, 'Supprimer le CV actuel', {'label_attr': {'class': 'form-check-label'}}) }}
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group mb-3">
+                                {{ form_label(form.commentaire, 'Commentaire', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.commentaire, {'attr': {'class': 'form-control', 'rows': 5, 'placeholder': 'Ajouter des notes ou commentaires sur ce candidat...'}}) }}
+                                <small class="text-danger">{{ form_errors(form.commentaire) }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group mb-3">
+                                {{ form_label(form.status, 'Statut de la candidature', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.status, {'attr': {'class': 'form-select'}}) }}
+                                <small class="text-danger">{{ form_errors(form.status) }}</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{{ path('app_candidatadmin_index') }}" class="btn btn-secondary">
+                            <i class="ti ti-arrow-left"></i> Retour à la liste
+                        </a>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="ti ti-device-floppy"></i> Mettre à jour
+                        </button>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

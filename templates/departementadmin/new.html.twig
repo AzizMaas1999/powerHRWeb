@@ -1,0 +1,61 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Nouveau Département{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h3 class="page-title">
+        <span class="page-title-icon bg-gradient-danger text-white me-2">
+            <i class="ti ti-building-plus"></i>
+        </span> Ajouter un département
+    </h3>
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('charges_admin_home') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_departementadmin_index') }}">Départements</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Nouveau</li>
+        </ul>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Formulaire de création de département</h4>
+
+                {{ form_start(form, {'attr': {'class': 'form'}}) }}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group mb-3">
+                                {{ form_label(form.nom, 'Nom du département', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Ressources Humaines'}}) }}
+                                <small class="text-danger">{{ form_errors(form.nom) }}</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group mb-3">
+                                {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 5, 'placeholder': 'Description détaillée du département'}}) }}
+                                <small class="text-danger">{{ form_errors(form.description) }}</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{{ path('app_departementadmin_index') }}" class="btn btn-secondary">
+                            <i class="ti ti-arrow-left"></i> Retour à la liste
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="ti ti-device-floppy"></i> Enregistrer
+                        </button>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

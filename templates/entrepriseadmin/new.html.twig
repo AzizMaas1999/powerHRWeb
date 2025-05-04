@@ -1,0 +1,93 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Nouvelle Entreprise{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h3 class="page-title">
+        <span class="page-title-icon bg-gradient-danger text-white me-2">
+            <i class="ti ti-building-store"></i>
+        </span> Ajouter une entreprise
+    </h3>
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('charges_admin_home') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_entrepriseadmin_index') }}">Entreprises</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Nouvelle</li>
+        </ul>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Formulaire d'ajout d'entreprise</h4>
+
+                {{ form_start(form, {'attr': {'class': 'form'}}) }}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                {{ form_label(form.nom, 'Nom de l\'entreprise', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Nom de l\'entreprise'}}) }}
+                                <small class="text-danger">{{ form_errors(form.nom) }}</small>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                {{ form_label(form.email, 'Email', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.email, {'attr': {'class': 'form-control', 'placeholder': 'Email de l\'entreprise'}}) }}
+                                <small class="text-danger">{{ form_errors(form.email) }}</small>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                {{ form_label(form.telephone, 'Téléphone', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.telephone, {'attr': {'class': 'form-control', 'placeholder': 'Numéro de téléphone'}}) }}
+                                <small class="text-danger">{{ form_errors(form.telephone) }}</small>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                {{ form_label(form.adresse, 'Adresse', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.adresse, {'attr': {'class': 'form-control', 'placeholder': 'Adresse complète', 'rows': 3}}) }}
+                                <small class="text-danger">{{ form_errors(form.adresse) }}</small>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                {{ form_label(form.matriculeFiscale, 'Matricule fiscale', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.matriculeFiscale, {'attr': {'class': 'form-control', 'placeholder': 'Matricule fiscale'}}) }}
+                                <small class="text-danger">{{ form_errors(form.matriculeFiscale) }}</small>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                {{ form_label(form.siteWeb, 'Site web', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.siteWeb, {'attr': {'class': 'form-control', 'placeholder': 'https://exemple.com'}}) }}
+                                <small class="text-danger">{{ form_errors(form.siteWeb) }}</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group mb-3">
+                                {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 5, 'placeholder': 'Description de l\'entreprise...'}}) }}
+                                <small class="text-danger">{{ form_errors(form.description) }}</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{{ path('app_entrepriseadmin_index') }}" class="btn btn-secondary">
+                            <i class="ti ti-arrow-left"></i> Retour à la liste
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="ti ti-device-floppy"></i> Enregistrer
+                        </button>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

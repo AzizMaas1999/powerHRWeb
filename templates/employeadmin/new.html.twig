@@ -1,0 +1,101 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Nouvel Employé{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h3 class="page-title">
+        <span class="page-title-icon bg-gradient-danger text-white me-2">
+            <i class="ti ti-user-plus"></i>
+        </span> Ajouter un employé
+    </h3>
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('charges_admin_home') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_employeadmin_index') }}">Employés</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Nouveau</li>
+        </ul>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Formulaire d'ajout d'employé</h4>
+
+                {{ form_start(form, {'attr': {'class': 'form'}}) }}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                {{ form_label(form.username, 'Nom d\'utilisateur', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.username, {'attr': {'class': 'form-control', 'placeholder': 'Nom d\'utilisateur'}}) }}
+                                <small class="text-danger">{{ form_errors(form.username) }}</small>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                {{ form_label(form.password, 'Mot de passe', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.password, {'attr': {'class': 'form-control', 'placeholder': 'Mot de passe'}}) }}
+                                <small class="text-danger">{{ form_errors(form.password) }}</small>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                {{ form_label(form.email, 'Email', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.email, {'attr': {'class': 'form-control', 'placeholder': 'Email'}}) }}
+                                <small class="text-danger">{{ form_errors(form.email) }}</small>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                {{ form_label(form.prenom, 'Prénom', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.prenom, {'attr': {'class': 'form-control', 'placeholder': 'Prénom'}}) }}
+                                <small class="text-danger">{{ form_errors(form.prenom) }}</small>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                {{ form_label(form.nom, 'Nom', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Nom'}}) }}
+                                <small class="text-danger">{{ form_errors(form.nom) }}</small>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                {{ form_label(form.poste, 'Poste', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.poste, {'attr': {'class': 'form-control'}}) }}
+                                <small class="text-danger">{{ form_errors(form.poste) }}</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                {{ form_label(form.salaire, 'Salaire (TND)', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.salaire, {'attr': {'class': 'form-control', 'placeholder': 'Salaire'}}) }}
+                                <small class="text-danger">{{ form_errors(form.salaire) }}</small>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                {{ form_label(form.departement, 'Département', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.departement, {'attr': {'class': 'form-select'}}) }}
+                                <small class="text-danger">{{ form_errors(form.departement) }}</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{{ path('app_employeadmin_index') }}" class="btn btn-secondary">
+                            <i class="ti ti-arrow-left"></i> Retour à la liste
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="ti ti-device-floppy"></i> Enregistrer
+                        </button>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

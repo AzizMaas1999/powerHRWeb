@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Tableau de bord Charges{% endblock %}
+{% block title %}Tableau de bord Admin{% endblock %}
 
 {% block body %}
 <div class="page-header">
     <h3 class="page-title text-white">
-        <span class="page-title-icon bg-gradient-primary text-white me-2">
-            <i class="mdi mdi-account-group"></i>
-        </span> Tableau de bord Ressources Humaines
+        <span class="page-title-icon bg-gradient-danger text-white me-2">
+            <i class="mdi mdi-shield-account"></i>
+        </span> Tableau de bord Administration
     </h3>
     <div class="d-flex align-items-center">
         <p class="text-muted mb-0">Dernière mise à jour: {{ "now"|date("d/m/Y H:i", 'Africa/Tunis') }}</p>
@@ -23,7 +23,7 @@
                 </h4>
                 <h2 class="mb-5">{{ employesCount }}</h2>
                 <h6 class="card-text">
-                    <a href="{{ path('app_employe_index') }}" class="text-white">Gérer les employés</a>
+                    <a href="{{ path('app_employeadmin_index') }}" class="text-white">Administrer les employés</a>
                 </h6>
             </div>
         </div>
@@ -36,7 +36,7 @@
                 </h4>
                 <h2 class="mb-5">{{ fichesCount }}</h2>
                 <h6 class="card-text">
-                    <a href="{{ path('app_fiche_employe_index') }}" class="text-white">Voir les fiches</a>
+                    <a href="{{ path('app_fiche_employeadmin_index') }}" class="text-white">Administrer les fiches</a>
                 </h6>
             </div>
         </div>
@@ -49,7 +49,7 @@
                 </h4>
                 <h2 class="mb-5">{{ questionnairesCount }}</h2>
                 <h6 class="card-text">
-                    <a href="{{ path('app_questionnaire_index') }}" class="text-white">Gérer les questionnaires</a>
+                    <a href="{{ path('app_questionnaireadmin_index') }}" class="text-white">Administrer les questionnaires</a>
                 </h6>
             </div>
         </div>
@@ -114,7 +114,7 @@
                     </table>
                 </div>
                 <div class="d-flex justify-content-end mt-3">
-                    <a href="{{ path('app_pointageadmin_index') }}" class="btn btn-sm btn-primary">Voir tout</a>
+                    <a href="{{ path('app_pointageadmin_index') }}" class="btn btn-sm btn-primary">Administrer les pointages</a>
                 </div>
             </div>
         </div>
@@ -125,14 +125,14 @@
     <div class="col-12 grid-margin">
         <div class="card bg-dark text-white">
             <div class="card-body">
-                <h4 class="card-title text-white">Accès Rapide</h4>
+                <h4 class="card-title text-white">Accès Rapide - Administration</h4>
                 <div class="row mt-3">
                     <div class="col-md-3 mb-4">
                         <div>
                             <p class="mb-4">Gestion de paie</p>
                             <p class="fs-30 mb-2">{{ paiesTraitees }}</p>
                             <p>fiches traitées ce mois</p>
-                            <a href="{{ path('app_paie_index') }}" class="btn btn-outline-light btn-sm mt-3">Gérer</a>
+                            <a href="{{ path('app_paieadmin_index') }}" class="btn btn-outline-light btn-sm mt-3">Administrer</a>
                         </div>
                     </div>
                     <div class="col-md-3 mb-4">
@@ -140,7 +140,7 @@
                             <p class="mb-4">Candidatures</p>
                             <p class="fs-30 mb-2">{{ candidatsCount }}</p>
                             <p>nouveaux candidats</p>
-                            <a href="{{ path('app_candidat_index') }}" class="btn btn-outline-light btn-sm mt-3">Consulter</a>
+                            <a href="{{ path('app_candidatadmin_index') }}" class="btn btn-outline-light btn-sm mt-3">Administrer</a>
                         </div>
                     </div>
                     <div class="col-md-3 mb-4">
@@ -148,7 +148,7 @@
                             <p class="mb-4">Demandes congés</p>
                             <p class="fs-30 mb-2">{{ demandesEnAttente }}</p>
                             <p>en attente d'approbation</p>
-                            <a href="{{ path('app_demandeadmin_liste_attente') }}" class="btn btn-outline-light btn-sm mt-3">Traiter</a>
+                            <a href="{{ path('app_demandeadmin_liste_attente') }}" class="btn btn-outline-light btn-sm mt-3">Administrer</a>
                         </div>
                     </div>
                     <div class="col-md-3 mb-4">
@@ -156,7 +156,7 @@
                             <p class="mb-4">Importation CSV</p>
                             <p class="fs-30 mb-2"><i class="mdi mdi-upload"></i></p>
                             <p>pointages des employés</p>
-                            <a href="{{ path('csv_pointage_all') }}" class="btn btn-outline-light btn-sm mt-3">Importer</a>
+                            <a href="{{ path('csv_pointageadmin_all') }}" class="btn btn-outline-light btn-sm mt-3">Administrer</a>
                         </div>
                     </div>
                 </div>
@@ -171,7 +171,7 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <h4 class="card-title text-white">Demandes En Attente</h4>
-                    <a href="{{ path('app_demandeadmin_liste_attente') }}" class="btn btn-info">Voir tout</a>
+                    <a href="{{ path('app_demandeadmin_liste_attente') }}" class="btn btn-info">Administrer tout</a>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-dark">
@@ -223,8 +223,8 @@
                 <h4 class="card-title">Répartition par département</h4>
                 <canvas id="department-distribution-chart" style="height:250px"></canvas>
                 <div class="text-center mt-4">
-                    <a href="{{ path('app_departement_index') }}" class="btn btn-outline-primary btn-sm">
-                        <i class="mdi mdi-eye"></i> Voir tous les départements
+                    <a href="{{ path('app_departementadmin_index') }}" class="btn btn-outline-primary btn-sm">
+                        <i class="mdi mdi-eye"></i> Administrer les départements
                     </a>
                 </div>
             </div>

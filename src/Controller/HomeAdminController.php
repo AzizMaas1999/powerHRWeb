@@ -16,33 +16,16 @@ use App\Repository\QuestionnaireRepository;
 use App\Repository\CandidatRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use Doctrine\Persistence\ManagerRegistry; // <<< ajoute cette ligne en haut avec les autres "use"
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use DateTime;
 
-#[Route('/home')]
-class HomeController extends AbstractController
+#[IsGranted('ROLE_ADMIN')]
+#[Route('/homeadmin')]
+final class HomeAdminController extends AbstractController
 {
-    #[Route('/directeur', name: 'directeur_home')]
-    public function directeur(ManagerRegistry $doctrine): Response
-    {
-        $entityManager = $doctrine->getManager();
-    
-        // Requête pour compter les demandes avec statut "En Attente"
-        /*$query = $entityManager->createQuery(
-            'SELECT COUNT(d.id) FROM App\Entity\Demande d WHERE d.status = :status'
-        )->setParameter('status', 'En Attente');
-    
-        $nbDemandesEnAttente = $query->getSingleScalarResult();
-    */
-        return $this->render('home/directeur.html.twig', [
-            /*'nbDemandesEnAttente' => $nbDemandesEnAttente,*/
-        ]);
-    }
-
-    #[Route('/charges', name: 'charges_home')]
-    public function charges(
+    #[Route('/charges', name: 'charges_admin_home')]
+    public function chargesAdmin(
         PaieRepository $paieRepository, 
         EmployeRepository $employeRepository, 
         PointageRepository $pointageRepository,
@@ -76,36 +59,24 @@ class HomeController extends AbstractController
             $lastDayOfMonth = clone $firstDayOfMonth;
             $lastDayOfMonth->modify('last day of this month');
             
-            $presenceCount = count($pointageRepository->createQueryBuilder('p')
-                ->andWhere('p.date >= :firstDay')
-                ->andWhere('p.date <= :lastDay')
-                ->setParameter('firstDay', $firstDayOfMonth)
-                ->setParameter('lastDay', $lastDayOfMonth)
-                ->getQuery()
-                ->getResult());
-                
-            // Calculate average presence per employee
-            $avgPresencePerEmployee = $employesCount > 0 ? $presenceCount / $employesCount : 0;
-            $presenceData[] = round($avgPresencePerEmployee, 1); // Round to 1 decimal place
+            $presenceCount = count($pointageRepository->findByDateRange($firstDayOfMonth, $lastDayOfMonth));
+            $presenceData[] = $presenceCount;
             
-            // Calculate average absence per employee
-            $workingDays = 20; // Moyenne de jours ouvrables par mois
-            $expectedAttendance = $workingDays; // Per employee
-            $avgAbsencePerEmployee = max(0, min($expectedAttendance - $avgPresencePerEmployee, $expectedAttendance * 0.3)); // Plafonner à 30%
-            $absenceData[] = round($avgAbsencePerEmployee, 1); // Round to 1 decimal place
+            // Pour simplifier, utiliser un nombre fixe d'absences
+            // Dans un scénario réel, vous pourriez calculer les absences en fonction du nombre total d'employés
+            // moins les présences par jour
+            $absenceData[] = max(0, $employesCount * 3 - $presenceCount); // 3 jours de travail en moyenne par mois
         }
         
-        // Calculate average values across all 4 months
-        $avgPresence = count($presenceData) > 0 ? array_sum($presenceData) / count($presenceData) : 0;
-        $avgAbsence = count($absenceData) > 0 ? array_sum($absenceData) / count($absenceData) : 0;
-        $totalAvg = $avgPresence + $avgAbsence;
-        $presenceRate = $totalAvg > 0 ? round(($avgPresence / $totalAvg) * 100) : 0;
-        $absenceRate = 100 - $presenceRate;
+        // Calculer les taux de présence et d'absence
+        $totalPresence = array_sum($presenceData);
+        $totalAbsence = array_sum($absenceData);
+        $total = $totalPresence + $totalAbsence;
         
-        // Récupérer les pointages récents
-        $recentPointages = $pointageRepository->findBy([], ['date' => 'DESC'], 4);
+        $presenceRate = $total > 0 ? round(($totalPresence / $total) * 100) : 0;
+        $absenceRate = $total > 0 ? round(($totalAbsence / $total) * 100) : 0;
         
-        // Récupérer les données pour la répartition par département
+        // Récupérer tous les départements et leurs effectifs
         $departements = $departementRepository->findAll();
         $departementLabels = [];
         $departementData = [];
@@ -128,32 +99,27 @@ class HomeController extends AbstractController
         
         // Récupérer les pointages récents
         $today = new \DateTime('now', new \DateTimeZone('Africa/Tunis'));
-        $today->setTime(0, 0, 0); // Set to beginning of day
+        $today->setTime(0, 0, 0);
         
-        // Get all employees except admins
-        $allEmployes = $employeRepository->findAll();
+        $tomorrow = clone $today;
+        $tomorrow->add(new \DateInterval('P1D'));
+        
+        // Préparer les données de statut pour les employés
+        $employes = $employeRepository->findBy([], ['username' => 'ASC'], 5);
         $employeStatusToday = [];
         
-        // Check status for each employee today
-        foreach ($allEmployes as $employe) {
-            // Skip admin users
-            if ($employe->getPoste() === 'Admin') {
-                continue;
-            }
+        foreach ($employes as $employe) {
+            $status = 'Absent'; // Par défaut, considérer comme absent
             
-            $todayPointage = $pointageRepository->findOneBy([
+            // Rechercher le pointage de l'employé pour aujourd'hui
+            $pointage = $pointageRepository->findOneBy([
                 'employe' => $employe,
                 'date' => $today
             ]);
             
-            $status = 'Absent';
-            if ($todayPointage) {
-                if ($todayPointage->getHeureSortie()) {
-                    // If both entry and exit times are recorded
-                    $status = 'Présent';
-                } elseif ($todayPointage->getHeureEntree()) {
-                    // If only entry time is recorded
-                    $entryTime = $todayPointage->getHeureEntree();
+            if ($pointage) {
+                if ($pointage->getHeureEntree()) {
+                    $entryTime = $pointage->getHeureEntree();
                     $expectedEntryTime = new \DateTime('08:00:00'); // 8 AM as expected start time
                     
                     if ($entryTime > $expectedEntryTime) {
@@ -171,7 +137,7 @@ class HomeController extends AbstractController
             ];
         }
         
-        return $this->render('home/charges.html.twig', [
+        return $this->render('home/chargesadmin.html.twig', [
             'paies' => $paieRepository->findAll(),
             'employesCount' => $employesCount,
             'fichesCount' => $fichesCount,
@@ -181,7 +147,7 @@ class HomeController extends AbstractController
             'absenceData' => $absenceData,
             'presenceRate' => $presenceRate,
             'absenceRate' => $absenceRate,
-            'recentPointages' => $recentPointages,
+            'recentPointages' => $pointageRepository->findBy([], ['date' => 'DESC'], 5),
             'departementLabels' => $departementLabels,
             'departementData' => $departementData,
             'demandesEnAttente' => $demandesCount,
@@ -190,17 +156,5 @@ class HomeController extends AbstractController
             'paiesTraitees' => $paiesTraitees,
             'employeStatusToday' => $employeStatusToday
         ]);
-    }
-
-    #[Route('/ouvrier', name: 'ouvrier_home')]
-    public function ouvrier(): Response
-    {
-        return $this->render('home/ouvrier.html.twig');
-    }
-
-    #[Route('/facturation', name: 'facturation_home')]
-    public function facturation(): Response
-    {
-        return $this->render('home/facturation.html.twig');
     }
 }

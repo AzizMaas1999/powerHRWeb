@@ -1,0 +1,109 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Modifier Département{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h3 class="page-title">
+        <span class="page-title-icon bg-gradient-danger text-white me-2">
+            <i class="ti ti-edit"></i>
+        </span> Modifier un département
+    </h3>
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('charges_admin_home') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_departementadmin_index') }}">Départements</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Modifier</li>
+        </ul>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Modifier les informations du département {{ departement.nom }}</h4>
+
+                {{ form_start(form, {'attr': {'class': 'form'}}) }}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group mb-3">
+                                {{ form_label(form.nom, 'Nom du département', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Ressources Humaines'}}) }}
+                                <small class="text-danger">{{ form_errors(form.nom) }}</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group mb-3">
+                                {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 5, 'placeholder': 'Description détaillée du département'}}) }}
+                                <small class="text-danger">{{ form_errors(form.description) }}</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{{ path('app_departementadmin_index') }}" class="btn btn-secondary">
+                            <i class="ti ti-arrow-left"></i> Retour à la liste
+                        </a>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="ti ti-device-floppy"></i> Mettre à jour
+                        </button>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Employés affectés à ce département</h4>
+                
+                {% if departement.employes|length > 0 %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nom</th>
+                                    <th>Email</th>
+                                    <th>Poste</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for employe in departement.employes %}
+                                    <tr>
+                                        <td>{{ employe.id }}</td>
+                                        <td>{{ employe.prenom }} {{ employe.nom }}</td>
+                                        <td>{{ employe.email }}</td>
+                                        <td>{{ employe.poste }}</td>
+                                        <td>
+                                            <a href="{{ path('app_employeadmin_show', {'id': employe.id}) }}" class="btn btn-info btn-sm">
+                                                <i class="ti ti-eye"></i>
+                                            </a>
+                                            <a href="{{ path('app_employeadmin_edit', {'id': employe.id}) }}" class="btn btn-warning btn-sm">
+                                                <i class="ti ti-edit"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info mt-3">
+                        <i class="ti ti-info-circle me-2"></i> Aucun employé n'est actuellement affecté à ce département.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

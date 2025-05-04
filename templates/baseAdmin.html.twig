@@ -6,9 +6,9 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="description" content="Mantis is made using Bootstrap 5 design framework. Download the free admin template & use it for your project.">
-      <meta name="keywords" content="Mantis, Dashboard UI Kit, Bootstrap 5, Admin Template, Admin Dashboard, CRM, CMS, Bootstrap Admin Template">
-      <meta name="author" content="CodedThemes">
+      <meta name="description" content="PowerHR Admin Dashboard">
+      <meta name="keywords" content="PowerHR, Admin Dashboard, HR Management">
+      <meta name="author" content="PowerHR Team">
 
         <!-- [Favicon] icon -->
         <link rel="icon" href="{{ asset('Admin/assets/images/favicon.svg') }}" type="image/x-icon">
@@ -48,237 +48,219 @@
     <nav class="pc-sidebar">
         <div class="navbar-wrapper">
             <div class="m-header">
-                <a href="/index.html" class="b-brand text-primary">
+                <a href="{{ path('charges_admin_home') }}" class="b-brand text-primary">
                     <!-- ========   Change your logo from here   ============ -->
                     <img src="{{ asset('Admin/assets/images/Logo.png') }}" class="img-fluid logo-lg" alt="logo">
                 </a>
             </div>
             <ul class="pc-navbar">
                 <li class="pc-item pc-caption">
-                    <label>Navigation</label>
+                    <label>Administration</label>
                     <i class="ti ti-dashboard"></i>
                 </li>
+                <li class="pc-item">
+                    <a href="{{ path('charges_admin_home') }}" class="pc-link">
+                        <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
+                        <span class="pc-mtext">Dashboard Admin</span>
+                    </a>
+                </li>
+                
                 <li class="pc-item pc-hasmenu">
                     <a href="#!" class="pc-link">
-                        <span class="pc-micon"><i class="ti ti-menu"></i></span>
+                        <span class="pc-micon"><i class="ti ti-users"></i></span>
+                        <span class="pc-mtext">Gestion Employés</span>
+                        <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                    </a>
+                    <ul class="pc-submenu">
+                        <li class="pc-item"><a class="pc-link" href="{{ path('app_employeadmin_index') }}">Liste des employés</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ path('app_employeadmin_new') }}">Nouvel employé</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ path('app_fiche_employeadmin_index') }}">Fiches employés</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ path('app_fiche_employeadmin_new') }}">Nouvelle fiche</a></li>
+                    </ul>
+                </li>
+                
+                <li class="pc-item pc-hasmenu">
+                    <a href="#!" class="pc-link">
+                        <span class="pc-micon"><i class="ti ti-calendar-time"></i></span>
                         <span class="pc-mtext">Pointage</span>
                         <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                     </a>
                     <ul class="pc-submenu">
-                        <li class="pc-item"><a class="pc-link" href="/pointageadmin/employe">Ajouter un pointage</a></li>
-                        <li class="pc-item"><a class="pc-link" href="/pointageadmin">Afficher tous les pointages</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ path('app_pointageadmin_index') }}">Tous les pointages</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ path('app_showEmployeadmin_index') }}">Ajouter un pointage</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ path('csv_pointageadmin_all') }}">Import CSV</a></li>
                     </ul>
                 </li>
+                
                 <li class="pc-item pc-hasmenu">
                     <a href="#!" class="pc-link">
-                        <span class="pc-micon"><i class="ti ti-menu"></i></span>
-                        <span class="pc-mtext">Demande</span>
+                        <span class="pc-micon"><i class="ti ti-calendar-plus"></i></span>
+                        <span class="pc-mtext">Demandes</span>
                         <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                     </a>
                     <ul class="pc-submenu">
-                        <li class="pc-item"><a class="pc-link" href="/demandeadmin/new">Ajouter une Demande</a></li>
-                        <li class="pc-item"><a class="pc-link" href="/demandeadmin">Afficher tous les demandes</a></li>
-
-                        
-
+                        <li class="pc-item"><a class="pc-link" href="{{ path('app_demandeadmin_index') }}">Toutes les demandes</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ path('app_demandeadmin_new') }}">Nouvelle demande</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ path('app_demandeadmin_liste_attente') }}">Demandes en attente</a></li>
                     </ul>
                 </li>
+
                 <li class="pc-item pc-hasmenu">
                     <a href="#!" class="pc-link">
-                        <span class="pc-micon"><i class="ti ti-menu"></i></span>
-                        <span class="pc-mtext">Questionnaire</span>
+                        <span class="pc-micon"><i class="ti ti-building"></i></span>
+                        <span class="pc-mtext">Départements</span>
                         <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                     </a>
                     <ul class="pc-submenu">
-                        <li class="pc-item"><a class="pc-link" href="/questionnaireadmin/new">Ajouter un questionnaire</a></li>
-                        <li class="pc-item"><a class="pc-link" href="/questionnaireadmin">Afficher tous les questionnaires</a></li>
-
+                        <li class="pc-item"><a class="pc-link" href="{{ path('app_departementadmin_index') }}">Liste des départements</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ path('app_departementadmin_new') }}">Nouveau département</a></li>
                     </ul>
+                </li>
+                
+                <li class="pc-item pc-hasmenu">
+                    <a href="#!" class="pc-link">
+                        <span class="pc-micon"><i class="ti ti-cash"></i></span>
+                        <span class="pc-mtext">Paie</span>
+                        <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                    </a>
+                    <ul class="pc-submenu">
+                        <li class="pc-item"><a class="pc-link" href="{{ path('app_paieadmin_index') }}">Toutes les paies</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ path('app_showEmployePaieadmin_index') }}">Générer une paie</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ path('app_paieadmin_fiche_employe') }}">Fiches de paie</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ path('app_paieadmin_generate_auto') }}">Génération automatique</a></li>
+                    </ul>
+                </li>
+                
+                <li class="pc-item pc-hasmenu">
+                    <a href="#!" class="pc-link">
+                        <span class="pc-micon"><i class="ti ti-forms"></i></span>
+                        <span class="pc-mtext">Questionnaires</span>
+                        <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                    </a>
+                    <ul class="pc-submenu">
+                        <li class="pc-item"><a class="pc-link" href="{{ path('app_questionnaireadmin_index') }}">Liste des questionnaires</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ path('app_questionnaireadmin_new') }}">Nouveau questionnaire</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ path('app_repquestionnaireadmin_index') }}">Réponses</a></li>
+                    </ul>
+                </li>
+                
+                <li class="pc-item pc-hasmenu">
+                    <a href="#!" class="pc-link">
+                        <span class="pc-micon"><i class="ti ti-user-plus"></i></span>
+                        <span class="pc-mtext">Candidats</span>
+                        <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                    </a>
+                    <ul class="pc-submenu">
+                        <li class="pc-item"><a class="pc-link" href="{{ path('app_candidatadmin_index') }}">Liste des candidats</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ path('app_candidatadmin_new') }}">Nouveau candidat</a></li>
+                    </ul>
+                </li>
+
+                <li class="pc-item pc-caption">
+                    <label>Paramètres</label>
+                </li>
+                
+                <li class="pc-item">
+                    <a href="{{ path('app_logout') }}" class="pc-link">
+                        <span class="pc-micon"><i class="ti ti-logout"></i></span>
+                        <span class="pc-mtext">Déconnexion</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </nav>
     <!-- [ Sidebar Menu ] end -->
+    
     <!-- [ Header Topbar ] start -->
     <header class="pc-header">
         <div class="header-wrapper">
+            <div class="me-auto pc-mob-drp">
+                <ul class="list-unstyled">
+                    <li class="pc-h-item">
+                        <a class="pc-head-link ms-0" href="#" id="sidebar-hide">
+                            <i class="ti ti-menu-2"></i>
+                        </a>
+                    </li>
+                    <li class="pc-h-item">
+                        <a class="pc-head-link ms-0" href="{{ path('charges_admin_home') }}" id="header-collapse">
+                            <i class="ti ti-home"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
                 <div class="ms-auto">
                 <ul class="list-unstyled">
                     <li class="dropdown pc-h-item">
-                    <a
-                        class="pc-head-link dropdown-toggle arrow-none me-0"
-                        data-bs-toggle="dropdown"
-                        href="#"
-                        role="button"
-                        aria-haspopup="false"
-                        aria-expanded="false"
-                    >
-                        <i class="ti ti-mail"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-notification dropdown-menu-end pc-h-dropdown">
-                        <div class="dropdown-header d-flex align-items-center justify-content-between">
-                        <h5 class="m-0">Message</h5>
-                        <a href="#!" class="pc-head-link bg-transparent"><i class="ti ti-x text-danger"></i></a>
-                        </div>
-                        <div class="dropdown-divider"></div>
-                        <div class="dropdown-header px-0 text-wrap header-notification-scroll position-relative" style="max-height: calc(100vh - 215px)">
-                        <div class="list-group list-group-flush w-100">
-                            <a class="list-group-item list-group-item-action">
-                            <div class="d-flex">
-                                <div class="flex-shrink-0">
-                                <img src="{{ asset('Admin/assets/images/user/avatar-2.jpg') }}" alt="user-image" class="user-avtar">
-                                </div>
-                                <div class="flex-grow-1 ms-1">
-                                <span class="float-end text-muted">3:00 AM</span>
-                                <p class="text-body mb-1">It's <b>Cristina danny's</b> birthday today.</p>
-                                <span class="text-muted">2 min ago</span>
+                        <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                            <i class="ti ti-bell"></i>
+                            <span class="badge bg-danger pc-h-badge">3</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-notification dropdown-menu-end pc-h-dropdown">
+                            <div class="dropdown-header d-flex align-items-center justify-content-between">
+                                <h5 class="m-0">Notifications</h5>
+                                <a href="#!" class="btn btn-link btn-sm">Marquer comme lues</a>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="dropdown-body header-notification-scroll position-relative" style="max-height: calc(100vh - 215px)">
+                                <div class="list-group list-group-flush w-100">
+                                    <a class="list-group-item list-group-item-action">
+                                        <div class="d-flex">
+                                            <div class="flex-shrink-0">
+                                                <div class="avtar avtar-s bg-light-warning">
+                                                    <i class="ti ti-calendar-event"></i>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <span class="float-end text-muted">Maintenant</span>
+                                                <p class="text-body mb-1">2 nouvelles demandes à traiter</p>
+                                                <span class="text-muted">Cliquez pour voir</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <a class="list-group-item list-group-item-action">
+                                        <div class="d-flex">
+                                            <div class="flex-shrink-0">
+                                                <div class="avtar avtar-s bg-light-success">
+                                                    <i class="ti ti-user-check"></i>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <span class="float-end text-muted">2h</span>
+                                                <p class="text-body mb-1">3 nouveaux candidats</p>
+                                                <span class="text-muted">Nouveaux CV à examiner</span>
+                                            </div>
+                                        </div>
+                                    </a>
                                 </div>
                             </div>
-                            </a>
-                            <a class="list-group-item list-group-item-action">
-                            <div class="d-flex">
-                                <div class="flex-shrink-0">
-                                <img src="{{ asset('Admin/assets/images/user/avatar-1.jpg') }}" alt="user-image" class="user-avtar">
-                                </div>
-                                <div class="flex-grow-1 ms-1">
-                                <span class="float-end text-muted">6:00 PM</span>
-                                <p class="text-body mb-1"><b>Aida Burg</b> commented your post.</p>
-                                <span class="text-muted">5 August</span>
-                                </div>
-                            </div>
-                            </a>
-                            <a class="list-group-item list-group-item-action">
-                            <div class="d-flex">
-                                <div class="flex-shrink-0">
-                                <img src="{{ asset('Admin/assets/images/user/avatar-3.jpg') }}" alt="user-image" class="user-avtar">
-                                </div>
-                                <div class="flex-grow-1 ms-1">
-                                <span class="float-end text-muted">2:45 PM</span>
-                                <p class="text-body mb-1"><b>There was a failure to your setup.</b></p>
-                                <span class="text-muted">7 hours ago</span>
-                                </div>
-                            </div>
-                            </a>
-                            <a class="list-group-item list-group-item-action">
-                            <div class="d-flex">
-                                <div class="flex-shrink-0">
-                                <img src="{{ asset('Admin/assets/images/user/avatar-4.jpg') }}" alt="user-image" class="user-avtar">
-                                </div>
-                                <div class="flex-grow-1 ms-1">
-                                <span class="float-end text-muted">9:10 PM</span>
-                                <p class="text-body mb-1"><b>Cristina Danny </b> invited to join <b> Meeting.</b></p>
-                                <span class="text-muted">Daily scrum meeting time</span>
-                                </div>
-                            </div>
-                            </a>
                         </div>
-                        </div>
-                        <div class="dropdown-divider"></div>
-                        <div class="text-center py-2">
-                        <a href="#!" class="link-primary">View all</a>
-                        </div>
-                    </div>
                     </li>
                     <li class="dropdown pc-h-item header-user-profile">
-                    <a
-                        class="pc-head-link dropdown-toggle arrow-none me-0"
-                        data-bs-toggle="dropdown"
-                        href="#"
-                        role="button"
-                        aria-haspopup="false"
-                        data-bs-auto-close="outside"
-                        aria-expanded="false"
-                    >
-                        <img src="{{ asset('Admin/assets/images/user/avatar-2.jpg') }}" alt="user-image" class="user-avtar">
-                        <span>Stebin Ben</span>
-                    </a>
-                    <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
-                        <div class="dropdown-header">
-                        <div class="d-flex mb-1">
-                            <div class="flex-shrink-0">
-                            <img src="{{ asset('Admin/assets/images/user/avatar-2.jpg') }}" alt="user-image" class="user-avtar wid-35">
+                        <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" data-bs-auto-close="outside" aria-expanded="false">
+                            <img src="{{ asset('Admin/assets/images/user/avatar-2.jpg') }}" alt="user-image" class="user-avtar">
+                            <span>{{ app.user ? app.user.username : 'Admin' }}</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
+                            <div class="dropdown-header">
+                                <div class="d-flex mb-1">
+                                    <div class="flex-shrink-0">
+                                        <img src="{{ asset('Admin/assets/images/user/avatar-2.jpg') }}" alt="user-image" class="user-avtar wid-35">
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="mb-1">{{ app.user ? app.user.username : 'Admin' }}</h6>
+                                        <span>{{ app.user ? app.user.poste : 'Administrateur' }}</span>
+                                    </div>
+                                    <a href="{{ path('app_logout') }}" class="pc-head-link bg-transparent">
+                                        <i class="ti ti-power text-danger"></i>
+                                    </a>
+                                </div>
                             </div>
-                            <div class="flex-grow-1 ms-3">
-                            <h6 class="mb-1">Stebin Ben</h6>
-                            <span>UI/UX Designer</span>
+                            <div class="text-center py-2">
+                                <a href="{{ path('app_logout') }}" class="btn btn-outline-danger">
+                                    <i class="ti ti-logout me-1"></i>Déconnexion
+                                </a>
                             </div>
-                            <a href="#!" class="pc-head-link bg-transparent"><i class="ti ti-power text-danger"></i></a>
                         </div>
-                        </div>
-                        <ul class="nav drp-tabs nav-fill nav-tabs" id="mydrpTab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button
-                            class="nav-link active"
-                            id="drp-t1"
-                            data-bs-toggle="tab"
-                            data-bs-target="#drp-tab-1"
-                            type="button"
-                            role="tab"
-                            aria-controls="drp-tab-1"
-                            aria-selected="true"
-                            ><i class="ti ti-user"></i> Profile</button
-                            >
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button
-                            class="nav-link"
-                            id="drp-t2"
-                            data-bs-toggle="tab"
-                            data-bs-target="#drp-tab-2"
-                            type="button"
-                            role="tab"
-                            aria-controls="drp-tab-2"
-                            aria-selected="false"
-                            ><i class="ti ti-settings"></i> Setting</button
-                            >
-                        </li>
-                        </ul>
-                        <div class="tab-content" id="mysrpTabContent">
-                        <div class="tab-pane fade show active" id="drp-tab-1" role="tabpanel" aria-labelledby="drp-t1" tabindex="0">
-                            <a href="#!" class="dropdown-item">
-                            <i class="ti ti-edit-circle"></i>
-                            <span>Edit Profile</span>
-                            </a>
-                            <a href="#!" class="dropdown-item">
-                            <i class="ti ti-user"></i>
-                            <span>View Profile</span>
-                            </a>
-                            <a href="#!" class="dropdown-item">
-                            <i class="ti ti-clipboard-list"></i>
-                            <span>Social Profile</span>
-                            </a>
-                            <a href="#!" class="dropdown-item">
-                            <i class="ti ti-wallet"></i>
-                            <span>Billing</span>
-                            </a>
-                            <a href="#!" class="dropdown-item">
-                            <i class="ti ti-power"></i>
-                            <span>Logout</span>
-                            </a>
-                        </div>
-                        <div class="tab-pane fade" id="drp-tab-2" role="tabpanel" aria-labelledby="drp-t2" tabindex="0">
-                            <a href="#!" class="dropdown-item">
-                            <i class="ti ti-help"></i>
-                            <span>Support</span>
-                            </a>
-                            <a href="#!" class="dropdown-item">
-                            <i class="ti ti-user"></i>
-                            <span>Account Settings</span>
-                            </a>
-                            <a href="#!" class="dropdown-item">
-                            <i class="ti ti-lock"></i>
-                            <span>Privacy Center</span>
-                            </a>
-                            <a href="#!" class="dropdown-item">
-                            <i class="ti ti-messages"></i>
-                            <span>Feedback</span>
-                            </a>
-                            <a href="#!" class="dropdown-item">
-                            <i class="ti ti-list"></i>
-                            <span>History</span>
-                            </a>
-                        </div>
-                        </div>
-                    </div>
                     </li>
                 </ul>
             </div>
@@ -287,28 +269,36 @@
     <!-- [ Header ] end -->
         <!-- [ Main Content ] start -->
         <div class="pc-container">
-            {% block body %}{% endblock %}
+            <div class="pc-content">
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                
+                {% block body %}{% endblock %}
+            </div>
         </div>
         <!-- [ Main Content ] end -->
     <footer class="pc-footer">
         <div class="footer-wrapper container-fluid">
-        <div class="row">
-            <div class="col-sm my-1">
-            <p class="m-0"
-                >Mantis &#9829; crafted by Team <a href="https://themeforest.net/user/codedthemes" target="_blank">Codedthemes</a> Distributed by <a href="https://themewagon.com/">ThemeWagon</a>.</p
-            >
+            <div class="row">
+                <div class="col-sm my-1">
+                    <p class="m-0">PowerHR © {{ "now"|date("Y") }} - Système de gestion des ressources humaines</p>
+                </div>
+                <div class="col-auto my-1">
+                    <ul class="list-inline footer-link mb-0">
+                        <li class="list-inline-item"><a href="{{ path('charges_admin_home') }}">Dashboard</a></li>
+                        <li class="list-inline-item"><a href="{{ path('app_logout') }}">Déconnexion</a></li>
+                    </ul>
+                </div>
             </div>
-            <div class="col-auto my-1">
-            <ul class="list-inline footer-link mb-0">
-                <li class="list-inline-item"><a href="../index.html">Home</a></li>
-            </ul>
-            </div>
-        </div>
         </div>
     </footer>
   </body>
   <!-- [Body] end -->
-
-  
 </html>
 

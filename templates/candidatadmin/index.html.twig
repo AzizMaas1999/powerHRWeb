@@ -1,0 +1,128 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Administration des Candidats{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h3 class="page-title text-white">
+        <span class="page-title-icon bg-gradient-danger text-white me-2">
+            <i class="ti ti-user-plus"></i>
+        </span> Administration des Candidats
+    </h3>
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">
+                <a href="{{ path('charges_admin_home') }}" class="text-decoration-none">
+                    <i class="ti ti-home"></i> Dashboard Admin
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="card-title mb-0">Liste des Candidats</h4>
+                    <div class="d-flex">
+                        <div class="input-group me-2" style="width: 300px;">
+                            <input type="text" id="search-candidat" class="form-control" placeholder="Rechercher un candidat...">
+                            <span class="input-group-text"><i class="ti ti-search"></i></span>
+                        </div>
+                        <a href="{{ path('app_candidatadmin_new') }}" class="btn btn-primary">
+                            <i class="ti ti-plus"></i> Nouveau Candidat
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nom</th>
+                                <th>Email</th>
+                                <th>Téléphone</th>
+                                <th>Poste</th>
+                                <th>Date Postulation</th>
+                                <th>CV</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for candidat in candidats %}
+                            <tr>
+                                <td>{{ candidat.id }}</td>
+                                <td>{{ candidat.prenom }} {{ candidat.nom }}</td>
+                                <td>{{ candidat.email }}</td>
+                                <td>{{ candidat.telephone }}</td>
+                                <td>
+                                    <span class="badge badge-primary">{{ candidat.posteConvoite }}</span>
+                                </td>
+                                <td>{{ candidat.datePostulation ? candidat.datePostulation|date('d/m/Y') : '-' }}</td>
+                                <td>
+                                    {% if candidat.cv %}
+                                    <a href="{{ asset('uploads/cv/' ~ candidat.cv) }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                        <i class="ti ti-file-text"></i> CV
+                                    </a>
+                                    {% else %}
+                                    <span class="badge bg-warning">Non fourni</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="{{ path('app_candidatadmin_show', {'id': candidat.id}) }}" class="btn btn-info btn-sm">
+                                            <i class="ti ti-eye"></i>
+                                        </a>
+                                        <a href="{{ path('app_candidatadmin_edit', {'id': candidat.id}) }}" class="btn btn-warning btn-sm">
+                                            <i class="ti ti-edit"></i>
+                                        </a>
+                                        <form method="post" action="{{ path('app_candidatadmin_delete', {'id': candidat.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce candidat?');" style="display: inline-block;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ candidat.id) }}">
+                                            <button class="btn btn-danger btn-sm">
+                                                <i class="ti ti-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="8" class="text-center">Aucun candidat trouvé</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search-candidat');
+    
+    if (searchInput) {
+        searchInput.addEventListener('keyup', function() {
+            const searchText = this.value.toLowerCase();
+            const rows = document.querySelectorAll('tbody tr');
+            
+            rows.forEach(row => {
+                const name = row.cells[1].textContent.toLowerCase();
+                const email = row.cells[2].textContent.toLowerCase();
+                const poste = row.cells[4].textContent.toLowerCase();
+                
+                if (name.includes(searchText) || email.includes(searchText) || poste.includes(searchText)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,174 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Détails de l'entreprise{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h3 class="page-title">
+        <span class="page-title-icon bg-gradient-danger text-white me-2">
+            <i class="ti ti-building"></i>
+        </span> Détails de l'entreprise
+    </h3>
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('charges_admin_home') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_entrepriseadmin_index') }}">Entreprises</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Détails</li>
+        </ul>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-4">
+                    <h4 class="card-title">Informations de l'entreprise</h4>
+                    <div>
+                        <a href="{{ path('app_entrepriseadmin_edit', {'id': entreprise.id}) }}" class="btn btn-warning">
+                            <i class="ti ti-edit"></i> Modifier
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="card bg-gradient-primary text-white">
+                            <div class="card-body">
+                                <h5 class="card-title text-white">{{ entreprise.nom }}</h5>
+                                <p class="mb-1"><i class="ti ti-mail me-2"></i> {{ entreprise.email }}</p>
+                                <p class="mb-1"><i class="ti ti-phone me-2"></i> {{ entreprise.telephone }}</p>
+                                <p class="mb-0"><i class="ti ti-receipt-tax me-2"></i> MF: {{ entreprise.matriculeFiscale }}</p>
+                                {% if entreprise.siteWeb %}
+                                    <p class="mb-0"><i class="ti ti-world me-2"></i> <a href="{{ entreprise.siteWeb }}" class="text-white" target="_blank">{{ entreprise.siteWeb }}</a></p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-8">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th style="width: 30%">ID</th>
+                                        <td>{{ entreprise.id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Nom</th>
+                                        <td>{{ entreprise.nom }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Email</th>
+                                        <td>{{ entreprise.email }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Téléphone</th>
+                                        <td>{{ entreprise.telephone }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Adresse</th>
+                                        <td>{{ entreprise.adresse }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Matricule Fiscale</th>
+                                        <td>{{ entreprise.matriculeFiscale }}</td>
+                                    </tr>
+                                    {% if entreprise.siteWeb %}
+                                    <tr>
+                                        <th>Site Web</th>
+                                        <td><a href="{{ entreprise.siteWeb }}" target="_blank">{{ entreprise.siteWeb }}</a></td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        {% if entreprise.description %}
+                        <div class="mt-4">
+                            <h5>Description</h5>
+                            <div class="border p-3 rounded bg-light">
+                                {{ entreprise.description|nl2br }}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Factures associées -->
+                <div class="mt-5">
+                    <h5>Factures associées</h5>
+                    
+                    {% if entreprise.factures is defined and entreprise.factures|length > 0 %}
+                        <div class="table-responsive mt-3">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Référence</th>
+                                        <th>Date</th>
+                                        <th>Montant TTC</th>
+                                        <th>Statut</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for facture in entreprise.factures %}
+                                        <tr>
+                                            <td>{{ facture.reference }}</td>
+                                            <td>{{ facture.dateCreation|date('d/m/Y') }}</td>
+                                            <td class="text-end">{{ facture.montant|number_format(2, ',', ' ') }} TND</td>
+                                            <td>
+                                                {% if facture.status == 'Payée' %}
+                                                    <span class="badge bg-success">{{ facture.status }}</span>
+                                                {% elseif facture.status == 'Non payée' %}
+                                                    <span class="badge bg-warning">{{ facture.status }}</span>
+                                                {% else %}
+                                                    <span class="badge bg-danger">{{ facture.status }}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <a href="{{ path('app_factureadmin_show', {'id': facture.id}) }}" class="btn btn-info btn-sm">
+                                                    <i class="ti ti-eye"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info mt-3">
+                            <i class="ti ti-info-circle me-2"></i> Aucune facture associée à cette entreprise
+                        </div>
+                    {% endif %}
+                    
+                    <div class="mt-3">
+                        <a href="{{ path('app_factureadmin_new', {'entreprise': entreprise.id}) }}" class="btn btn-primary">
+                            <i class="ti ti-file-plus"></i> Créer une facture pour cette entreprise
+                        </a>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <a href="{{ path('app_entrepriseadmin_index') }}" class="btn btn-secondary">
+                        <i class="ti ti-arrow-left"></i> Retour à la liste
+                    </a>
+                    
+                    <form method="post" action="{{ path('app_entrepriseadmin_delete', {'id': entreprise.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette entreprise?');" class="d-inline-block">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ entreprise.id) }}">
+                        <button class="btn btn-danger">
+                            <i class="ti ti-trash"></i> Supprimer
+                        </button>
+                    </form>
+                    
+                    {% if entreprise.email %}
+                    <a href="mailto:{{ entreprise.email }}" class="btn btn-primary">
+                        <i class="ti ti-mail"></i> Contacter
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

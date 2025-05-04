@@ -1,0 +1,272 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Administration des Factures{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h3 class="page-title text-white">
+        <span class="page-title-icon bg-gradient-danger text-white me-2">
+            <i class="ti ti-receipt"></i>
+        </span> Administration des Factures
+    </h3>
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">
+                <a href="{{ path('charges_admin_home') }}" class="text-decoration-none">
+                    <i class="ti ti-home"></i> Dashboard Admin
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="card-title mb-0">Liste des Factures</h4>
+                    <div class="d-flex">
+                        <div class="input-group me-2" style="width: 300px;">
+                            <input type="text" id="search-facture" class="form-control" placeholder="Rechercher une facture...">
+                            <span class="input-group-text"><i class="ti ti-search"></i></span>
+                        </div>
+                        <a href="{{ path('app_factureadmin_new') }}" class="btn btn-primary">
+                            <i class="ti ti-plus"></i> Nouvelle Facture
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Filtres -->
+                <div class="mb-4">
+                    <button class="btn btn-outline-secondary mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFilters" aria-expanded="false">
+                        <i class="ti ti-filter me-1"></i> Filtres avancés
+                    </button>
+                    
+                    <div class="collapse" id="collapseFilters">
+                        <div class="card card-body bg-light">
+                            <form id="filter-form" method="get" class="row g-3">
+                                <div class="col-md-3">
+                                    <label class="form-label">Statut</label>
+                                    <select name="status" class="form-select">
+                                        <option value="">Tous les statuts</option>
+                                        <option value="Payée">Payée</option>
+                                        <option value="Non payée">Non payée</option>
+                                        <option value="Annulée">Annulée</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-3">
+                                    <label class="form-label">Date de début</label>
+                                    <input type="date" name="date_debut" class="form-control" data-controller="flatpickr">
+                                </div>
+                                
+                                <div class="col-md-3">
+                                    <label class="form-label">Date de fin</label>
+                                    <input type="date" name="date_fin" class="form-control" data-controller="flatpickr">
+                                </div>
+                                
+                                <div class="col-md-3">
+                                    <label class="form-label">Entreprise</label>
+                                    <select name="entreprise" class="form-select">
+                                        <option value="">Toutes les entreprises</option>
+                                        {% for entreprise in entreprises|default([]) %}
+                                            <option value="{{ entreprise.id }}">{{ entreprise.nom }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+                                <div class="col-12 mt-3">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="ti ti-filter"></i> Filtrer
+                                    </button>
+                                    <button type="reset" class="btn btn-secondary">
+                                        <i class="ti ti-x"></i> Réinitialiser
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Statistiques des factures -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card bg-success text-white">
+                            <div class="card-body d-flex align-items-center">
+                                <i class="ti ti-receipt-refund fs-3 me-3"></i>
+                                <div>
+                                    <h5 class="mb-0">{{ factures_payees|default(0) }}</h5>
+                                    <p class="mb-0">Factures payées</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-warning text-white">
+                            <div class="card-body d-flex align-items-center">
+                                <i class="ti ti-receipt fs-3 me-3"></i>
+                                <div>
+                                    <h5 class="mb-0">{{ factures_non_payees|default(0) }}</h5>
+                                    <p class="mb-0">Factures non payées</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-info text-white">
+                            <div class="card-body d-flex align-items-center">
+                                <i class="ti ti-cash fs-3 me-3"></i>
+                                <div>
+                                    <h5 class="mb-0">{{ montant_total|default('0')|number_format(2, ',', ' ') }} TND</h5>
+                                    <p class="mb-0">Total facturé</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Référence</th>
+                                <th>Entreprise</th>
+                                <th>Date de création</th>
+                                <th>Date d'échéance</th>
+                                <th>Montant TTC</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for facture in factures %}
+                            <tr>
+                                <td>{{ facture.reference }}</td>
+                                <td>
+                                    {% if facture.entreprise %}
+                                        <a href="{{ path('app_entrepriseadmin_show', {'id': facture.entreprise.id}) }}">
+                                            {{ facture.entreprise.nom }}
+                                        </a>
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                                <td>{{ facture.dateCreation|date('d/m/Y') }}</td>
+                                <td>{{ facture.dateEcheance|date('d/m/Y') }}</td>
+                                <td class="text-end">{{ facture.montantTtc|number_format(2, ',', ' ') }} TND</td>
+                                <td>
+                                    {% if facture.status == 'Payée' %}
+                                        <span class="badge bg-success">{{ facture.status }}</span>
+                                    {% elseif facture.status == 'Non payée' %}
+                                        <span class="badge bg-warning">{{ facture.status }}</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ facture.status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="{{ path('app_factureadmin_show', {'id': facture.id}) }}" class="btn btn-info btn-sm">
+                                            <i class="ti ti-eye"></i>
+                                        </a>
+                                        <a href="{{ path('app_factureadmin_edit', {'id': facture.id}) }}" class="btn btn-warning btn-sm">
+                                            <i class="ti ti-edit"></i>
+                                        </a>
+                                        <a href="{{ path('app_factureadmin_pdf', {'id': facture.id}) }}" class="btn btn-primary btn-sm" target="_blank">
+                                            <i class="ti ti-file-pdf"></i>
+                                        </a>
+                                        <form method="post" action="{{ path('app_factureadmin_delete', {'id': facture.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette facture?');" style="display: inline-block;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ facture.id) }}">
+                                            <button class="btn btn-danger btn-sm">
+                                                <i class="ti ti-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="7" class="text-center">Aucune facture trouvée</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% if factures.haveToPaginate is defined %}
+                <div class="mt-4 d-flex justify-content-center">
+                    <nav aria-label="...">
+                        <ul class="pagination">
+                            {% if factures.hasPreviousPage %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ path('app_factureadmin_index', {page: factures.previousPage}) }}">
+                                        <i class="ti ti-chevron-left"></i>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#"><i class="ti ti-chevron-left"></i></a>
+                                </li>
+                            {% endif %}
+
+                            {% for page in 1..factures.lastPage %}
+                                <li class="page-item {{ page == factures.currentPage ? 'active' : '' }}">
+                                    <a class="page-link" href="{{ path('app_factureadmin_index', {page: page}) }}">{{ page }}</a>
+                                </li>
+                            {% endfor %}
+
+                            {% if factures.hasNextPage %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ path('app_factureadmin_index', {page: factures.nextPage}) }}">
+                                        <i class="ti ti-chevron-right"></i>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#"><i class="ti ti-chevron-right"></i></a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search-facture');
+    
+    if (searchInput) {
+        searchInput.addEventListener('keyup', function() {
+            const searchText = this.value.toLowerCase();
+            const rows = document.querySelectorAll('tbody tr');
+            
+            rows.forEach(row => {
+                const reference = row.cells[0].textContent.toLowerCase();
+                const entreprise = row.cells[1].textContent.toLowerCase();
+                const date = row.cells[2].textContent.toLowerCase();
+                
+                if (reference.includes(searchText) || entreprise.includes(searchText) || date.includes(searchText)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    }
+    
+    // Reset form and submit
+    const resetButton = document.querySelector('#filter-form button[type="reset"]');
+    if (resetButton) {
+        resetButton.addEventListener('click', function() {
+            setTimeout(() => {
+                document.getElementById('filter-form').submit();
+            }, 100);
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Administration des Départements{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h3 class="page-title text-white">
+        <span class="page-title-icon bg-gradient-danger text-white me-2">
+            <i class="ti ti-building"></i>
+        </span> Administration des Départements
+    </h3>
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">
+                <a href="{{ path('charges_admin_home') }}" class="text-decoration-none">
+                    <i class="mdi mdi-home"></i> Dashboard Admin
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="card-title mb-0">Liste des Départements</h4>
+                    <a href="{{ path('app_departementadmin_new') }}" class="btn btn-primary">
+                        <i class="ti ti-plus"></i> Nouveau Département
+                    </a>
+                </div>
+                
+                {% if pagination.getTotalItemCount > 0 %}
+                <div class="table-responsive" id="departments-list">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nom</th>
+                                <th>Description</th>
+                                <th>Nombre d'employés</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for departement in pagination %}
+                                <tr>
+                                    <td>{{ departement.id }}</td>
+                                    <td>{{ departement.nom }}</td>
+                                    <td>{{ departement.description|length > 50 ? departement.description|slice(0, 50) ~ '...' : departement.description }}</td>
+                                    <td>
+                                        <span class="badge bg-primary">{{ departement.employes|length }}</span>
+                                    </td>
+                                    <td class="text-nowrap">
+                                        <a href="{{ path('app_departementadmin_show', {'id': departement.id}) }}" class="btn btn-info btn-sm">
+                                            <i class="ti ti-eye"></i>
+                                        </a>
+                                        <a href="{{ path('app_departementadmin_edit', {'id': departement.id}) }}" class="btn btn-warning btn-sm">
+                                            <i class="ti ti-edit"></i>
+                                        </a>
+                                        <form method="post" action="{{ path('app_departementadmin_delete', {'id': departement.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce département?');" style="display: inline-block;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ departement.id) }}">
+                                            <button class="btn btn-danger btn-sm">
+                                                <i class="ti ti-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="navigation mt-3 d-flex justify-content-center">
+                    {{ knp_pagination_render(pagination) }}
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="ti ti-info-circle me-2"></i> Aucun département enregistré.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search-department');
+    
+    if (searchInput) {
+        let timeout = null;
+        
+        searchInput.addEventListener('keyup', function() {
+            clearTimeout(timeout);
+            
+            timeout = setTimeout(function() {
+                const query = searchInput.value;
+                const url = new URL(window.location.href);
+                url.searchParams.set('q', query);
+                url.searchParams.set('ajax', 1);
+                
+                fetch(url)
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById('departments-list').innerHTML = html;
+                    });
+            }, 300);
+        });
+    }
+});
+</script>
+{% endblock %}

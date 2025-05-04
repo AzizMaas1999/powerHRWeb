@@ -1,0 +1,335 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Nouvelle Facture{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .line-item-row {
+        background-color: #f8f9fa;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        border-left: 3px solid #6c757d;
+    }
+    .delete-line-item {
+        color: #dc3545;
+        cursor: pointer;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h3 class="page-title">
+        <span class="page-title-icon bg-gradient-danger text-white me-2">
+            <i class="ti ti-file-invoice"></i>
+        </span> Créer une nouvelle facture
+    </h3>
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('charges_admin_home') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_factureadmin_index') }}">Factures</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Nouvelle</li>
+        </ul>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Formulaire de création de facture</h4>
+
+                {{ form_start(form, {'attr': {'class': 'form', 'id': 'facture-form'}}) }}
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Informations générales</h5>
+                            <div class="card p-3 bg-light">
+                                <div class="form-group mb-3">
+                                    {{ form_label(form.reference, 'Référence', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.reference, {'attr': {'class': 'form-control', 'placeholder': 'Auto-généré si laissé vide'}}) }}
+                                    <small class="text-danger">{{ form_errors(form.reference) }}</small>
+                                </div>
+                                
+                                <div class="form-group mb-3">
+                                    {{ form_label(form.entreprise, 'Entreprise', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.entreprise, {'attr': {'class': 'form-control'}}) }}
+                                    <small class="text-danger">{{ form_errors(form.entreprise) }}</small>
+                                </div>
+                                
+                                <div class="form-group mb-3">
+                                    {{ form_label(form.dateCreation, 'Date de création', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.dateCreation, {'attr': {'class': 'form-control', 'data-controller': 'flatpickr'}}) }}
+                                    <small class="text-danger">{{ form_errors(form.dateCreation) }}</small>
+                                </div>
+                                
+                                <div class="form-group mb-3">
+                                    {{ form_label(form.dateEcheance, 'Date d\'échéance', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.dateEcheance, {'attr': {'class': 'form-control', 'data-controller': 'flatpickr'}}) }}
+                                    <small class="text-danger">{{ form_errors(form.dateEcheance) }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h5>Détails de paiement</h5>
+                            <div class="card p-3 bg-light">
+                                <div class="form-group mb-3">
+                                    {{ form_label(form.status, 'Statut', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.status, {'attr': {'class': 'form-control'}}) }}
+                                    <small class="text-danger">{{ form_errors(form.status) }}</small>
+                                </div>
+                                
+                                <div class="form-group mb-3">
+                                    {{ form_label(form.modePaiement, 'Mode de paiement', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.modePaiement, {'attr': {'class': 'form-control'}}) }}
+                                    <small class="text-danger">{{ form_errors(form.modePaiement) }}</small>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            {{ form_label(form.tauxTva, 'Taux TVA (%)', {'label_attr': {'class': 'form-label'}}) }}
+                                            {{ form_widget(form.tauxTva, {'attr': {'class': 'form-control', 'step': '0.1'}}) }}
+                                            <small class="text-danger">{{ form_errors(form.tauxTva) }}</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            {{ form_label(form.remise, 'Remise (%)', {'label_attr': {'class': 'form-label'}}) }}
+                                            {{ form_widget(form.remise, {'attr': {'class': 'form-control', 'step': '0.1'}}) }}
+                                            <small class="text-danger">{{ form_errors(form.remise) }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Lignes de facture -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5>Lignes de facturation</h5>
+                                <button type="button" id="add-line-item" class="btn btn-sm btn-primary">
+                                    <i class="ti ti-plus"></i> Ajouter une ligne
+                                </button>
+                            </div>
+                            
+                            <div id="line-items-container" data-prototype="{{ form_widget(form.lignes.vars.prototype)|e('html_attr') }}">
+                                {% for ligne in form.lignes %}
+                                    <div class="line-item-row row">
+                                        <div class="col-md-5">
+                                            {{ form_label(ligne.designation, 'Désignation', {'label_attr': {'class': 'form-label'}}) }}
+                                            {{ form_widget(ligne.designation, {'attr': {'class': 'form-control', 'placeholder': 'Description du service/produit'}}) }}
+                                            {{ form_errors(ligne.designation) }}
+                                        </div>
+                                        <div class="col-md-2">
+                                            {{ form_label(ligne.quantite, 'Quantité', {'label_attr': {'class': 'form-label'}}) }}
+                                            {{ form_widget(ligne.quantite, {'attr': {'class': 'form-control quantite', 'min': '1'}}) }}
+                                            {{ form_errors(ligne.quantite) }}
+                                        </div>
+                                        <div class="col-md-2">
+                                            {{ form_label(ligne.prixUnitaire, 'Prix unitaire', {'label_attr': {'class': 'form-label'}}) }}
+                                            {{ form_widget(ligne.prixUnitaire, {'attr': {'class': 'form-control prix-unitaire', 'step': '0.01'}}) }}
+                                            {{ form_errors(ligne.prixUnitaire) }}
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="form-label">Total HT</label>
+                                            <div class="input-group">
+                                                <input type="text" readonly class="form-control ligne-total" value="0.00">
+                                                <span class="input-group-text">TND</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1 d-flex align-items-end">
+                                            <button type="button" class="btn btn-danger remove-line-item mb-3">
+                                                <i class="ti ti-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <!-- Summary -->
+                            <div class="row mt-4">
+                                <div class="col-md-6 offset-md-6">
+                                    <div class="card bg-light">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <strong>Total HT:</strong>
+                                                <span id="total-ht">0.00 TND</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <strong>Remise:</strong>
+                                                <span id="total-remise">0.00 TND</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <strong>TVA (<span id="taux-tva">19</span>%):</strong>
+                                                <span id="total-tva">0.00 TND</span>
+                                            </div>
+                                            <hr>
+                                            <div class="d-flex justify-content-between">
+                                                <strong>Total TTC:</strong>
+                                                <span id="total-ttc" class="text-primary fw-bold">0.00 TND</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Notes -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="form-group">
+                                {{ form_label(form.notes, 'Notes / Conditions', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.notes, {'attr': {'class': 'form-control', 'rows': '4', 'placeholder': 'Conditions de paiement, notes importantes, etc.'}}) }}
+                                {{ form_errors(form.notes) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{{ path('app_factureadmin_index') }}" class="btn btn-secondary">
+                            <i class="ti ti-arrow-left"></i> Retour à la liste
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="ti ti-device-floppy"></i> Enregistrer
+                        </button>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Variables
+    const container = document.getElementById('line-items-container');
+    const addButton = document.getElementById('add-line-item');
+    const prototype = container.dataset.prototype;
+    let index = container.children.length;
+    const tauxTvaInput = document.querySelector('[name="{{ form.tauxTva.vars.full_name }}"]');
+    const remiseInput = document.querySelector('[name="{{ form.remise.vars.full_name }}"]');
+    
+    // Add new line item
+    addButton.addEventListener('click', function() {
+        const newForm = prototype.replace(/__name__/g, index);
+        const div = document.createElement('div');
+        div.classList.add('line-item-row', 'row');
+        div.innerHTML = newForm;
+        
+        // Réorganiser les éléments du prototype
+        const formControls = div.querySelectorAll('[id$="_designation"], [id$="_quantite"], [id$="_prixUnitaire"]');
+        
+        // Créer la structure pour chaque champ
+        let html = '';
+        html += '<div class="col-md-5">';
+        html += '<label class="form-label">Désignation</label>';
+        html += formControls[0].outerHTML.replace(/class="([^"]*)"/, 'class="$1 form-control" placeholder="Description du service/produit"');
+        html += '</div>';
+        
+        html += '<div class="col-md-2">';
+        html += '<label class="form-label">Quantité</label>';
+        html += formControls[1].outerHTML.replace(/class="([^"]*)"/, 'class="$1 form-control quantite" min="1"');
+        html += '</div>';
+        
+        html += '<div class="col-md-2">';
+        html += '<label class="form-label">Prix unitaire</label>';
+        html += formControls[2].outerHTML.replace(/class="([^"]*)"/, 'class="$1 form-control prix-unitaire" step="0.01"');
+        html += '</div>';
+        
+        html += '<div class="col-md-2">';
+        html += '<label class="form-label">Total HT</label>';
+        html += '<div class="input-group">';
+        html += '<input type="text" readonly class="form-control ligne-total" value="0.00">';
+        html += '<span class="input-group-text">TND</span>';
+        html += '</div>';
+        html += '</div>';
+        
+        html += '<div class="col-md-1 d-flex align-items-end">';
+        html += '<button type="button" class="btn btn-danger remove-line-item mb-3"><i class="ti ti-trash"></i></button>';
+        html += '</div>';
+        
+        div.innerHTML = html;
+        container.appendChild(div);
+        
+        // Add event listeners to new inputs
+        addInputListeners(div);
+        index++;
+        
+        // Recalculate totals
+        calculateTotals();
+    });
+    
+    // Remove line item
+    container.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-line-item') || e.target.closest('.remove-line-item')) {
+            const button = e.target.classList.contains('remove-line-item') ? e.target : e.target.closest('.remove-line-item');
+            const row = button.closest('.line-item-row');
+            row.remove();
+            calculateTotals();
+        }
+    });
+    
+    // Calculate line item total
+    function calculateLineTotal(row) {
+        const quantite = parseFloat(row.querySelector('.quantite').value) || 0;
+        const prixUnitaire = parseFloat(row.querySelector('.prix-unitaire').value) || 0;
+        const total = quantite * prixUnitaire;
+        row.querySelector('.ligne-total').value = total.toFixed(2);
+        return total;
+    }
+    
+    // Calculate all totals
+    function calculateTotals() {
+        let totalHT = 0;
+        
+        // Calculate each line total and sum
+        document.querySelectorAll('.line-item-row').forEach(function(row) {
+            totalHT += calculateLineTotal(row);
+        });
+        
+        const remise = parseFloat(remiseInput.value) || 0;
+        const tauxTva = parseFloat(tauxTvaInput.value) || 0;
+        
+        const montantRemise = totalHT * (remise / 100);
+        const totalHTApresRemise = totalHT - montantRemise;
+        const montantTva = totalHTApresRemise * (tauxTva / 100);
+        const totalTTC = totalHTApresRemise + montantTva;
+        
+        // Update display
+        document.getElementById('total-ht').textContent = totalHT.toFixed(2) + ' TND';
+        document.getElementById('total-remise').textContent = montantRemise.toFixed(2) + ' TND';
+        document.getElementById('taux-tva').textContent = tauxTva.toFixed(1);
+        document.getElementById('total-tva').textContent = montantTva.toFixed(2) + ' TND';
+        document.getElementById('total-ttc').textContent = totalTTC.toFixed(2) + ' TND';
+    }
+    
+    // Add event listeners to all inputs affecting totals
+    function addInputListeners(container) {
+        const inputs = container.querySelectorAll('.quantite, .prix-unitaire');
+        inputs.forEach(function(input) {
+            input.addEventListener('input', calculateTotals);
+        });
+    }
+    
+    // Initialize
+    document.querySelectorAll('.line-item-row').forEach(function(row) {
+        addInputListeners(row);
+    });
+    
+    tauxTvaInput.addEventListener('input', calculateTotals);
+    remiseInput.addEventListener('input', calculateTotals);
+    
+    // Initial calculation
+    calculateTotals();
+});
+</script>
+{% endblock %}
+{% endblock %}
