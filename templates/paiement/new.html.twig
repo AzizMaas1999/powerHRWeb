@@ -4,30 +4,49 @@
 
 {% block body %}
 <div class="container mt-5">
-    <div class="card shadow-lg rounded border-0 bg-dark text-white">
+    <div class="card shadow-lg rounded border-0">
         <div class="card-body">
-            <h1 class="card-title mb-4 text-white">Créer un nouveau Paiement</h1>
+            <h1 class="card-title mb-4">Créer un nouveau Paiement</h1>
 
-            {# ✅ Affichage des messages flash #}
             {% for message in app.flashes('success') %}
                 <div class="alert alert-success">{{ message }}</div>
             {% endfor %}
             {% for message in app.flashes('error') %}
                 <div class="alert alert-danger">{{ message }}</div>
             {% endfor %}
-            {% for message in app.flashes('warning') %}
-                <div class="alert alert-warning">{{ message }}</div>
-            {% endfor %}
 
-            {# ✅ Formulaire #}
-            {{ include('paiement/_form.html.twig') }}
+            {{ form_start(form) }}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.date) }}
+                    {{ form_row(form.mode) }}
+                    {{ form_row(form.reference) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.factures) }}
+                    <div class="form-group mb-3">
+                        <label for="devise" class="form-label">Devise</label>
+                        <select id="devise" name="devise" class="form-control">
+                            {% for code, name in currencies %}
+                                <option value="{{ code }}" {% if code == 'TND' %}selected{% endif %}>
+                                    {{ name }} ({{ code }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {{ form_row(form.montant, {'attr': {'readonly': 'readonly'}}) }}
+                    <div class="form-group mb-3">
+                        <label class="form-label">Montant converti</label>
+                        <div id="montant-converti" class="form-control-block fw-bold "></div>
+                    </div>
+                </div>
+            </div>
 
-            {# ✅ Labels personnalisés #}
-            
-
-            <a href="{{ path('app_paiement_index') }}" class="btn btn-outline-light mt-4">
-                ← Retour à la liste
-            </a>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+                <a href="{{ path('app_paiement_index') }}" class="btn btn-outline-secondary">Annuler</a>
+            </div>
+            {{ form_end(form) }}
         </div>
     </div>
 </div>
@@ -36,78 +55,61 @@
 {% block javascripts %}
 {{ parent() }}
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Sélecteurs corrigés pour correspondre aux noms de champs
-    const factureSelect = document.querySelector('select[name="paiement[factures][]"]');
-    const montantInput = document.querySelector('input[name="paiement[montant]"]');
-    const deviseSelect = document.querySelector('select[name="paiement[devise]"]');
-
-    const montantAffiche = document.getElementById('montant-affiche');
+document.addEventListener('DOMContentLoaded', function() {
+    const montantInput = document.querySelector('#paiement_montant');
+    const facturesSelect = document.querySelector('#paiement_factures');
+    const deviseSelect = document.querySelector('#devise');
     const montantConverti = document.getElementById('montant-converti');
+    
+    function updateMontant() {
+        let total = 0;
+        const selectedOptions = Array.from(facturesSelect.selectedOptions);
+        
+        selectedOptions.forEach(option => {
+            const montant = parseFloat(option.getAttribute('data-total'));
+            if (!isNaN(montant)) {
+                total += montant;
+            }
+        });
+        
+        montantInput.value = total.toFixed(2);
+        updateConvertedAmount();
+    }
 
-    async function updateConvertedMontant() {
-        if (!montantInput || !deviseSelect || !montantAffiche || !montantConverti) {
-            console.error('Certains éléments sont manquants.');
+    async function updateConvertedAmount() {
+        const amount = montantInput.value;
+        const targetCurrency = deviseSelect.value;
+        
+        if (!amount || amount <= 0) {
+            montantConverti.textContent = '0.00 ' + targetCurrency;
             return;
         }
 
-        const montant = parseFloat(montantInput.value || "0");
-        const devise = deviseSelect.value;
+        if (targetCurrency === 'TND') {
+            montantConverti.textContent = `${amount} TND (pas de conversion nécessaire)`;
+            return;
+        }
 
-        montantAffiche.value = isNaN(montant) ? '' : montant.toFixed(2) + ' TND';
-
-        if (!isNaN(montant) && devise && montant > 0 && devise !== 'TND') {
-            try {
-                // URL corrigée pour correspondre à la route dans ton contrôleur
-                const response = await fetch(`/paiement/convert?amount=${montant}&currency=${devise}`);
-                const data = await response.json();
-
-                if (data.converted) {
-                    montantConverti.value = data.converted.toFixed(2) + ' ' + devise;
-                } else {
-                    montantConverti.value = 'Erreur de conversion';
-                }
-            } catch (error) {
-                console.error('Erreur API', error);
-                montantConverti.value = 'Erreur API';
+        try {
+            const response = await fetch(`/api/convert?amount=${amount}&from=TND&to=${targetCurrency}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                montantConverti.textContent = `${data.result.toFixed(2)} ${targetCurrency}`;
+            } else {
+                montantConverti.textContent = 'Erreur de conversion';
             }
-        } else if (devise === 'TND') {
-            montantConverti.value = montant.toFixed(2) + ' TND (pas de conversion nécessaire)';
-        } else {
-            montantConverti.value = '';
+        } catch (error) {
+            console.error('Erreur API:', error);
+            montantConverti.textContent = 'Erreur de conversion';
         }
     }
 
-    // Quand on change la sélection de facture
-    if (factureSelect && montantInput) {
-        factureSelect.addEventListener('change', function () {
-            let total = 0;
-            const selectedOptions = Array.from(factureSelect.selectedOptions);
-
-            for (let i = 0; i < selectedOptions.length; i++) {
-                const montant = parseFloat(selectedOptions[i].dataset.total);
-                if (!isNaN(montant)) {
-                    total += montant;
-                }
-            }
-
-            montantInput.value = total.toFixed(2);
-
-            // ➡️ Mettre à jour affichage après avoir changé montant
-            updateConvertedMontant();
-        });
-    }
-
-    // Quand on modifie montant ou devise
-    if (montantInput) {
-        montantInput.addEventListener('input', updateConvertedMontant);
-    }
-    if (deviseSelect) {
-        deviseSelect.addEventListener('change', updateConvertedMontant);
-    }
-
-    // Appeler au démarrage pour afficher directement
-    updateConvertedMontant();
+    facturesSelect.addEventListener('change', updateMontant);
+    deviseSelect.addEventListener('change', updateConvertedAmount);
+    
+    // Calculer le montant initial
+    updateMontant();
 });
 </script>
 {% endblock %}

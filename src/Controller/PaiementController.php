@@ -6,6 +6,7 @@ use App\Entity\Paiement;
 use App\Form\PaiementType;
 use App\Repository\PaiementRepository;
 use App\Repository\FactureRepository;
+use App\Service\CurrencyConverterService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,6 +17,13 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/paiement')]
 final class PaiementController extends AbstractController
 {
+    private $currencyConverter;
+
+    public function __construct(CurrencyConverterService $currencyConverter)
+    {
+        $this->currencyConverter = $currencyConverter;
+    }
+
     #[Route(name: 'app_paiement_index', methods: ['GET'])]
     public function index(PaiementRepository $paiementRepository): Response
     {
@@ -48,14 +56,33 @@ final class PaiementController extends AbstractController
                 return $this->render('paiement/new.html.twig', [
                     'paiement' => $paiement,
                     'form' => $form,
+                    'currencies' => $this->currencyConverter->getSupportedCurrencies()
                 ]);
+            }
+
+            // Si une devise différente de TND est sélectionnée, convertir le montant
+            $devise = $request->request->get('devise', 'TND');
+            if ($devise !== 'TND') {
+                $montantOriginal = $paiement->getMontant();
+                $montantConverti = $this->currencyConverter->convert($montantOriginal, $devise, 'TND');
+                
+                if ($montantConverti === null) {
+                    $this->addFlash('error', 'Erreur lors de la conversion du montant. Veuillez réessayer.');
+                    return $this->render('paiement/new.html.twig', [
+                        'paiement' => $paiement,
+                        'form' => $form,
+                        'currencies' => $this->currencyConverter->getSupportedCurrencies()
+                    ]);
+                }
+                
+                $paiement->setMontant($montantConverti);
             }
 
             $entityManager->persist($paiement);
             $entityManager->flush();
 
             foreach ($selectedFactures as $facture) {
-                $facture->setPaiementId($paiement->getId());
+                $facture->setPaiement_id($paiement->getId());
                 $entityManager->persist($facture);
             }
 
@@ -72,6 +99,7 @@ final class PaiementController extends AbstractController
         return $this->render('paiement/new.html.twig', [
             'paiement' => $paiement,
             'form' => $form,
+            'currencies' => $this->currencyConverter->getSupportedCurrencies()
         ]);
     }
 
@@ -98,6 +126,7 @@ final class PaiementController extends AbstractController
         return $this->render('paiement/edit.html.twig', [
             'paiement' => $paiement,
             'form' => $form,
+            'currencies' => $this->currencyConverter->getSupportedCurrencies()
         ]);
     }
 
