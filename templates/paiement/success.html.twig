@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paiement réussi{% endblock %}
+
+{% block body %}
+    <div class="container mt-5 text-center">
+        <h1 class="text-success">✅ Paiement effectué avec succès !</h1>
+        <p>Merci pour votre paiement. Votre transaction a été enregistrée.</p>
+        <a href="{{ path('app_facture_index') }}" class="btn btn-primary mt-3">Retour à la liste des factures</a>
+    </div>
+{% endblock %}

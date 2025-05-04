@@ -32,15 +32,15 @@ class Facture
     }
     
     public function __toString(): string
-{
-    return 'Facture n°' . $this->getNum(); // ou toute autre propriété représentative
-}
+    {
+        return 'Facture n°' . $this->getNum(); // ou toute autre propriété représentative
+    }
 
 
-#[ORM\Column(type: 'date', nullable: false)]
-#[Assert\NotBlank(message: "La date est requise.")]
-#[Assert\LessThanOrEqual("today", message: "La date ne peut pas être dans le futur.")]
-private ?\DateTimeInterface $date = null;
+    #[ORM\Column(type: 'date', nullable: false)]
+    #[Assert\NotBlank(message: "La date est requise.")]
+    #[Assert\LessThanOrEqual("today", message: "La date ne peut pas être dans le futur.")]
+    private ?\DateTimeInterface $date = null;
 
 
     public function getDate(): ?\DateTimeInterface
@@ -88,23 +88,23 @@ private ?\DateTimeInterface $date = null;
     }
 
     
-#[ORM\Column(type: 'float', nullable: true)]
-#[Assert\Regex(
-    pattern: "/^\d+([.,]\d+)?$/",
-    message: "Le total doit contenir uniquement des chiffres ou des décimales."
-)]
-private ?float $total = null;
+    #[ORM\Column(type: 'float', nullable: true)]
+    #[Assert\Regex(
+        pattern: "/^\d+([.,]\d+)?$/",
+        message: "Le total doit contenir uniquement des chiffres ou des décimales."
+    )]
+    private ?float $total = null;
 
-public function getTotal(): ?float
-{
-    return $this->total;
-}
+    public function getTotal(): ?float
+    {
+        return $this->total;
+    }
 
-public function setTotal(?float $total): self
-{
-    $this->total = $total;
-    return $this;
-}
+    public function setTotal(?float $total): self
+    {
+        $this->total = $total;
+        return $this;
+    }
 
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $clfr_id = null;
@@ -168,59 +168,23 @@ public function setTotal(?float $total): self
         return $this;
     }
 
-    public function getClfrId(): ?int
-    {
-        return $this->clfr_id;
-    }
-
-    public function setClfrId(?int $clfr_id): static
-    {
-        $this->clfr_id = $clfr_id;
-        return $this;
-    }
-
-    public function getPaiementId(): ?int
-    {
-        return $this->paiement_id;
-    }
-
-    public function setPaiementId(?int $paiement_id): static
-    {
-        $this->paiement_id = $paiement_id;
-        return $this;
-    }
-
-
-
-
-
     // Dans ton entité Facture
 
-public function calculerTotal(): void
-{
-    $total = 0.0;
-
-    foreach ($this->getArticles() as $article) {
-        $prixUnitaire = $article->getPrixUni();
-        $quantite = $article->getQuantity();
-        $tva = $article->getTVA() / 100;  // TVA sous forme de pourcentage
-
-        // Calcul du prix total de l'article (prix unitaire * quantité * (1 + taux de TVA))
-        $total += ($prixUnitaire * $quantite * (1 + $tva));
-    }
-
-    // Assigner le total à l'entité Facture
-    $this->setTotal($total);
-}
-
-    #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $status = null;
-
-    public function setStatus(?string $status): self
+    public function calculerTotal(): void
     {
-        $this->status = $status;
-        return $this;
-    }
+        $total = 0.0;
 
+        foreach ($this->getArticles() as $article) {
+            $prixUnitaire = $article->getPrixUni();
+            $quantite = $article->getQuantity();
+            $tva = $article->getTVA() / 100;  // TVA sous forme de pourcentage
+
+            // Calcul du prix total de l'article (prix unitaire * quantité * (1 + taux de TVA))
+            $total += ($prixUnitaire * $quantite * (1 + $tva));
+        }
+
+        // Assigner le total à l'entité Facture
+        $this->setTotal($total);
+    }
 }
 

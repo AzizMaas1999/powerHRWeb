@@ -3,7 +3,7 @@
 {% block title %}Liste des Paiements{% endblock %}
 
 {% block body %}
-<div class="container mt-5 text-white">
+<div class="container mt-5 text-white bg-white p-4 rounded shadow">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="display-6">Liste des Paiements</h1>
@@ -32,7 +32,7 @@
                     <td>{{ paiement.date ? paiement.date|date('d/m/Y') : '—' }}</td>
                     <td>{{ paiement.mode|capitalize }}</td>
                     <td class="text-truncate" style="max-width: 150px;">{{ paiement.reference }}</td>
-                    <td>{{ paiement.montant }} €</td>
+                    <td>{{ paiement.montant }} TND</td>
                     <td>
                         <div class="btn-group" role="group">
                             <a href="{{ path('app_paiement_show', {'id': paiement.id}) }}" class="btn btn-outline-primary btn-sm">Voir</a>

@@ -14,6 +14,12 @@ parameters:
     rapidapi.key: '%env(RAPIDAPI_KEY)%'
     rapidapi.sender_email: '%env(RAPIDAPI_SENDER_EMAIL)%'
     rapidapi.senders_name: '%env(RAPIDAPI_SENDERS_NAME)%'
+    flouci_app_token: '%env(FLOUCI_APP_TOKEN)%'
+    flouci_app_secret: '%env(FLOUCI_APP_SECRET)%'
+    flouci_api_url: 'https://developers.flouci.com/api'
+
+
+
 
 services:
     # default configuration for services in this file
@@ -33,6 +39,9 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    App\Service\CurrencyConverterService:
+        arguments:
+            $httpClient: '@http_client'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
