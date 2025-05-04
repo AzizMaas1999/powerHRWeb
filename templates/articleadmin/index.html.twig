@@ -1,0 +1,77 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Gestion des Articles{% endblock %}
+
+{% block body %}
+    <div class="card">
+        <div class="card-header">
+            <h5>Liste des Articles</h5>
+            <div class="card-header-right">
+                <a href="{{ path('app_articleadmin_new') }}" class="btn btn-primary btn-sm">
+                    <i class="ti ti-plus"></i> Nouvel Article
+                </a>
+            </div>
+        </div>
+        <div class="card-body table-border-style">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Description</th>
+                            <th>Quantité</th>
+                            <th>Prix unitaire</th>
+                            <th>TVA (%)</th>
+                            <th>Total HT</th>
+                            <th>Total TTC</th>
+                            <th>Facture</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for article in articles %}
+                        <tr>
+                            <td>{{ article.id }}</td>
+                            <td>{{ article.description|slice(0, 30) }}{% if article.description|length > 30 %}...{% endif %}</td>
+                            <td class="text-center">{{ article.quantity }}</td>
+                            <td class="text-end">{{ article.prixUni|number_format(2, ',', ' ') }} TND</td>
+                            <td class="text-center">{{ article.TVA|number_format(2, ',', ' ') }}</td>
+                            <td class="text-end">{{ (article.quantity * article.prixUni)|number_format(2, ',', ' ') }} TND</td>
+                            <td class="text-end">{{ (article.quantity * article.prixUni * (1 + article.TVA / 100))|number_format(2, ',', ' ') }} TND</td>
+                            <td>
+                                {% if article.facture %}
+                                    <a href="{{ path('app_factureadmin_show', {'id': article.facture.id}) }}">
+                                        {{ article.facture.reference }}
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted">Non assigné</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a href="{{ path('app_articleadmin_show', {'id': article.id}) }}" class="btn btn-info btn-sm">
+                                        <i class="ti ti-eye"></i>
+                                    </a>
+                                    <a href="{{ path('app_articleadmin_edit', {'id': article.id}) }}" class="btn btn-warning btn-sm">
+                                        <i class="ti ti-pencil"></i>
+                                    </a>
+                                    <form method="post" action="{{ path('app_articleadmin_delete', {'id': article.id}) }}" style="display:inline-block" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
+                                        <button class="btn btn-danger btn-sm">
+                                            <i class="ti ti-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="9" class="text-center">Aucun article trouvé</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

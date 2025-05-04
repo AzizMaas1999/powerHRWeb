@@ -156,6 +156,33 @@
                     </ul>
                 </li>
 
+                <li class="pc-item pc-hasmenu">
+                    <a href="#!" class="pc-link">
+                        <span class="pc-micon"><i class="ti ti-message-circle"></i></span>
+                        <span class="pc-mtext">Feedbacks</span>
+                        <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                    </a>
+                    <ul class="pc-submenu">
+                        <li class="pc-item"><a class="pc-link" href="{{ path('app_feedbackadmin_index') }}">Liste des feedbacks</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ path('app_feedbackadmin_new') }}">Nouveau feedback</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ path('app_feedbackadmin_stats') }}">Statistiques</a></li>
+                    </ul>
+                </li>
+
+                <li class="pc-item pc-hasmenu">
+                    <a href="#!" class="pc-link">
+                        <span class="pc-micon"><i class="ti ti-receipt"></i></span>
+                        <span class="pc-mtext">Facturation</span>
+                        <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                    </a>
+                    <ul class="pc-submenu">
+                        <li class="pc-item"><a class="pc-link" href="{{ path('app_factureadmin_index') }}">Factures</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ path('app_articleadmin_index') }}">Articles</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ path('app_paiementadmin_index') }}">Paiements</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ path('app_entrepriseadmin_index') }}">Entreprises</a></li>
+                    </ul>
+                </li>
+
                 <li class="pc-item pc-caption">
                     <label>Paramètres</label>
                 </li>

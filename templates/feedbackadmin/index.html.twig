@@ -1,0 +1,74 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Gestion des Feedbacks{% endblock %}
+
+{% block body %}
+    <div class="card">
+        <div class="card-header">
+            <h5>Liste des Feedbacks</h5>
+            <div class="card-header-right">
+                <a href="{{ path('app_feedbackadmin_new') }}" class="btn btn-primary btn-sm">
+                    <i class="ti ti-plus"></i> Nouveau Feedback
+                </a>
+                <a href="{{ path('app_feedbackadmin_stats') }}" class="btn btn-info btn-sm">
+                    <i class="ti ti-chart-pie"></i> Statistiques
+                </a>
+            </div>
+        </div>
+        <div class="card-body table-border-style">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Client/Fournisseur</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for feedback in feedbacks %}
+                        <tr>
+                            <td>{{ feedback.id }}</td>
+                            <td>{{ feedback.dateCreation|date('d/m/Y H:i') }}</td>
+                            <td>
+                                {% if feedback.type == 'positif' %}
+                                    <span class="badge bg-success">Positif</span>
+                                {% elseif feedback.type == 'negatif' %}
+                                    <span class="badge bg-danger">Négatif</span>
+                                {% else %}
+                                    <span class="badge bg-light">Neutre</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ feedback.description|slice(0, 50) }}{% if feedback.description|length > 50 %}...{% endif %}</td>
+                            <td>{{ feedback.clfr ? feedback.clfr.nom : 'Non défini' }}</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a href="{{ path('app_feedbackadmin_show', {'id': feedback.id}) }}" class="btn btn-info btn-sm">
+                                        <i class="ti ti-eye"></i>
+                                    </a>
+                                    <a href="{{ path('app_feedbackadmin_edit', {'id': feedback.id}) }}" class="btn btn-warning btn-sm">
+                                        <i class="ti ti-pencil"></i>
+                                    </a>
+                                    <form method="post" action="{{ path('app_feedbackadmin_delete', {'id': feedback.id}) }}" style="display:inline-block" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce feedback?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ feedback.id) }}">
+                                        <button class="btn btn-danger btn-sm">
+                                            <i class="ti ti-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center">Aucun feedback trouvé</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

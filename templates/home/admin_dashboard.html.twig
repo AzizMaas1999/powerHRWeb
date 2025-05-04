@@ -1,0 +1,516 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Dashboard Administratif | PowerHR{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .overview-card {
+            transition: transform 0.3s ease;
+        }
+        .overview-card:hover {
+            transform: translateY(-5px);
+        }
+        .icon-box {
+            width: 65px;
+            height: 65px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+        .avatar-group .avatar {
+            margin-left: -10px;
+            border: 2px solid #fff;
+            transition: transform 0.2s;
+        }
+        .avatar-group .avatar:hover {
+            z-index: 5;
+            transform: scale(1.1);
+        }
+        .chart-container {
+            min-height: 350px;
+        }
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        .status-present {
+            background-color: #3cc474;
+        }
+        .status-absent {
+            background-color: #f44236;
+        }
+        .status-late {
+            background-color: #ffba57;
+        }
+        .task-progress {
+            height: 8px;
+            border-radius: 10px;
+        }
+        .feedback-card {
+            border-left: 4px solid transparent;
+        }
+        .feedback-positive {
+            border-left-color: #3cc474;
+        }
+        .feedback-negative {
+            border-left-color: #f44236;
+        }
+        .feedback-neutral {
+            border-left-color: #7267EF;
+        }
+        .rotate-45 {
+            transform: rotate(45deg);
+        }
+        .quick-link-card {
+            transition: all 0.3s ease;
+        }
+        .quick-link-card:hover {
+            background-color: #7267EF;
+            color: white;
+        }
+        .quick-link-card:hover i,
+        .quick-link-card:hover p {
+            color: white !important;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <!-- [ Main Content ] start -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4>Bienvenue, {{ app.user ? app.user.username : 'Administrateur' }} </h4>
+                    <p class="text-muted">Tableau de bord de PowerHR - Administration du système</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistiques générales -->
+    <div class="row">
+        <div class="col-sm-6 col-xl-3">
+            <div class="card mb-3 overview-card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="icon-box bg-light-primary">
+                                <i class="ti ti-users text-primary"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5 class="mb-0">{{ employesCount }}</h5>
+                            <p class="text-muted mb-0">Employés actifs</p>
+                        </div>
+                        <div class="dropdown">
+                            <a class="avtar avtar-s btn-link-secondary dropdown-toggle arrow-none" href="javascript:void(0);" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="ti ti-dots-vertical f-18"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                <a class="dropdown-item" href="{{ path('app_employeadmin_index') }}">Voir la liste</a>
+                                <a class="dropdown-item" href="{{ path('app_employeadmin_new') }}">Ajouter employé</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <p class="text-muted mb-0">Taux de présence</p>
+                            <p class="mb-0 text-success">{{ presenceRate }}%</p>
+                        </div>
+                        <div class="progress mt-2" style="height: 5px">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ presenceRate }}%" aria-valuenow="{{ presenceRate }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card mb-3 overview-card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="icon-box bg-light-danger">
+                                <i class="ti ti-file-description text-danger"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5 class="mb-0">{{ demandesEnAttente }}</h5>
+                            <p class="text-muted mb-0">Demandes en attente</p>
+                        </div>
+                        <div class="dropdown">
+                            <a class="avtar avtar-s btn-link-secondary dropdown-toggle arrow-none" href="javascript:void(0);" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="ti ti-dots-vertical f-18"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                <a class="dropdown-item" href="{{ path('app_demandeadmin_liste_attente') }}">Voir demandes</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <div class="progress task-progress">
+                            <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card mb-3 overview-card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="icon-box bg-light-success">
+                                <i class="ti ti-report-money text-success"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5 class="mb-0">{{ paiesTraitees }}</h5>
+                            <p class="text-muted mb-0">Paies traitées ce mois</p>
+                        </div>
+                        <div class="dropdown">
+                            <a class="avtar avtar-s btn-link-secondary dropdown-toggle arrow-none" href="javascript:void(0);" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="ti ti-dots-vertical f-18"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                <a class="dropdown-item" href="{{ path('app_paieadmin_index') }}">Voir les paies</a>
+                                <a class="dropdown-item" href="{{ path('app_paieadmin_generate_auto') }}">Générer les paies</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        {% set paiePercentage = (employesCount > 0) ? ((paiesTraitees / employesCount) * 100) : 0 %}
+                        <div class="d-flex justify-content-between align-items-center">
+                            <p class="text-muted mb-0">Progression</p>
+                            <p class="mb-0 text-success">{{ paiePercentage|round }}%</p>
+                        </div>
+                        <div class="progress mt-2" style="height: 5px">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ paiePercentage|round }}%" aria-valuenow="{{ paiePercentage|round }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card mb-3 overview-card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="icon-box bg-light-warning">
+                                <i class="ti ti-user-plus text-warning"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5 class="mb-0">{{ candidatsCount }}</h5>
+                            <p class="text-muted mb-0">Candidatures</p>
+                        </div>
+                        <div class="dropdown">
+                            <a class="avtar avtar-s btn-link-secondary dropdown-toggle arrow-none" href="javascript:void(0);" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="ti ti-dots-vertical f-18"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                <a class="dropdown-item" href="{{ path('app_candidatadmin_index') }}">Voir candidats</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <div class="avatar-group">
+                            <div class="avatar bg-light-primary rounded-circle">
+                                <i class="ti ti-file-cv text-primary"></i>
+                            </div>
+                            <div class="avatar bg-light-success rounded-circle">
+                                <i class="ti ti-checkup-list text-success"></i>
+                            </div>
+                            <div class="avatar bg-light-warning rounded-circle">
+                                <i class="ti ti-users text-warning"></i>
+                            </div>
+                            <div class="avatar bg-light-danger rounded-circle">
+                                <i class="ti ti-file-check text-danger"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Graphiques et tableaux d'analyse -->
+    <div class="row">
+        <!-- Graphique présence/absence -->
+        <div class="col-md-8 col-xl-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Statistiques de présence</h5>
+                </div>
+                <div class="card-body">
+                    <div id="presence-chart" class="chart-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Distribution des employés par département -->
+        <div class="col-md-4 col-xl-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Départements</h5>
+                </div>
+                <div class="card-body">
+                    <div id="department-chart" class="chart-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Demandes en attente -->
+        <div class="col-xl-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Demandes en attente de traitement</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Employé</th>
+                                    <th>Type</th>
+                                    <th>Date début</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if demandesEnAttenteListe|length > 0 %}
+                                    {% for demande in demandesEnAttenteListe %}
+                                        <tr>
+                                            <td>{{ demande.employe ? demande.employe.username : 'Non défini' }}</td>
+                                            <td>{{ demande.type }}</td>
+                                            <td>{{ demande.dateDebut|date('d/m/Y') }}</td>
+                                            <td class="text-center">
+                                                <div class="d-flex justify-content-center">
+                                                    <form method="post" action="{{ path('app_demandeadmin_valider', {'id': demande.id}) }}" class="me-1">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('Valider' ~ demande.id) }}">
+                                                        <button type="submit" class="btn btn-sm btn-success">
+                                                            <i class="ti ti-check"></i>
+                                                        </button>
+                                                    </form>
+                                                    <form method="post" action="{{ path('app_demandeadmin_refuser', {'id': demande.id}) }}">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('Refuser' ~ demande.id) }}">
+                                                        <button type="submit" class="btn btn-sm btn-danger">
+                                                            <i class="ti ti-x"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="4" class="text-center">Aucune demande en attente</td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ path('app_demandeadmin_liste_attente') }}" class="btn btn-outline-primary btn-sm">Voir toutes les demandes</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statut des employés aujourd'hui -->
+        <div class="col-xl-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Statut des employés aujourd'hui</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Employé</th>
+                                    <th>Département</th>
+                                    <th>Statut</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in employeStatusToday %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0">
+                                                    <div class="avtar avtar-xs bg-light-primary rounded-circle">
+                                                        <i class="ti ti-user text-primary"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="flex-grow-1 ms-2">
+                                                    {{ item.employe.username }}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{{ item.employe.departement ? item.employe.departement.nom : 'Non défini' }}</td>
+                                        <td>
+                                            {% if item.status == 'Présent' %}
+                                                <span class="status-indicator status-present"></span> Présent
+                                            {% elseif item.status == 'Retard' %}
+                                                <span class="status-indicator status-late"></span> En retard
+                                            {% else %}
+                                                <span class="status-indicator status-absent"></span> Absent
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ path('app_pointageadmin_index') }}" class="btn btn-outline-primary btn-sm">Voir tous les pointages</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Accès rapides -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Accès rapides</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3 col-sm-6">
+                            <a href="{{ path('app_employeadmin_new') }}" class="card quick-link-card border-0 shadow-sm mb-0">
+                                <div class="card-body text-center">
+                                    <i class="ti ti-user-plus text-primary mb-2" style="font-size: 24px;"></i>
+                                    <p class="mb-0 text-muted">Ajouter un employé</p>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <a href="{{ path('app_paieadmin_generate_auto') }}" class="card quick-link-card border-0 shadow-sm mb-0">
+                                <div class="card-body text-center">
+                                    <i class="ti ti-report-money text-success mb-2" style="font-size: 24px;"></i>
+                                    <p class="mb-0 text-muted">Générer les paies</p>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <a href="{{ path('app_demandeadmin_liste_attente') }}" class="card quick-link-card border-0 shadow-sm mb-0">
+                                <div class="card-body text-center">
+                                    <i class="ti ti-list-check text-warning mb-2" style="font-size: 24px;"></i>
+                                    <p class="mb-0 text-muted">Traiter les demandes</p>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <a href="{{ path('app_feedbackadmin_stats') }}" class="card quick-link-card border-0 shadow-sm mb-0">
+                                <div class="card-body text-center">
+                                    <i class="ti ti-chart-pie text-danger mb-2" style="font-size: 24px;"></i>
+                                    <p class="mb-0 text-muted">Statistiques feedbacks</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Graphique de présence
+            var presenceOptions = {
+                series: [{
+                    name: 'Présences',
+                    data: {{ presenceData|json_encode|raw }}
+                }, {
+                    name: 'Absences',
+                    data: {{ absenceData|json_encode|raw }}
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 350,
+                    stacked: true,
+                    toolbar: {
+                        show: true
+                    },
+                    zoom: {
+                        enabled: true
+                    }
+                },
+                colors: ['#3cc474', '#f73e5e'],
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        legend: {
+                            position: 'bottom',
+                            offsetX: -10,
+                            offsetY: 0
+                        }
+                    }
+                }],
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        borderRadius: 4,
+                        columnWidth: '55%',
+                    },
+                },
+                xaxis: {
+                    categories: {{ months|json_encode|raw }},
+                },
+                legend: {
+                    position: 'bottom',
+                },
+                fill: {
+                    opacity: 1
+                },
+                dataLabels: {
+                    enabled: false
+                }
+            };
+
+            // Graphique de départements
+            var departmentOptions = {
+                series: {{ departementData|json_encode|raw }},
+                chart: {
+                    width: '100%',
+                    type: 'pie',
+                },
+                labels: {{ departementLabels|json_encode|raw }},
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }],
+                colors: ['#7267ef', '#3cc474', '#ffa21d', '#f73e5e', '#00b8d9', '#6b58cd']
+            };
+
+            var presenceChart = new ApexCharts(document.querySelector("#presence-chart"), presenceOptions);
+            var departmentChart = new ApexCharts(document.querySelector("#department-chart"), departmentOptions);
+            
+            presenceChart.render();
+            departmentChart.render();
+        });
+    </script>
+{% endblock %}

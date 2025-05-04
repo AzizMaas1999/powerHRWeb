@@ -213,8 +213,14 @@ public function calculerTotal(): void
     $this->setTotal($total);
 }
 
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $status = null;
 
-
+    public function setStatus(?string $status): self
+    {
+        $this->status = $status;
+        return $this;
+    }
 
 }
 

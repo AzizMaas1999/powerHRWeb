@@ -47,14 +47,13 @@ final class CandidatAdminController extends AbstractController
                         $this->getParameter('cv_directory'),
                         $newFilename
                     );
-                    $candidat->setCv($newFilename);
+                    $candidat->setCvPdfUrl($newFilename);
                 } catch (FileException $e) {
                     // Handle exception
                     $this->addFlash('error', 'Un problème est survenu lors du téléchargement du CV');
                 }
             }
             
-            $candidat->setDatePostulation(new \DateTime());
             $entityManager->persist($candidat);
             $entityManager->flush();
 
@@ -98,14 +97,14 @@ final class CandidatAdminController extends AbstractController
                     );
                     
                     // Delete old CV if exists
-                    if ($candidat->getCv()) {
-                        $oldCvPath = $this->getParameter('cv_directory').'/'.$candidat->getCv();
+                    if ($candidat->getCvPdfUrl()) {
+                        $oldCvPath = $this->getParameter('cv_directory').'/'.$candidat->getCvPdfUrl();
                         if (file_exists($oldCvPath)) {
                             unlink($oldCvPath);
                         }
                     }
                     
-                    $candidat->setCv($newFilename);
+                    $candidat->setCvPdfUrl($newFilename);
                 } catch (FileException $e) {
                     // Handle exception
                     $this->addFlash('error', 'Un problème est survenu lors du téléchargement du CV');
@@ -129,8 +128,8 @@ final class CandidatAdminController extends AbstractController
     {
         if ($this->isCsrfTokenValid('delete'.$candidat->getId(), $request->getPayload()->getString('_token'))) {
             // Delete CV file if exists
-            if ($candidat->getCv()) {
-                $cvPath = $this->getParameter('cv_directory').'/'.$candidat->getCv();
+            if ($candidat->getCvPdfUrl()) {
+                $cvPath = $this->getParameter('cv_directory').'/'.$candidat->getCvPdfUrl();
                 if (file_exists($cvPath)) {
                     unlink($cvPath);
                 }

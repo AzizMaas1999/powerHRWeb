@@ -23,7 +23,7 @@ final class RepquestionnaireAdminController extends AbstractController
         ]);
     }
 
-    #[Route('/repquestionnaireadmin/new/{questionnaireId}', name: 'app_repquestionnaireadmin_new')]
+    #[Route('/new/{questionnaireId}', name: 'app_repquestionnaireadmin_new')]
     public function new(Request $request, EntityManagerInterface $entityManager, QuestionnaireRepository $questionnaireRepository, int $questionnaireId): Response
     {
         $repQuestionnaire = new RepQuestionnaire();
@@ -87,7 +87,7 @@ final class RepquestionnaireAdminController extends AbstractController
     #[Route('/{id}', name: 'app_repquestionnaireadmin_delete', methods: ['POST'])]
     public function delete(Request $request, Repquestionnaire $repquestionnaire, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $repquestionnaire->getId(), $request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $repquestionnaire->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($repquestionnaire);
             $entityManager->flush();
 

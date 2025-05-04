@@ -1,0 +1,55 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Nouveau Feedback{% endblock %}
+
+{% block body %}
+    <div class="card">
+        <div class="card-header">
+            <h5>Créer un nouveau feedback</h5>
+            <div class="card-header-right">
+                <a href="{{ path('app_feedbackadmin_index') }}" class="btn btn-secondary btn-sm">
+                    <i class="ti ti-arrow-left"></i> Retour à la liste
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            {{ form_label(form.type, 'Type de feedback') }}
+                            {{ form_widget(form.type, {'attr': {'class': 'form-select'}}) }}
+                            <div class="form-text text-danger">
+                                {{ form_errors(form.type) }}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form_label(form.clfr, 'Client/Fournisseur') }}
+                            {{ form_widget(form.clfr, {'attr': {'class': 'form-select'}}) }}
+                            <div class="form-text text-danger">
+                                {{ form_errors(form.clfr) }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            {{ form_label(form.description, 'Description') }}
+                            {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 5}}) }}
+                            <div class="form-text text-danger">
+                                {{ form_errors(form.description) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="ti ti-device-floppy"></i> Enregistrer
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

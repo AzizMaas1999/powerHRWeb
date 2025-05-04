@@ -58,6 +58,9 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
         if (in_array('ROLE_FACTURATION', $roles)) {
             return new RedirectResponse($this->urlGenerator->generate('facturation_home'));
         }
+        if (in_array('ROLE_ADMIN', $roles)) {
+            return new RedirectResponse($this->urlGenerator->generate('charges_admin_home'));
+        }
 
         return new RedirectResponse($this->urlGenerator->generate('default_home'));
     }

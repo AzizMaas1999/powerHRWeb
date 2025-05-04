@@ -238,7 +238,12 @@ final class PointageAdminController extends AbstractController
         $pointage->setDate(new \DateTime());
         $pointage->setHeureEntree(new \DateTime());
 
-        $employe = $this->getUser(); 
+        $employe = $this->getUser();
+        if (!$employe instanceof Employe) {
+            $this->addFlash('danger', 'Erreur: Utilisateur connecté invalide.');
+            return $this->redirectToRoute('app_pointageadmin_index');
+        }
+        
         $pointage->setEmploye($employe);
 
         $form = $this->createForm(PointageType::class, $pointage);
@@ -248,6 +253,7 @@ final class PointageAdminController extends AbstractController
             $entityManager->persist($pointage);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Pointage ajouté avec succès.');
             return $this->redirectToRoute('app_pointageadmin_index', [], Response::HTTP_SEE_OTHER);
         }
 

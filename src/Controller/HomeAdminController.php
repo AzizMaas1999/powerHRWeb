@@ -14,6 +14,8 @@ use App\Repository\FicheEmployeRepository;
 use App\Repository\DemandeRepository;
 use App\Repository\QuestionnaireRepository;
 use App\Repository\CandidatRepository;
+use App\Repository\FeedbackRepository;
+use App\Repository\FactureRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -24,7 +26,7 @@ use DateTime;
 #[Route('/homeadmin')]
 final class HomeAdminController extends AbstractController
 {
-    #[Route('/charges', name: 'charges_admin_home')]
+    #[Route('/', name: 'charges_admin_home')]
     public function chargesAdmin(
         PaieRepository $paieRepository, 
         EmployeRepository $employeRepository, 
@@ -33,7 +35,9 @@ final class HomeAdminController extends AbstractController
         DemandeRepository $demandeRepository,
         FicheEmployeRepository $ficheEmployeRepository,
         QuestionnaireRepository $questionnaireRepository,
-        CandidatRepository $candidatRepository
+        CandidatRepository $candidatRepository,
+        FeedbackRepository $feedbackRepository,
+        FactureRepository $factureRepository
     ): Response
     {
         // Nombre total d'employés actifs
@@ -136,8 +140,17 @@ final class HomeAdminController extends AbstractController
                 'status' => $status
             ];
         }
+
+        // Statistiques des feedbacks
+        $feedbacksPositifs = count($feedbackRepository->findBy(['type' => 'positif']));
+        $feedbacksNegatifs = count($feedbackRepository->findBy(['type' => 'negatif']));
+        $feedbacksNeutres = count($feedbackRepository->findBy(['type' => 'neutre']));
         
-        return $this->render('home/chargesadmin.html.twig', [
+        // Statistiques des factures
+        $facturesPaid = count($factureRepository->findBy(['status' => 'Payée']));
+        $facturesUnpaid = count($factureRepository->findBy(['status' => 'Non payée']));
+        
+        return $this->render('home/admin_dashboard.html.twig', [
             'paies' => $paieRepository->findAll(),
             'employesCount' => $employesCount,
             'fichesCount' => $fichesCount,
@@ -154,7 +167,12 @@ final class HomeAdminController extends AbstractController
             'demandesEnAttenteListe' => $demandesEnAttenteListe,
             'candidatsCount' => $candidatsCount,
             'paiesTraitees' => $paiesTraitees,
-            'employeStatusToday' => $employeStatusToday
+            'employeStatusToday' => $employeStatusToday,
+            'feedbacksPositifs' => $feedbacksPositifs,
+            'feedbacksNegatifs' => $feedbacksNegatifs,
+            'feedbacksNeutres' => $feedbacksNeutres,
+            'facturesPaid' => $facturesPaid,
+            'facturesUnpaid' => $facturesUnpaid
         ]);
     }
 }

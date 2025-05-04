@@ -62,6 +62,21 @@ class PointageRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Find pointages by date range
+     */
+    public function findByDateRange(\DateTime $startDate, \DateTime $endDate): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.date >= :startDate')
+            ->andWhere('p.date <= :endDate')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+            ->orderBy('p.date', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Pointage[] Returns an array of Pointage objects
     //     */

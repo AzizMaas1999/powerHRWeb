@@ -2,7 +2,7 @@
 
 ## 📝 Description du projet
 
-PowerHR est une application web développée avec Symfony 6.4 dans le cadre du projet de fin d'études à **Esprit School of Engineering**.  
+PowerHR est une application web développée avec Symfony 6.4 dans le cadre du projet intégré java web de 3éme Année à **Esprit School of Engineering**.  
 Elle permet de gérer les employés, les pointages, la paie, les demandes internes, ainsi que la facturation et les paiements clients/fournisseurs.
 
 ## 🔖 Topics
@@ -105,4 +105,4 @@ Tu peux librement l’utiliser, le modifier, et le redistribuer à condition de 
 
 ## 💼 Remerciements
 
-Projet développé sous la supervision de **Esprit School of Engineering** dans le cadre du module PFE - 2025.
+Projet développé sous la supervision de **Esprit School of Engineering** dans le cadre du module PI 3A - 2025
