@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseAdmin.html.twig' %}
 
 {% block title %}Administration des Employés{% endblock %}
 
@@ -51,9 +51,9 @@
                             <tr>
                                 <td>{{ employe.id }}</td>
                                 <td>{{ employe.username }}</td>
-                                <td>{{ employe.email }}</td>
-                                <td>{{ employe.prenom }}</td>
-                                <td>{{ employe.nom }}</td>
+                                <td>{% if employe.ficheEmploye %}{{ employe.ficheEmploye.email }}{% else %}Non défini{% endif %}</td>
+                                <td>{% if employe.ficheEmploye %}{{ employe.ficheEmploye.prenom }}{% else %}Non défini{% endif %}</td>
+                                <td>{% if employe.ficheEmploye %}{{ employe.ficheEmploye.nom }}{% else %}Non défini{% endif %}</td>
                                 <td>
                                     <span class="badge badge-primary">{{ employe.poste }}</span>
                                 </td>

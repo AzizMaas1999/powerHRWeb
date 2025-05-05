@@ -1,0 +1,195 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Détails de la Fiche de Paie{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h3 class="page-title">
+        <span class="page-title-icon bg-gradient-danger text-white me-2">
+            <i class="ti ti-file-invoice"></i>
+        </span> Détails de la Fiche de Paie #{{ paie.id }}
+    </h3>
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('charges_admin_home') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_paieadmin_index') }}">Fiches de Paie</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Détails</li>
+        </ul>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-md-6 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Informations de la Paie</h4>
+                <div class="d-flex justify-content-end mb-3">
+                    <div class="btn-group">
+                        <a href="{{ path('app_paieadmin_edit', {'id': paie.id}) }}" class="btn btn-warning btn-sm">
+                            <i class="ti ti-edit me-1"></i> Modifier
+                        </a>
+                        <form method="post" action="{{ path('app_paieadmin_delete', {'id': paie.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette fiche de paie?');" style="display: inline-block;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ paie.id) }}">
+                            <button class="btn btn-danger btn-sm">
+                                <i class="ti ti-trash me-1"></i> Supprimer
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th style="width: 30%">ID</th>
+                            <td>{{ paie.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>Période</th>
+                            <td>{{ paie.mois }} {{ paie.annee }}</td>
+                        </tr>
+                        <tr>
+                            <th>Montant</th>
+                            <td><span class="badge bg-success p-2">{{ paie.montant|number_format(2, ',', ' ') }} TND</span></td>
+                        </tr>
+                        <tr>
+                            <th>Jours Travaillés</th>
+                            <td>{{ paie.nbJour }}</td>
+                        </tr>
+                        <tr>
+                            <th>Heures Travaillées</th>
+                            <td>{{ paie.heuresTravaillees is defined ? paie.heuresTravaillees|number_format(2, ',', ' ') : 'N/A' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Méthode de Paiement</th>
+                            <td>{{ paie.methodePaiement is defined ? paie.methodePaiement : 'Non défini' }}</td>
+                        </tr>
+                        {% if paie.datePaiement is defined and paie.datePaiement %}
+                        <tr>
+                            <th>Date de Paiement</th>
+                            <td>{{ paie.datePaiement|date('d/m/Y') }}</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Informations de l'Employé</h4>
+                
+                {% if employe %}
+                    <div class="text-center mb-4">
+                        <div class="avatar avatar-xl mb-3">
+                            <span class="avatar-title rounded-circle bg-primary">
+                                {{ employe.username|slice(0,1)|upper }}
+                            </span>
+                        </div>
+                        <h5>{{ employe.username }}</h5>
+                        <p class="text-muted mb-1">{{ employe.poste }}</p>
+                        <p class="mb-1"><i class="ti ti-mail me-2"></i> {% if employe.ficheEmploye %}{{ employe.ficheEmploye.email }}{% else %}Non défini{% endif %}</p>
+                        <p class="mb-1"><i class="ti ti-cash me-2"></i> {{ employe.salaire|number_format(2, ',', ' ') }} TND</p>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th style="width: 30%">Prénom</th>
+                                    <td>{% if employe.ficheEmploye %}{{ employe.ficheEmploye.prenom }}{% else %}Non défini{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <th>Nom</th>
+                                    <td>{% if employe.ficheEmploye %}{{ employe.ficheEmploye.nom }}{% else %}Non défini{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <th>Département</th>
+                                    <td>
+                                        {% if employe.departement %}
+                                            {{ employe.departement.nom }}
+                                        {% else %}
+                                            <span class="text-muted">Non assigné</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% if employe.rib %}
+                                <tr>
+                                    <th>RIB</th>
+                                    <td>{{ employe.rib }}</td>
+                                </tr>
+                                {% endif %}
+                                {% if employe.codeSociale %}
+                                <tr>
+                                    <th>Code Social</th>
+                                    <td>{{ employe.codeSociale }}</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning">
+                        <i class="ti ti-alert-triangle me-2"></i> Aucun employé associé à cette fiche de paie
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Pointages associés</h4>
+                
+                {% if pointages and not pointages.empty %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Heure d'entrée</th>
+                                    <th>Heure de sortie</th>
+                                    <th>Durée</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for pointage in pointages %}
+                                    <tr>
+                                        <td>{{ pointage.date|date('d/m/Y') }}</td>
+                                        <td>{{ pointage.heureEntree ? pointage.heureEntree|date('H:i') : 'N/A' }}</td>
+                                        <td>{{ pointage.heureSortie ? pointage.heureSortie|date('H:i') : 'N/A' }}</td>
+                                        <td>
+                                            {% if pointage.heureEntree and pointage.heureSortie %}
+                                                {% set diff = date(pointage.heureSortie).diff(date(pointage.heureEntree)) %}
+                                                {% set hours = diff.h %}
+                                                {% set minutes = diff.i %}
+                                                {{ hours }}h{{ minutes < 10 ? '0' : '' }}{{ minutes }}
+                                            {% else %}
+                                                N/A
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        <i class="ti ti-info-circle me-2"></i> Aucun pointage associé à cette fiche de paie
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center mt-4">
+    <a href="{{ path('app_paieadmin_index') }}" class="btn btn-outline-secondary">
+        <i class="ti ti-arrow-left me-2"></i> Retour à la liste
+    </a>
+</div>
+{% endblock %}

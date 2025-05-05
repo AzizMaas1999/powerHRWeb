@@ -1,0 +1,127 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Génération de Paie par Employé{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h3 class="page-title">
+        <span class="page-title-icon bg-gradient-danger text-white me-2">
+            <i class="ti ti-users"></i>
+        </span> Génération de Paie par Employé
+    </h3>
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('charges_admin_home') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_paieadmin_index') }}">Fiches de Paie</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Par Employé</li>
+        </ul>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Liste des Employés</h4>
+                <p class="card-description">Sélectionnez un employé pour générer sa fiche de paie</p>
+                
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nom d'utilisateur</th>
+                                <th>Email</th>
+                                <th>Nom</th>
+                                <th>Prénom</th>
+                                <th>Poste</th>
+                                <th>Salaire</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for employe in employes %}
+                            <tr>
+                                <td>{{ employe.id }}</td>
+                                <td>{{ employe.username }}</td>
+                                <td>{% if employe.ficheEmploye %}{{ employe.ficheEmploye.email }}{% else %}Non défini{% endif %}</td>
+                                <td>{% if employe.ficheEmploye %}{{ employe.ficheEmploye.nom }}{% else %}Non défini{% endif %}</td>
+                                <td>{% if employe.ficheEmploye %}{{ employe.ficheEmploye.prenom }}{% else %}Non défini{% endif %}</td>
+                                <td><span class="badge bg-info">{{ employe.poste }}</span></td>
+                                <td>{{ employe.salaire|number_format(2, ',', ' ') }} TND</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#generateModal{{ employe.id }}">
+                                            <i class="ti ti-wand-sparkles me-1"></i> Générer Paie
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Modal de génération de paie -->
+                                    <div class="modal fade" id="generateModal{{ employe.id }}" tabindex="-1" aria-labelledby="generateModalLabel{{ employe.id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-gradient-success text-white">
+                                                    <h5 class="modal-title" id="generateModalLabel{{ employe.id }}">
+                                                        Générer une paie pour {{ employe.username }}
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form action="{{ path('app_paieadmin_generate', {'id': employe.id}) }}" method="get">
+                                                        <div class="mb-3">
+                                                            <label for="month{{ employe.id }}" class="form-label">Mois</label>
+                                                            <select class="form-select" id="month{{ employe.id }}" name="month">
+                                                                <option value="Janvier">Janvier</option>
+                                                                <option value="Février">Février</option>
+                                                                <option value="Mars">Mars</option>
+                                                                <option value="Avril">Avril</option>
+                                                                <option value="Mai">Mai</option>
+                                                                <option value="Juin">Juin</option>
+                                                                <option value="Juillet">Juillet</option>
+                                                                <option value="Août">Août</option>
+                                                                <option value="Septembre">Septembre</option>
+                                                                <option value="Octobre">Octobre</option>
+                                                                <option value="Novembre">Novembre</option>
+                                                                <option value="Décembre">Décembre</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="year{{ employe.id }}" class="form-label">Année</label>
+                                                            <select class="form-select" id="year{{ employe.id }}" name="year">
+                                                                <option value="2023">2023</option>
+                                                                <option value="2024">2024</option>
+                                                                <option value="2025" selected>2025</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="text-end">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                                            <button type="submit" class="btn btn-success">
+                                                                <i class="ti ti-wand me-2"></i> Générer
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="8" class="text-center">Aucun employé trouvé</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center mt-4">
+    <a href="{{ path('app_paieadmin_index') }}" class="btn btn-outline-secondary">
+        <i class="ti ti-arrow-left me-2"></i> Retour à la liste des paies
+    </a>
+</div>
+{% endblock %}

@@ -19,7 +19,6 @@ class Facture
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-
     public function getId(): ?int
     {
         return $this->id;
@@ -30,7 +29,7 @@ class Facture
         $this->id = $id;
         return $this;
     }
-    
+
     public function __toString(): string
     {
         return 'Facture n°' . $this->getNum(); // ou toute autre propriété représentative

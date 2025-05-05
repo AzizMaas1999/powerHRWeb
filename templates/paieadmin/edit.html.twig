@@ -1,0 +1,108 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Modifier la Fiche de Paie{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h3 class="page-title">
+        <span class="page-title-icon bg-gradient-danger text-white me-2">
+            <i class="ti ti-edit"></i>
+        </span> Modifier la Fiche de Paie #{{ paie.id }}
+    </h3>
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('charges_admin_home') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_paieadmin_index') }}">Fiches de Paie</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Modifier</li>
+        </ul>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-md-8 grid-margin stretch-card mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Informations de la Fiche de Paie</h4>
+                
+                {{ form_start(form, {'attr': {'class': 'forms-sample'}}) }}
+                
+                <div class="form-group row mb-3">
+                    <label for="mois" class="col-sm-3 col-form-label">{{ form_label(form.mois) }}</label>
+                    <div class="col-sm-9">
+                        {{ form_widget(form.mois, {'attr': {'class': 'form-control'}}) }}
+                        <small class="form-text text-danger">{{ form_errors(form.mois) }}</small>
+                    </div>
+                </div>
+
+                <div class="form-group row mb-3">
+                    <label for="annee" class="col-sm-3 col-form-label">{{ form_label(form.annee) }}</label>
+                    <div class="col-sm-9">
+                        {{ form_widget(form.annee, {'attr': {'class': 'form-control'}}) }}
+                        <small class="form-text text-danger">{{ form_errors(form.annee) }}</small>
+                    </div>
+                </div>
+                
+                <div class="form-group row mb-3">
+                    <label for="nbJour" class="col-sm-3 col-form-label">{{ form_label(form.nbJour) }}</label>
+                    <div class="col-sm-9">
+                        {{ form_widget(form.nbJour, {'attr': {'class': 'form-control'}}) }}
+                        <small class="form-text text-danger">{{ form_errors(form.nbJour) }}</small>
+                    </div>
+                </div>
+                
+                <div class="form-group row mb-3">
+                    <label for="montant" class="col-sm-3 col-form-label">{{ form_label(form.montant) }}</label>
+                    <div class="col-sm-9">
+                        {{ form_widget(form.montant, {'attr': {'class': 'form-control'}}) }}
+                        <small class="form-text text-danger">{{ form_errors(form.montant) }}</small>
+                        <small class="form-text text-muted">Montant en TND</small>
+                    </div>
+                </div>
+                
+                {% if form.heuresTravaillees is defined %}
+                <div class="form-group row mb-3">
+                    <label for="heuresTravaillees" class="col-sm-3 col-form-label">{{ form_label(form.heuresTravaillees) }}</label>
+                    <div class="col-sm-9">
+                        {{ form_widget(form.heuresTravaillees, {'attr': {'class': 'form-control'}}) }}
+                        <small class="form-text text-danger">{{ form_errors(form.heuresTravaillees) }}</small>
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if form.methodePaiement is defined %}
+                <div class="form-group row mb-3">
+                    <label for="methodePaiement" class="col-sm-3 col-form-label">{{ form_label(form.methodePaiement) }}</label>
+                    <div class="col-sm-9">
+                        {{ form_widget(form.methodePaiement, {'attr': {'class': 'form-control'}}) }}
+                        <small class="form-text text-danger">{{ form_errors(form.methodePaiement) }}</small>
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if form.datePaiement is defined %}
+                <div class="form-group row mb-3">
+                    <label for="datePaiement" class="col-sm-3 col-form-label">{{ form_label(form.datePaiement) }}</label>
+                    <div class="col-sm-9">
+                        {{ form_widget(form.datePaiement, {'attr': {'class': 'form-control'}}) }}
+                        <small class="form-text text-danger">{{ form_errors(form.datePaiement) }}</small>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="form-group row">
+                    <div class="col-sm-12 text-center">
+                        <button type="submit" class="btn btn-gradient-primary me-2">
+                            <i class="ti ti-device-floppy me-2"></i> Enregistrer les modifications
+                        </button>
+                        <a href="{{ path('app_paieadmin_index') }}" class="btn btn-light">
+                            <i class="ti ti-x me-2"></i> Annuler
+                        </a>
+                    </div>
+                </div>
+                
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,210 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Fiches de Paie par Employé{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h3 class="page-title">
+        <span class="page-title-icon bg-gradient-danger text-white me-2">
+            <i class="ti ti-file-search"></i>
+        </span> Fiches de Paie par Employé
+    </h3>
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('charges_admin_home') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_paieadmin_index') }}">Fiches de Paie</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Par Employé</li>
+        </ul>
+    </nav>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Sélectionner un Employé</h4>
+                <form method="get" class="row g-3 align-items-end">
+                    <div class="col-md-6">
+                        <label for="employe" class="form-label">Employé</label>
+                        <select name="employe" id="employe" class="form-select">
+                            <option value="">Sélectionner un employé</option>
+                            {% for employe in employes %}
+                                <option value="{{ employe.id }}" {{ app.request.query.get('employe') == employe.id ? 'selected' : '' }}>
+                                    {{ employe.username }} - {% if employe.ficheEmploye %}{{ employe.ficheEmploye.nom }} {{ employe.ficheEmploye.prenom }}{% else %}{{ employe.username }}{% endif %}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="annee" class="form-label">Année</label>
+                        <select name="annee" id="annee" class="form-select">
+                            <option value="2023" {{ app.request.query.get('annee') == '2023' ? 'selected' : '' }}>2023</option>
+                            <option value="2024" {{ app.request.query.get('annee') == '2024' ? 'selected' : '' }}>2024</option>
+                            <option value="2025" {{ app.request.query.get('annee') == '2025' or not app.request.query.get('annee') ? 'selected' : '' }}>2025</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="ti ti-search me-1"></i> Rechercher
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if app.request.query.get('employe') %}
+    {% set employeId = app.request.query.get('employe') %}
+    {% set selectedEmploye = null %}
+    
+    {% for employe in employes %}
+        {% if employe.id == employeId %}
+            {% set selectedEmploye = employe %}
+        {% endif %}
+    {% endfor %}
+    
+    {% if selectedEmploye %}
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="avatar avatar-md bg-gradient-primary rounded-circle me-3">
+                                <span class="text-white">{{ selectedEmploye.username|slice(0,1)|upper }}</span>
+                            </div>
+                            <div>
+                                <h4 class="mb-0">{{ selectedEmploye.username }}</h4>
+                                <p class="text-muted mb-0">
+                                    {% if selectedEmploye.ficheEmploye %}
+                                        {{ selectedEmploye.ficheEmploye.prenom }} {{ selectedEmploye.ficheEmploye.nom }}
+                                    {% else %}
+                                        Fiche employé non définie
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="ms-auto">
+                                <span class="badge bg-primary">{{ selectedEmploye.poste }}</span>
+                                {% if selectedEmploye.salaire %}
+                                    <span class="badge bg-success">{{ selectedEmploye.salaire|number_format(2, ',', ' ') }} TND</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <table class="table table-sm">
+                                    <tbody>
+                                        <tr>
+                                            <th>Email</th>
+                                            <td>{% if selectedEmploye.ficheEmploye %}{{ selectedEmploye.ficheEmploye.email }}{% else %}Non défini{% endif %}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Téléphone</th>
+                                            <td>{% if selectedEmploye.ficheEmploye %}{{ selectedEmploye.ficheEmploye.numTel }}{% else %}Non défini{% endif %}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <table class="table table-sm">
+                                    <tbody>
+                                        <tr>
+                                            <th>Département</th>
+                                            <td>{{ selectedEmploye.departement ? selectedEmploye.departement.nom : 'Non assigné' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>RIB</th>
+                                            <td>{{ selectedEmploye.rib ? selectedEmploye.rib : 'Non défini' }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-12 grid-margin">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Fiches de Paie - {{ app.request.query.get('annee', '2025') }}</h4>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Période</th>
+                                        <th>Montant</th>
+                                        <th>Jours</th>
+                                        <th>Heures</th>
+                                        <th>Méthode</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% set annee = app.request.query.get('annee', '2025') %}
+                                    {% set hasPaies = false %}
+                                    
+                                    {% for pointage in selectedEmploye.pointages %}
+                                        {% if pointage.paie and pointage.paie.annee == annee %}
+                                            {% set hasPaies = true %}
+                                            <tr>
+                                                <td>{{ pointage.paie.id }}</td>
+                                                <td>{{ pointage.paie.mois }} {{ pointage.paie.annee }}</td>
+                                                <td>{{ pointage.paie.montant|number_format(2, ',', ' ') }} TND</td>
+                                                <td>{{ pointage.paie.nbJour }}</td>
+                                                <td>{{ pointage.paie.heuresTravaillees is defined ? pointage.paie.heuresTravaillees|number_format(1, ',', ' ') : 'N/A' }}</td>
+                                                <td>
+                                                    <span class="badge bg-info">
+                                                        {{ pointage.paie.methodePaiement is defined ? pointage.paie.methodePaiement : 'Non défini' }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <a href="{{ path('app_paieadmin_show', {'id': pointage.paie.id}) }}" class="btn btn-info btn-sm">
+                                                        <i class="ti ti-eye"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            {% set displayedPaies = [] %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    
+                                    {% if not hasPaies %}
+                                        <tr>
+                                            <td colspan="7" class="text-center">Aucune fiche de paie trouvée pour l'année {{ annee }}</td>
+                                        </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="mt-4 text-center">
+                            <a href="{{ path('app_paieadmin_generate', {'id': selectedEmploye.id}) }}" class="btn btn-success">
+                                <i class="ti ti-plus me-2"></i> Générer une nouvelle fiche de paie
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-warning">
+            Employé non trouvé
+        </div>
+    {% endif %}
+{% else %}
+    <div class="alert alert-info">
+        <i class="ti ti-info-circle me-2"></i> Veuillez sélectionner un employé pour afficher ses fiches de paie.
+    </div>
+{% endif %}
+
+<div class="text-center mt-4">
+    <a href="{{ path('app_paieadmin_index') }}" class="btn btn-outline-secondary">
+        <i class="ti ti-arrow-left me-2"></i> Retour à la liste des paies
+    </a>
+</div>
+{% endblock %}

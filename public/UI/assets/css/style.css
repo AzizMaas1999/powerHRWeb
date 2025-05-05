@@ -15996,6 +15996,59 @@ code {
 /*-------------------------------------------------------------------*/
 /* === Components === */
 /* Badges */
+
+/* Sidebar Scrollable */
+.sidebar-scrollable {
+    height: -webkit-fill-available;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #666 #191c24;
+}
+
+.sidebar-scrollable::-webkit-scrollbar {
+    width: 5px;
+}
+
+.sidebar-scrollable::-webkit-scrollbar-track {
+    background: #191c24;
+}
+
+.sidebar-scrollable::-webkit-scrollbar-thumb {
+    background: #666;
+    border-radius: 10px;
+}
+
+.sidebar-scrollable::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+
+/* Keep submenus from being cut off */
+.sidebar-scrollable .nav-item .collapse.show {
+    height: auto !important;
+    max-height: none !important;
+    display: block !important;
+}
+
+/* Alert Container for Notifications */
+.alert-container {
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    z-index: 9999;
+    max-width: 350px;
+}
+
+.alert-container .alert {
+    margin-bottom: 10px;
+    padding: 15px;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 .badge {
   border-radius: 0.25rem;
   font-size: 0.75rem;
@@ -20689,7 +20742,6 @@ div.tagsinput {
     overflow: hidden;
     flex-wrap: nowrap;
     flex-direction: column;
-    margin-bottom: 60px;
     padding-top: 70px; }
     @media (max-width: 992px) {
       .sidebar .nav {

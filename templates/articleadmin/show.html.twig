@@ -94,8 +94,10 @@
                                             <td>
                                                 {% if article.facture.status == 'Payée' %}
                                                     <span class="badge bg-success">{{ article.facture.status }}</span>
-                                                {% else %}
+                                                {% elseif article.facture.status == 'En attente' %}
                                                     <span class="badge bg-warning">{{ article.facture.status }}</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">Non défini</span>
                                                 {% endif %}
                                             </td>
                                         </tr>

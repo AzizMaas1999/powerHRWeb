@@ -44,6 +44,8 @@ class Employe implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /* Email field removed - now only in FicheEmploye entity */
+
     #[ORM\Column(type: 'string', nullable: false)]
     private ?string $password = null;
 

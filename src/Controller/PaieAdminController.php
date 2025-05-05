@@ -2,59 +2,29 @@
 
 namespace App\Controller;
 
-use Dompdf\Dompdf;
-use Dompdf\Options;
-use DateTime;
 use App\Entity\Paie;
 use App\Entity\Employe;
 use App\Form\PaieType;
 use App\Repository\PaieRepository;
-use App\Repository\PointageRepository;
 use App\Repository\EmployeRepository;
+use App\Repository\PointageRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use DateTime;
 
 #[IsGranted('ROLE_ADMIN')]
 #[Route('/paieadmin')]
 final class PaieAdminController extends AbstractController
 {
     #[Route('/', name: 'app_paieadmin_index', methods: ['GET'])]
-    public function index(Request $request, PaieRepository $paieRepository, PointageRepository $pointageRepository): Response
+    public function index(PaieRepository $paieRepository): Response
     {
-        // Handle search
-        $searchUsername = $request->query->get('search_username');
-        
-        if ($searchUsername) {
-            $paies = $paieRepository->searchByUsername($searchUsername);
-        } else {
-            // Get all paies ordered by year and month DESC
-            $paies = $paieRepository->findAllOrderedByYearAndMonthDesc();
-        }
-        
-        // Handle AJAX requests
-        if ($request->isXmlHttpRequest()) {
-            return $this->render('paieadmin/_table.html.twig', [
-                'paies' => $paies,
-                'pointages' => $pointageRepository->findAll(
-                    ['paie' => 'NOT NULL']
-                ),
-                'search_username' => $searchUsername,
-            ]);
-        }
-        
         return $this->render('paieadmin/index.html.twig', [
-            'paies' => $paies,
-            'pointages' => $pointageRepository->findAll(
-                ['paie' => 'NOT NULL']
-            ),
-            'search_username' => $searchUsername,
+            'paies' => $paieRepository->findBy([], ['annee' => 'DESC', 'mois' => 'DESC']),
         ]);
     }
 
@@ -69,8 +39,8 @@ final class PaieAdminController extends AbstractController
             $entityManager->persist($paie);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Paie ajoutée avec succès.');
-            return $this->redirectToRoute('app_paieadmin_index');
+            $this->addFlash('success', 'La fiche de paie a été créée avec succès.');
+            return $this->redirectToRoute('app_paieadmin_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('paieadmin/new.html.twig', [
@@ -79,6 +49,57 @@ final class PaieAdminController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}', name: 'app_paieadmin_show', methods: ['GET'])]
+    public function show(Paie $paie): Response
+    {
+        // Récupération des pointages liés à cette paie pour calculer les heures travaillées
+        $pointages = $paie->getPointages();
+        
+        // Récupérer l'employé associé à travers le premier pointage (si disponible)
+        $employe = null;
+        if (!$pointages->isEmpty()) {
+            $employe = $pointages->first()->getEmploye();
+        }
+        
+        return $this->render('paieadmin/show.html.twig', [
+            'paie' => $paie,
+            'employe' => $employe,
+            'pointages' => $pointages,
+        ]);
+    }
+
+    #[Route('/{id}/edit', name: 'app_paieadmin_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Paie $paie, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(PaieType::class, $paie);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            $this->addFlash('success', 'La fiche de paie a été modifiée avec succès.');
+            return $this->redirectToRoute('app_paieadmin_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('paieadmin/edit.html.twig', [
+            'paie' => $paie,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}/delete', name: 'app_paieadmin_delete', methods: ['POST'])]
+    public function delete(Request $request, Paie $paie, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$paie->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($paie);
+            $entityManager->flush();
+            
+            $this->addFlash('success', 'La fiche de paie a été supprimée avec succès.');
+        }
+
+        return $this->redirectToRoute('app_paieadmin_index', [], Response::HTTP_SEE_OTHER);
+    }
+    
     #[Route('/employe', name: 'app_showEmployePaieadmin_index', methods: ['GET'])]
     public function showEmp(EmployeRepository $employeRepository, PointageRepository $pointageRepository, PaieRepository $paieRepository): Response
     {
@@ -103,7 +124,6 @@ final class PaieAdminController extends AbstractController
         
         // Check if a paie already exists for this employee/month/year
         $existingPaie = $entityManager->getRepository(Paie::class)->findOneBy([
-            'employe' => $employe,
             'mois' => $month,
             'annee' => $year
         ]);
@@ -138,24 +158,17 @@ final class PaieAdminController extends AbstractController
             }
         }
         
-        // Calculate gross salary (assuming hourly rate is 15)
-        $hourlyRate = $employe->getSalaire() ?: 15;
-        $grossSalary = $totalHours * $hourlyRate;
+        // Calculate salary based on hours (assuming 160 hours per month as standard)
+        $baseSalary = $employe->getSalaire();
+        $hourlyRate = $baseSalary / 160;
+        $calculatedSalary = $totalHours * $hourlyRate;
         
-        // Apply deductions (example: 20% total deductions)
-        $deductions = $grossSalary * 0.20;
-        $netSalary = $grossSalary - $deductions;
-        
-        // Create new Paie record
+        // Create new paie
         $paie = new Paie();
-        $paie->setEmploye($employe)
-             ->setMontantBrut($grossSalary)
-             ->setMontantNet($netSalary)
-             ->setDatePaiement(new DateTime())
+        $paie->setMontant($calculatedSalary)
+             ->setNbJour(count($pointages))
              ->setMois($month)
-             ->setAnnee($year)
-             ->setHeuresTravaillees($totalHours)
-             ->setMethodePaiement('Virement bancaire');
+             ->setAnnee($year);
         
         $entityManager->persist($paie);
         $entityManager->flush();
@@ -189,7 +202,6 @@ final class PaieAdminController extends AbstractController
         foreach ($employes as $employe) {
             // Vérifier si une fiche de paie existe déjà pour ce mois
             $existingPaie = $paieRepository->findOneBy([
-                'employe' => $employe,
                 'mois' => $month,
                 'annee' => $year
             ]);
@@ -224,37 +236,34 @@ final class PaieAdminController extends AbstractController
                 $hourlyRate = $employe->getSalaire() ?: 15;
                 $grossSalary = $totalHours * $hourlyRate;
                 
-                // Appliquer des déductions (exemple: 20% de déductions totales)
-                $deductions = $grossSalary * 0.20;
-                $netSalary = $grossSalary - $deductions;
-                
-                // Créer une nouvelle fiche de paie
+                // Créer la paie
                 $paie = new Paie();
-                $paie->setEmploye($employe)
-                     ->setMontantBrut($grossSalary)
-                     ->setMontantNet($netSalary)
-                     ->setDatePaiement(new DateTime())
+                $paie->setMontant($grossSalary)
+                     ->setNbJour(count($pointages))
                      ->setMois($month)
-                     ->setAnnee($year)
-                     ->setHeuresTravaillees($totalHours)
-                     ->setMethodePaiement('Virement bancaire');
+                     ->setAnnee($year);
                 
                 $entityManager->persist($paie);
                 $totalPaieCount++;
+                
+                // Associate pointages with this paie
+                foreach ($pointages as $pointage) {
+                    $pointage->setPaie($paie);
+                }
             }
-        }
-        
-        if ($totalPaieCount > 0) {
-            $this->addFlash('success', "Total: $totalPaieCount paies ont été générées pour le mois en cours");
-        } else {
-            $this->addFlash('info', "Aucune nouvelle paie à générer pour ce mois.");
         }
         
         $entityManager->flush();
         
+        if ($totalPaieCount > 0) {
+            $this->addFlash('success', "$totalPaieCount fiches de paie ont été générées avec succès");
+        } else {
+            $this->addFlash('info', "Toutes les fiches de paie pour le mois en cours ont déjà été générées");
+        }
+        
         return $this->redirectToRoute('app_paieadmin_index');
     }
-
+    
     #[Route('/genererMoisPrecedents', name: 'app_paieadmin_generate_previous_months', methods: ['GET'])]
     public function genererMoisPrecedents(
         EntityManagerInterface $entityManager,
@@ -281,28 +290,46 @@ final class PaieAdminController extends AbstractController
             foreach ($employes as $employe) {
                 // Vérifier si une fiche de paie existe déjà pour ce mois
                 $existingPaie = $paieRepository->findOneBy([
-                    'employe' => $employe,
                     'mois' => $month,
                     'annee' => $year
                 ]);
                 
                 if (!$existingPaie) {
-                    // Créer une paie avec des données aléatoires pour les mois précédents
-                    $totalHours = rand(130, 180);
-                    $hourlyRate = $employe->getSalaire() ?: 15;
-                    $grossSalary = $totalHours * $hourlyRate;
-                    $deductions = $grossSalary * 0.20;
-                    $netSalary = $grossSalary - $deductions;
+                    // Calculer les heures travaillées pour le mois
+                    $firstDayOfMonth = new DateTime("{$year}-" . date('m', strtotime($month)) . "-01");
+                    $lastDayOfMonth = clone $firstDayOfMonth;
+                    $lastDayOfMonth->modify('last day of this month');
                     
+                    $pointages = $pointageRepository->findByEmployeAndDateRange(
+                        $employe,
+                        $firstDayOfMonth,
+                        $lastDayOfMonth
+                    );
+                    
+                    if (count($pointages) == 0) {
+                        continue; // Skip if no pointages for this month
+                    }
+                    
+                    $totalHours = 0;
+                    foreach ($pointages as $pointage) {
+                        if ($pointage->getHeureEntree() && $pointage->getHeureSortie()) {
+                            $entry = $pointage->getHeureEntree();
+                            $exit = $pointage->getHeureSortie();
+                            
+                            // Calculate hours worked
+                            $interval = $entry->diff($exit);
+                            $hours = $interval->h + ($interval->i / 60);
+                            
+                            $totalHours += $hours;
+                        }
+                    }
+                    
+                    // Create paie
                     $paie = new Paie();
-                    $paie->setEmploye($employe)
-                         ->setMontantBrut($grossSalary)
-                         ->setMontantNet($netSalary)
-                         ->setDatePaiement(new DateTime($previousMonth->format('Y-m-d')))
+                    $paie->setMontant($employe->getSalaire() * ($totalHours / 160))
+                         ->setNbJour(count($pointages))
                          ->setMois($month)
-                         ->setAnnee($year)
-                         ->setHeuresTravaillees($totalHours)
-                         ->setMethodePaiement('Virement bancaire');
+                         ->setAnnee($year);
                     
                     $entityManager->persist($paie);
                     $totalPaieCount++;
@@ -323,125 +350,5 @@ final class PaieAdminController extends AbstractController
         return $this->render('paieadmin/fiche_employe.html.twig', [
             'employes' => $employeRepository->findBy([], ['username' => 'ASC']),
         ]);
-    }
-
-    #[Route('/fiche/{id}/generer', name: 'app_paieadmin_fiche_generer', methods: ['GET'])]
-    public function genererFichePaie(
-        Employe $employe, 
-        PaieRepository $paieRepository,
-        Request $request
-    ): Response
-    {
-        // Par défaut, utiliser le mois courant
-        $selectedMonth = $request->query->get('month', (new \DateTime())->format('F'));
-        $selectedYear = $request->query->getInt('year', (new \DateTime())->format('Y'));
-        
-        // Récupérer les paies pour cet employé pour le mois et année sélectionnés
-        $paie = $paieRepository->findOneBy([
-            'employe' => $employe,
-            'mois' => $selectedMonth,
-            'annee' => $selectedYear
-        ]);
-        
-        if (!$paie) {
-            $this->addFlash('warning', "Pas de fiche de paie disponible pour {$employe->getUsername()} - {$selectedMonth} {$selectedYear}");
-            return $this->redirectToRoute('app_paieadmin_fiche_employe');
-        }
-
-        // Generate PDF
-        $options = new Options();
-        $options->set('defaultFont', 'Arial');
-        $options->set('isRemoteEnabled', true);
-        
-        $dompdf = new Dompdf($options);
-        
-        $html = $this->renderView('paieadmin/fiche_paie_pdf.html.twig', [
-            'paie' => $paie,
-            'employe' => $employe
-        ]);
-        
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4');
-        $dompdf->render();
-        
-        $response = new Response($dompdf->output());
-        $response->headers->set('Content-Type', 'application/pdf');
-        $response->headers->set(
-            'Content-Disposition',
-            "attachment; filename=\"fiche-paie-{$employe->getUsername()}-{$selectedMonth}-{$selectedYear}.pdf\""
-        );
-        
-        return $response;
-    }
-    
-    #[Route('/generer-toutes', name: 'app_paieadmin_generer_toutes', methods: ['GET'])]
-    public function genererToutesLesFiches(
-        PaieRepository $paieRepository,
-        Request $request,
-        MailerInterface $mailer
-    ): Response
-    {
-        $selectedMonth = $request->query->get('month', (new \DateTime())->format('F'));
-        $selectedYear = $request->query->getInt('year', (new \DateTime())->format('Y'));
-        
-        // Récupérer toutes les paies pour le mois et année sélectionnés
-        $paies = $paieRepository->findBy([
-            'mois' => $selectedMonth,
-            'annee' => $selectedYear
-        ]);
-        
-        if (empty($paies)) {
-            $this->addFlash('warning', "Aucune fiche de paie disponible pour {$selectedMonth} {$selectedYear}");
-            return $this->redirectToRoute('app_paieadmin_index');
-        }
-        
-        $this->addFlash('success', count($paies) . " fiches de paie générées pour {$selectedMonth} {$selectedYear}");
-        
-        return $this->render('paieadmin/fiches_generees.html.twig', [
-            'paies' => $paies,
-            'month' => $selectedMonth,
-            'year' => $selectedYear
-        ]);
-    }
-
-    #[Route('/{id}', name: 'app_paieadmin_show', methods: ['GET'])]
-    public function show(Paie $paie): Response
-    {
-        return $this->render('paieadmin/show.html.twig', [
-            'paie' => $paie,
-        ]);
-    }
-
-    #[Route('/{id}/edit', name: 'app_paieadmin_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Paie $paie, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(PaieType::class, $paie);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            $this->addFlash('success', 'Paie mise à jour avec succès.');
-            return $this->redirectToRoute('app_paieadmin_index');
-        }
-
-        return $this->render('paieadmin/edit.html.twig', [
-            'paie' => $paie,
-            'form' => $form,
-        ]);
-    }
-
-    #[Route('/{id}', name: 'app_paieadmin_delete', methods: ['POST'])]
-
-    public function delete(Request $request, Paie $paie, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$paie->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($paie);
-            $entityManager->flush();
-            
-            $this->addFlash('success', 'Paie supprimée avec succès.');
-        }
-
-        return $this->redirectToRoute('app_paieadmin_index');
     }
 }

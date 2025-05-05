@@ -1,0 +1,131 @@
+{% extends 'baseHome.html.twig' %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+<!-- Features Section -->
+<div class="section text-center">
+  <div class="container">
+    <h2 class="title">Pourquoi choisir PowerHR ?</h2>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card">
+          <div class="icon icon-warning"><i class="nc-icon nc-single-02"></i></div>
+          <h4 class="card-title">Gestion simplifiée</h4>
+          <p>Automatisez les tâches RH quotidiennes avec notre interface intuitive.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card">
+          <div class="icon icon-success"><i class="nc-icon nc-chart-bar-32"></i></div>
+          <h4 class="card-title">Analytique RH</h4>
+          <p>Obtenez des rapports et insights en temps réel sur votre effectif.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card">
+          <div class="icon icon-danger"><i class="nc-icon nc-badge"></i></div>
+          <h4 class="card-title">Suivi des candidatures</h4>
+          <p>Centralisez et gérez efficacement les candidatures reçues.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Pricing Section -->
+<div class="section section-dark text-center">
+  <div class="container">
+    <h2 class="title">Nos forfaits</h2>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card card-pricing">
+          <div class="card-body">
+            <h6>Basique</h6>
+            <h1 class="price">€29</h1>
+            <ul>
+              <li>Jusqu'à 10 employés</li>
+              <li>Support e-mail</li>
+            </ul>
+            <a href="#" class="btn btn-neutral btn-round">Choisir</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card card-pricing card-primary">
+          <div class="card-body">
+            <h6>Professionnel</h6>
+            <h1 class="price">€59</h1>
+            <ul>
+              <li>Jusqu'à 50 employés</li>
+              <li>Tableau de bord avancé</li>
+              <li>Support prioritaire</li>
+            </ul>
+            <a href="#" class="btn btn-danger btn-round">Le plus populaire</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card card-pricing">
+          <div class="card-body">
+            <h6>Entreprise</h6>
+            <h1 class="price">Sur demande</h1>
+            <ul>
+              <li>Nombre d'utilisateurs illimité</li>
+              <li>Intégrations personnalisées</li>
+            </ul>
+            <a href="#" class="btn btn-neutral btn-round">Contactez-nous</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ Section -->
+<div class="section text-center">
+  <div class="container">
+    <h2 class="title">Questions fréquentes</h2>
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="accordion" id="faqAccordion">
+          <div class="card">
+            <div class="card-header" id="headingOne">
+              <h5 class="mb-0">
+                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne">
+                  Est-ce que PowerHR est sécurisé ?
+                </button>
+              </h5>
+            </div>
+            <div id="collapseOne" class="collapse show" data-parent="#faqAccordion">
+              <div class="card-body">Oui, nous utilisons les meilleures pratiques de sécurité cloud pour protéger vos données.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header" id="headingTwo">
+              <h5 class="mb-0">
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo">
+                  Puis-je tester avant d’acheter ?
+                </button>
+              </h5>
+            </div>
+            <div id="collapseTwo" class="collapse" data-parent="#faqAccordion">
+              <div class="card-body">Oui, une version d’essai gratuite de 14 jours est disponible.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Contact Section -->
+<div class="section section-dark text-center">
+  <div class="container">
+    <h2 class="title">Contactez-nous</h2>
+    <p>Email: contact@powerhr.tn</p>
+    <p>Téléphone: +216 71 000 017</p>
+    <p>Adresse: 123 Rue RH, Ariana</p>
+  </div>
+</div>
+{% endblock %}

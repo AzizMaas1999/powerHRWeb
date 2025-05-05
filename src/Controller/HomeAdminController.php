@@ -109,10 +109,17 @@ final class HomeAdminController extends AbstractController
         $tomorrow->add(new \DateInterval('P1D'));
         
         // Préparer les données de statut pour les employés
+        // Fetch all employees except Admin
         $employes = $employeRepository->findBy([], ['username' => 'ASC'], 5);
+        
         $employeStatusToday = [];
         
         foreach ($employes as $employe) {
+            // Skip if the username is "Admin"
+            if ($employe->getUsername() === 'Admin') {
+                continue;
+            }
+            
             $status = 'Absent'; // Par défaut, considérer comme absent
             
             // Rechercher le pointage de l'employé pour aujourd'hui
@@ -146,9 +153,10 @@ final class HomeAdminController extends AbstractController
         $feedbacksNegatifs = count($feedbackRepository->findBy(['type' => 'negatif']));
         $feedbacksNeutres = count($feedbackRepository->findBy(['type' => 'neutre']));
         
-        // Statistiques des factures
-        $facturesPaid = count($factureRepository->findBy(['status' => 'Payée']));
-        $facturesUnpaid = count($factureRepository->findBy(['status' => 'Non payée']));
+        // Statistiques des factures - using total count instead of status since it doesn't exist
+        $allFactures = $factureRepository->findAll();
+        $facturesPaid = 0; // Placeholder - status field doesn't exist
+        $facturesUnpaid = count($allFactures); // Temporarily count all as unpaid
         
         return $this->render('home/admin_dashboard.html.twig', [
             'paies' => $paieRepository->findAll(),

@@ -34,11 +34,10 @@ class HomeController extends AbstractController
             'SELECT COUNT(d.id) FROM App\Entity\Demande d WHERE d.status = :status'
         )->setParameter('status', 'En Attente');
     
-        $nbDemandesEnAttente = $query->getSingleScalarResult();
-    */
-        return $this->render('home/directeur.html.twig', [
-            /*'nbDemandesEnAttente' => $nbDemandesEnAttente,*/
-        ]);
+        $nbDemandesEnAttente = $query->getSingleScalarResult();*/
+        return $this->render('home/directeur.html.twig'/*,[
+            'nbDemandesEnAttente' => $nbDemandesEnAttente,
+        ]*/);
     }
 
     #[Route('/charges', name: 'charges_home')]

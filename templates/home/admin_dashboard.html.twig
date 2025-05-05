@@ -4,6 +4,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.35.0/dist/apexcharts.css">
     <style>
         .overview-card {
             transition: transform 0.3s ease;
@@ -31,6 +32,8 @@
         }
         .chart-container {
             min-height: 350px;
+            position: relative;
+            width: 100%;
         }
         .status-indicator {
             width: 10px;
@@ -78,6 +81,18 @@
         .quick-link-card:hover p {
             color: white !important;
         }
+        /* Fix pour les graphiques */
+        #presence-chart, #department-chart {
+            height: 350px;
+            width: 100%;
+        }
+        .apexcharts-legend {
+            padding: 10px 0;
+        }
+        .apexcharts-tooltip {
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
     </style>
 {% endblock %}
 
@@ -101,9 +116,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="flex-shrink-0">
-                            <div class="icon-box bg-light-primary">
-                                <i class="ti ti-users text-primary"></i>
-                            </div>
+                            <i class="ti ti-users text-primary f-26"></i>
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h5 class="mb-0">{{ employesCount }}</h5>
@@ -136,9 +149,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="flex-shrink-0">
-                            <div class="icon-box bg-light-danger">
-                                <i class="ti ti-file-description text-danger"></i>
-                            </div>
+                            <i class="ti ti-git-pull-request text-danger f-26"></i>
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h5 class="mb-0">{{ demandesEnAttente }}</h5>
@@ -154,7 +165,11 @@
                         </div>
                     </div>
                     <div class="mt-3">
-                        <div class="progress task-progress">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <p class="text-muted mb-0">Progression</p>
+                            <p class="mb-0 text-danger">À traiter</p>
+                        </div>
+                        <div class="progress mt-2" style="height: 5px">
                             <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
@@ -166,9 +181,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="flex-shrink-0">
-                            <div class="icon-box bg-light-success">
-                                <i class="ti ti-report-money text-success"></i>
-                            </div>
+                            <i class="ti ti-report-money text-success f-26"></i>
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h5 class="mb-0">{{ paiesTraitees }}</h5>
@@ -202,9 +215,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="flex-shrink-0">
-                            <div class="icon-box bg-light-warning">
-                                <i class="ti ti-user-plus text-warning"></i>
-                            </div>
+                            <i class="ti ti-user-plus text-warning f-26"></i>
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h5 class="mb-0">{{ candidatsCount }}</h5>
@@ -216,22 +227,6 @@
                             </a>
                             <div class="dropdown-menu dropdown-menu-end">
                                 <a class="dropdown-item" href="{{ path('app_candidatadmin_index') }}">Voir candidats</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-3">
-                        <div class="avatar-group">
-                            <div class="avatar bg-light-primary rounded-circle">
-                                <i class="ti ti-file-cv text-primary"></i>
-                            </div>
-                            <div class="avatar bg-light-success rounded-circle">
-                                <i class="ti ti-checkup-list text-success"></i>
-                            </div>
-                            <div class="avatar bg-light-warning rounded-circle">
-                                <i class="ti ti-users text-warning"></i>
-                            </div>
-                            <div class="avatar bg-light-danger rounded-circle">
-                                <i class="ti ti-file-check text-danger"></i>
                             </div>
                         </div>
                     </div>
@@ -429,88 +424,182 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.35.0/dist/apexcharts.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Graphique de présence
-            var presenceOptions = {
-                series: [{
-                    name: 'Présences',
-                    data: {{ presenceData|json_encode|raw }}
-                }, {
-                    name: 'Absences',
-                    data: {{ absenceData|json_encode|raw }}
-                }],
-                chart: {
-                    type: 'bar',
-                    height: 350,
-                    stacked: true,
-                    toolbar: {
-                        show: true
-                    },
-                    zoom: {
-                        enabled: true
-                    }
-                },
-                colors: ['#3cc474', '#f73e5e'],
-                responsive: [{
-                    breakpoint: 480,
-                    options: {
-                        legend: {
-                            position: 'bottom',
-                            offsetX: -10,
-                            offsetY: 0
-                        }
-                    }
-                }],
-                plotOptions: {
-                    bar: {
-                        horizontal: false,
-                        borderRadius: 4,
-                        columnWidth: '55%',
-                    },
-                },
-                xaxis: {
-                    categories: {{ months|json_encode|raw }},
-                },
-                legend: {
-                    position: 'bottom',
-                },
-                fill: {
-                    opacity: 1
-                },
-                dataLabels: {
-                    enabled: false
-                }
-            };
-
-            // Graphique de départements
-            var departmentOptions = {
-                series: {{ departementData|json_encode|raw }},
-                chart: {
-                    width: '100%',
-                    type: 'pie',
-                },
-                labels: {{ departementLabels|json_encode|raw }},
-                responsive: [{
-                    breakpoint: 480,
-                    options: {
-                        chart: {
-                            width: 200
+            setTimeout(function() {
+                // Graphique de présence
+                var presenceOptions = {
+                    series: [{
+                        name: 'Présences',
+                        data: {{ presenceData|json_encode|raw }}
+                    }, {
+                        name: 'Absences',
+                        data: {{ absenceData|json_encode|raw }}
+                    }],
+                    chart: {
+                        type: 'bar',
+                        height: 350,
+                        stacked: true,
+                        toolbar: {
+                            show: true,
+                            tools: {
+                                download: true,
+                                selection: false,
+                                zoom: true,
+                                zoomin: true,
+                                zoomout: true,
+                                pan: false
+                            }
                         },
-                        legend: {
-                            position: 'bottom'
+                        animations: {
+                            enabled: true,
+                            easing: 'easeinout',
+                            speed: 800
+                        }
+                    },
+                    colors: ['#3cc474', '#f73e5e'],
+                    responsive: [{
+                        breakpoint: 480,
+                        options: {
+                            legend: {
+                                position: 'bottom',
+                                offsetX: -10,
+                                offsetY: 0
+                            }
+                        }
+                    }],
+                    plotOptions: {
+                        bar: {
+                            horizontal: false,
+                            borderRadius: 4,
+                            columnWidth: '55%',
+                            dataLabels: {
+                                total: {
+                                    enabled: true,
+                                    style: {
+                                        fontSize: '13px',
+                                        fontWeight: 900
+                                    }
+                                }
+                            }
+                        },
+                    },
+                    xaxis: {
+                        categories: {{ months|json_encode|raw }},
+                        labels: {
+                            style: {
+                                fontFamily: 'Public Sans, sans-serif'
+                            }
+                        }
+                    },
+                    yaxis: {
+                        title: {
+                            text: 'Nombre d\'employés',
+                            style: {
+                                fontFamily: 'Public Sans, sans-serif'
+                            }
+                        }
+                    },
+                    legend: {
+                        position: 'bottom',
+                        fontFamily: 'Public Sans, sans-serif',
+                        markers: {
+                            radius: 3
+                        }
+                    },
+                    fill: {
+                        opacity: 1
+                    },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    tooltip: {
+                        y: {
+                            formatter: function (val) {
+                                return val + " employés";
+                            }
                         }
                     }
-                }],
-                colors: ['#7267ef', '#3cc474', '#ffa21d', '#f73e5e', '#00b8d9', '#6b58cd']
-            };
+                };
 
-            var presenceChart = new ApexCharts(document.querySelector("#presence-chart"), presenceOptions);
-            var departmentChart = new ApexCharts(document.querySelector("#department-chart"), departmentOptions);
-            
-            presenceChart.render();
-            departmentChart.render();
+                // Graphique de départements
+                var departmentOptions = {
+                    series: {{ departementData|json_encode|raw }},
+                    chart: {
+                        width: '100%',
+                        type: 'pie',
+                        animations: {
+                            enabled: true,
+                            easing: 'easeinout',
+                            speed: 800,
+                            animateGradually: {
+                                enabled: true,
+                                delay: 150
+                            },
+                            dynamicAnimation: {
+                                enabled: true,
+                                speed: 350
+                            }
+                        }
+                    },
+                    labels: {{ departementLabels|json_encode|raw }},
+                    responsive: [{
+                        breakpoint: 480,
+                        options: {
+                            chart: {
+                                width: 200
+                            },
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }],
+                    colors: ['#7267ef', '#3cc474', '#ffa21d', '#f73e5e', '#00b8d9', '#6b58cd'],
+                    legend: {
+                        position: 'bottom',
+                        fontFamily: 'Public Sans, sans-serif'
+                    },
+                    tooltip: {
+                        y: {
+                            formatter: function (val, opts) {
+                                return val + " employés (" + opts.globals.seriesPercent[opts.seriesIndex].toFixed(1) + "%)";
+                            }
+                        }
+                    },
+                    plotOptions: {
+                        pie: {
+                            donut: {
+                                size: '50%',
+                                labels: {
+                                    show: true,
+                                    total: {
+                                        show: true,
+                                        label: 'Total',
+                                        formatter: function (w) {
+                                            return w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                try {
+                    if (document.querySelector("#presence-chart")) {
+                        var presenceChart = new ApexCharts(document.querySelector("#presence-chart"), presenceOptions);
+                        presenceChart.render();
+                    }
+                    
+                    if (document.querySelector("#department-chart")) {
+                        var departmentChart = new ApexCharts(document.querySelector("#department-chart"), departmentOptions);
+                        departmentChart.render();
+                    }
+                } catch (e) {
+                    console.error("Erreur lors de l'initialisation des graphiques:", e);
+                }
+            }, 300); // Petit délai pour s'assurer que le DOM est complètement chargé
         });
     </script>
 {% endblock %}

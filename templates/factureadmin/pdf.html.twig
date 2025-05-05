@@ -123,34 +123,6 @@
             font-weight: bold;
             margin-bottom: 5px;
         }
-        .status-paid {
-            color: #27ae60;
-            font-weight: bold;
-            border: 2px solid #27ae60;
-            display: inline-block;
-            padding: 5px 15px;
-            border-radius: 4px;
-            transform: rotate(-15deg);
-            position: absolute;
-            top: 120px;
-            right: 40px;
-            font-size: 24px;
-            opacity: 0.8;
-        }
-        .status-overdue {
-            color: #e74c3c;
-            font-weight: bold;
-            border: 2px solid #e74c3c;
-            display: inline-block;
-            padding: 5px 15px;
-            border-radius: 4px;
-            transform: rotate(-15deg);
-            position: absolute;
-            top: 120px;
-            right: 40px;
-            font-size: 24px;
-            opacity: 0.8;
-        }
         footer {
             margin-top: 50px;
             padding-top: 20px;
@@ -171,12 +143,6 @@
             <div style="position: relative; float: right; text-align: right;">
                 <div class="invoice-title">FACTURE</div>
                 <div class="invoice-number">#{{ facture.reference }}</div>
-                
-                {% if facture.status == 'Payée' %}
-                <div class="status-paid">PAYÉE</div>
-                {% elseif facture.status == 'En retard' %}
-                <div class="status-overdue">EN RETARD</div>
-                {% endif %}
             </div>
             <div style="clear: both;"></div>
         </div>
@@ -221,9 +187,9 @@
                     <td class="meta-label">Date d'échéance</td>
                     <td>{{ facture.dateEcheance|date('d/m/Y') }}</td>
                     <td class="meta-label">Statut</td>
-                    <td>{{ facture.status }}</td>
+                    <td>Non défini</td>
                 </tr>
-                {% if facture.status == 'Payée' and facture.datePaiement %}
+                {% if facture.datePaiement is defined and facture.datePaiement %}
                 <tr>
                     <td class="meta-label">Date de paiement</td>
                     <td colspan="3">{{ facture.datePaiement|date('d/m/Y') }}</td>

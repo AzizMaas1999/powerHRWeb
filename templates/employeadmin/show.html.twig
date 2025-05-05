@@ -37,7 +37,7 @@
                             <div class="card-body">
                                 <h5 class="card-title text-white">{{ employe.prenom }} {{ employe.nom }}</h5>
                                 <p class="mb-1"><i class="ti ti-briefcase me-2"></i> {{ employe.poste }}</p>
-                                <p class="mb-1"><i class="ti ti-mail me-2"></i> {{ employe.email }}</p>
+                                <p class="mb-1"><i class="ti ti-mail me-2"></i> {% if employe.ficheEmploye %}{{ employe.ficheEmploye.email }}{% else %}Non défini{% endif %}</p>
                                 <p class="mb-1"><i class="ti ti-cash me-2"></i> {{ employe.salaire|number_format(2, ',', ' ') }} TND</p>
                             </div>
                         </div>
@@ -57,7 +57,7 @@
                                     </tr>
                                     <tr>
                                         <th>Email</th>
-                                        <td>{{ employe.email }}</td>
+                                        <td>{% if employe.ficheEmploye %}{{ employe.ficheEmploye.email }}{% else %}Non défini{% endif %}</td>
                                     </tr>
                                     <tr>
                                         <th>Prénom</th>

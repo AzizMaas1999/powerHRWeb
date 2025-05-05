@@ -118,13 +118,7 @@
                                             <td>{{ facture.dateCreation|date('d/m/Y') }}</td>
                                             <td class="text-end">{{ facture.montant|number_format(2, ',', ' ') }} TND</td>
                                             <td>
-                                                {% if facture.status == 'Payée' %}
-                                                    <span class="badge bg-success">{{ facture.status }}</span>
-                                                {% elseif facture.status == 'Non payée' %}
-                                                    <span class="badge bg-warning">{{ facture.status }}</span>
-                                                {% else %}
-                                                    <span class="badge bg-danger">{{ facture.status }}</span>
-                                                {% endif %}
+                                                <span class="badge bg-secondary">Non défini</span>
                                             </td>
                                             <td>
                                                 <a href="{{ path('app_factureadmin_show', {'id': facture.id}) }}" class="btn btn-info btn-sm">
