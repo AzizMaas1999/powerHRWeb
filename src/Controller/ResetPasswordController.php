@@ -11,6 +11,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -26,7 +28,7 @@ class ResetPasswordController extends AbstractController
     public function __construct(
         private ResetPasswordHelperInterface $resetPasswordHelper,
         private EntityManagerInterface $entityManager,
-        private \App\Service\SendBulkEmailService $sendBulkEmailService
+        private MailerInterface $mailer
     ){}
 
     /**
@@ -146,26 +148,25 @@ class ResetPasswordController extends AbstractController
             return $this->redirectToRoute('app_check_email');
         }
 
-        $body = $this->renderView('reset_password/email.html.twig', [
-            'resetToken' => $resetToken,
-        ]);
-
         try {
-            $response = $this->sendBulkEmailService->sendOtpEmail(
-                $ficheEmploye->getEmail(),
-                'Your password reset request',
-                $body
-            );
+            $email = (new Email())
+                ->from('no-reply@powerhr.com')
+                ->to($ficheEmploye->getEmail())
+                ->subject('Your password reset request')
+                ->html($this->renderView('reset_password/email.html.twig', [
+                    'resetToken' => $resetToken,
+                ]));
 
-            if (!isset($response['success']) || !$response['success']) {
-                throw new \Exception('Failed to send email: ' . ($response['message'] ?? 'Unknown error'));
-            }
+            $this->mailer->send($email);
 
             // Store the token object in session for retrieval in check-email route.
             $this->setTokenObjectInSession($resetToken);
 
             return $this->redirectToRoute('app_check_email');
         } catch (\Exception $e) {
+            // Log the error for debugging
+            error_log('Email sending error: ' . $e->getMessage());
+            
             $this->addFlash('reset_password_error', sprintf(
                 'There was a problem sending your password reset email - %s',
                 $e->getMessage()
