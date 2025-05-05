@@ -11,7 +11,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Vich\UploaderBundle\Form\Type\VichFileType;
+use Symfony\Component\Validator\Constraints\File;
 
 class CandidatType extends AbstractType
 {
@@ -42,18 +43,23 @@ class CandidatType extends AbstractType
                 'label' => 'Entreprise',
                 'attr' => ['class' => 'form-select']
             ])
-            // Adding the PDF upload field with a label
-            ->add('cv', FileType::class, [
-                'label' => 'Télécharger un CV (PDF)',
-                'required' => True,  // Make this field optional
-                'attr' => ['class' => 'form-control'],
-                'mapped' => false,  // We don't map this field to the Candidat entity directly
+            ->add('cvFile', VichFileType::class, [
+                'label' => 'CV (PDF)',
+                'required' => true,
+                'allow_delete' => true,
+                'download_uri' => true,
+                'asset_helper' => true,
                 'constraints' => [
-                    new \Symfony\Component\Validator\Constraints\File([
-                        'mimeTypes' => ['application/pdf'],
+                    new File([
+                        'maxSize' => '5M',
+                        'mimeTypes' => [
+                            'application/pdf',
+                            'application/x-pdf',
+                        ],
                         'mimeTypesMessage' => 'Veuillez télécharger un fichier PDF valide.',
                     ])
                 ],
+                'attr' => ['class' => 'form-control']
             ]);
     }
 

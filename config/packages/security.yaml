@@ -1,7 +1,7 @@
 security:
     password_hashers:
         App\Entity\Employe:
-            algorithm: auto 
+            algorithm: argon2i 
 
     providers:
         app_user_provider:
@@ -24,3 +24,13 @@ security:
                 target: app_login
             login_throttling:
                 max_attempts: 5
+    access_control:
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/directeur, roles: ROLE_DIRECTEUR }
+        - { path: ^/charges, roles: ROLE_CHARGES }
+        - { path: ^/facturation, roles: ROLE_FACTURATION }
+        - { path: ^/ouvrier, roles: ROLE_OUVRIER }
+        - { path: ^/candidat/new, roles: PUBLIC_ACCESS }
+        - { path: ^/candidat, roles: ROLE_CHARGES }
+        - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/, roles: PUBLIC_ACCESS }

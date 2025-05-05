@@ -9,7 +9,7 @@
         "ext-iconv": "*",
         "bacon/bacon-qr-code": "^3.0",
         "doctrine/dbal": "*",
-        "doctrine/doctrine-bundle": "^2.13",
+        "doctrine/doctrine-bundle": "*",
         "doctrine/doctrine-migrations-bundle": "^3.4",
         "doctrine/orm": "^3.3",
         "dompdf/dompdf": "^3.1",

@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
@@ -23,6 +24,7 @@ use GuzzleHttp\Client;
 
 
 
+#[IsGranted('ROLE_FACTURATION')]
 #[Route('/facture')]
 final class FactureController extends AbstractController
 {

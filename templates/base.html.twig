@@ -162,7 +162,7 @@
               <span class="nav-link">Navigation</span>
             </li>
 
-            {% if app.user.poste == 'Charges' or app.user.poste == 'Directeur' %}
+            {% if app.user and (app.user.poste == 'Charges' or app.user.poste == 'Directeur') %}
             <!-- Pointage -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-pointage" aria-expanded="false" aria-controls="menu-pointage">
@@ -180,7 +180,7 @@
             </li>
             {% endif %}
 
-            {% if app.user.poste == 'Ouvrier' or app.user.poste == 'Directeur' %}
+            {% if app.user and (app.user.poste == 'Ouvrier' or app.user.poste == 'Directeur') %}
             <!-- Demande -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-demande" aria-expanded="false" aria-controls="menu-demande">
@@ -198,7 +198,7 @@
             </li>
             {% endif %}
 
-            {% if app.user.poste == 'Charges' or app.user.poste == 'Directeur' %}
+            {% if app.user and (app.user.poste == 'Charges' or app.user.poste == 'Directeur') %}
             <!-- Questionnaire -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-questionnaire" aria-expanded="false" aria-controls="menu-questionnaire">
@@ -234,7 +234,7 @@
             </li>
             {% endif %}
 
-            {% if app.user.poste == 'Ouvrier' %}
+            {% if app.user and app.user.poste == 'Ouvrier' %}
             <!-- Reponse Questionnaire -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-rep-questionnaire" aria-expanded="false" aria-controls="menu-rep-questionnaire">
@@ -250,7 +250,7 @@
             </li>
             {% endif %}
 
-            {% if app.user.poste == 'Directeur' or app.user.poste == 'Charges' %}
+            {% if app.user and (app.user.poste == 'Directeur' or app.user.poste == 'Charges') %}
             <!-- Paie -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-paie" aria-expanded="false" aria-controls="menu-paie">
@@ -268,7 +268,7 @@
             </li>
             {% endif %}
 
-            {% if app.user.poste == 'Directeur' or app.user.poste == 'Facturation' %}
+            {% if app.user and (app.user.poste == 'Directeur' or app.user.poste == 'Facturation') %}
             <!-- Article -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-article" aria-expanded="false" aria-controls="menu-article">
@@ -285,7 +285,7 @@
             </li>
             {% endif %}
 
-            {% if app.user.poste == 'Directeur' or app.user.poste == 'Facturation' %}
+            {% if app.user and (app.user.poste == 'Directeur' or app.user.poste == 'Facturation') %}
             <!-- Facture -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-facture" aria-expanded="false" aria-controls="menu-facture">
@@ -302,7 +302,7 @@
             </li>
             {% endif %}
 
-            {% if app.user.poste == 'Directeur' or app.user.poste == 'Facturation' %}
+            {% if app.user and (app.user.poste == 'Directeur' or app.user.poste == 'Facturation') %}
             <!-- Paiement -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#menu-paiement" aria-expanded="false" aria-controls="menu-paiement">
@@ -319,7 +319,7 @@
             </li>
             {% endif %}
 
-            {% if app.user.poste == 'Directeur' %}
+            {% if app.user and app.user.poste == 'Directeur' %}
             <!-- Departement -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#departement-menu" aria-expanded="false" aria-controls="departement-menu">
@@ -335,7 +335,7 @@
             </li>
             {% endif %}
 
-            {% if app.user.poste == 'Directeur' or app.user.poste == 'Facturation' %}
+            {% if app.user and (app.user.poste == 'Directeur' or app.user.poste == 'Facturation') %}
             <!-- Client/Fournisseur -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#clfr-menu" aria-expanded="false" aria-controls="clfr-menu">
@@ -355,7 +355,7 @@
             </li>
             {% endif %}
 
-            {% if app.user.poste == 'Directeur' or app.user.poste == 'Facturation' %}
+            {% if app.user and (app.user.poste == 'Directeur' or app.user.poste == 'Facturation') %}
             <!-- Feedback -->
             <li class="nav-item menu-items">
               <a class="nav-link" href="{{ path('app_clfr_feedback') }}">
@@ -365,7 +365,7 @@
             </li>
             {% endif %}
 
-            {% if app.user.poste == 'Directeur' or app.user.poste == 'Charges' %}
+            {% if app.user and (app.user.poste == 'Directeur' or app.user.poste == 'Charges') %}
             <!-- Employe -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#paie-menu" aria-expanded="false" aria-controls="paie-menu">
@@ -407,7 +407,7 @@
             </li>
             {% endif %}
 
-            {% if app.user.poste == 'Directeur' %}
+            {% if app.user and app.user.poste == 'Charges' %}
             <!-- Candidat -->
             <li class="nav-item menu-items">
               <a class="nav-link" data-toggle="collapse" href="#candidat-menu" aria-expanded="false" aria-controls="candidat-menu">
@@ -420,6 +420,7 @@
               <div class="collapse" id="candidat-menu">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <a class="nav-link" href="/candidat/new">Ajouter Candidat</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="/candidat">Afficher La Liste des Candidats</a></li>
                   <li class="nav-item"> <a class="nav-link" href="/candidat">Afficher La Liste des Candidats</a></li>
                 </ul>
               </div>
@@ -452,6 +453,7 @@
                         <button class="btn btn-danger btn-sm">Pointage Sortie</button>
                       </a>
                 </li>
+                {% if app.user %}
                 <li class="nav-item dropdown">
                   <a class="nav-link" id="profileDropdown" href="#" data-toggle="dropdown">
                     <div class="navbar-profile">
@@ -484,8 +486,9 @@
                         <p class="preview-subject mb-1">Log out</p>
                       </div>
                     </a>
-                    </div>
+                  </div>
                 </li>
+                {% endif %}
               </ul>
               <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
                 <span class="mdi mdi-format-line-spacing"></span>

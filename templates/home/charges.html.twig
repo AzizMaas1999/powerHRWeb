@@ -241,14 +241,17 @@ document.addEventListener('DOMContentLoaded', function() {
             type: 'bar',
             data: {
                 labels: {{ months|json_encode|raw }},
+                labels: {{ months|json_encode|raw }},
                 datasets: [{
                     label: 'Présence',
+                    data: {{ presenceData|json_encode|raw }},
                     data: {{ presenceData|json_encode|raw }},
                     backgroundColor: 'rgba(54, 162, 235, 0.8)',
                     borderColor: 'rgba(54, 162, 235, 1)',
                     borderWidth: 1
                 }, {
                     label: 'Absence',
+                    data: {{ absenceData|json_encode|raw }},
                     data: {{ absenceData|json_encode|raw }},
                     backgroundColor: 'rgba(255, 99, 132, 0.8)',
                     borderColor: 'rgba(255, 99, 132, 1)',

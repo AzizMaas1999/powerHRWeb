@@ -25,12 +25,7 @@ class EmployeType extends AbstractType
         }
 
         $builder
-            ->add('poste', ChoiceType::class, [
-                'choices' => Poste::cases(),
-                'choice_label' => fn(Poste $poste) => $poste->value,
-                'choice_value' => fn (?Poste $poste) => $poste?->value,
-                'label' => 'Poste'
-            ])            
+            ->add('poste')        
             ->add('salaire')
             ->add('rib')
             ->add('codeSociale')

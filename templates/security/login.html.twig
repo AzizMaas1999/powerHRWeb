@@ -36,22 +36,24 @@
                             You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
                         </div>
                     {% endif %}
-                  <div class="form-group">
-                    <label for="inputUsername">Username</label>
-                    <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control p_input" autocomplete="username" required autofocus>
-                  </div>
-                  <div class="form-group">
-                    <label for="inputPassword">Password</label>
-                    <input type="password" name="password" id="inputPassword" class="form-control p_input" autocomplete="current-password" required>
-                  </div>
-                  <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-                  <div class="form-group d-flex align-items-center justify-content-between">
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input" name="_remember_me"> Remember me </label>
+                  
+                    <div class="form-group">
+                        <label for="inputUsername">Username</label>
+                        <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control p_input" autocomplete="username" required autofocus>
                     </div>
-                    <a href="#" class="forgot-pass">Forgot password</a>
-                  </div>
+                    <div class="form-group">
+                        <label for="inputPassword">Password</label>
+                        <input type="password" name="password" id="inputPassword" class="form-control p_input" autocomplete="current-password" required>
+                    </div>
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                    <div class="form-group d-flex align-items-center justify-content-between">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input" name="_remember_me"> Remember me
+                            </label>
+                        </div>
+                        <a href="{{ path('app_forgot_password_request') }}" class="forgot-pass">Forgot password</a>
+                    </div>
                   <div class="text-center">
                     <button type="submit" class="btn btn-primary btn-block enter-btn">Login</button>
                   </div>

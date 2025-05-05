@@ -11,16 +11,24 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 
 
 #[Route('/employe')]
 final class EmployeController extends AbstractController
 {
     #[Route(name: 'app_employe_index', methods: ['GET'])]
-    public function index(EmployeRepository $employeRepository): Response
+    public function index(Request $request, EmployeRepository $employeRepository): Response
     {
+        $search = $request->query->get('search');
+        $employes = $search 
+            ? $employeRepository->search($search)
+            : $employeRepository->findAll();
+
         return $this->render('employe/index.html.twig', [
-            'employes' => $employeRepository->findAll(),
+            'employes' => $employes,
+            'search' => $search
         ]);
     }
 

@@ -7,9 +7,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\FicheEmployeRepository;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\HttpFoundation\File\File;
 
 #[ORM\Entity(repositoryClass: FicheEmployeRepository::class)]
 #[ORM\Table(name: 'fiche_employe')]
+#[Vich\Uploadable]
 class FicheEmploye
 {
     #[ORM\Id]
@@ -177,9 +180,21 @@ class FicheEmploye
         return $this;
     }
 
+    #[Vich\UploadableField(mapping: 'fiche_cv_pdf', fileNameProperty: 'cvPdfUrl')]
+    private ?File $cvPdfFile = null;
+
     #[ORM\Column(name: 'cvPdfUrl', type: 'string', nullable: true)]
-    #[Assert\NotBlank(message:'Le CV est requis.')]
     private ?string $cvPdfUrl = null;
+
+    public function setCvPdfFile(?File $file = null): void
+    {
+        $this->cvPdfFile = $file;
+    }
+
+    public function getCvPdfFile(): ?File
+    {
+        return $this->cvPdfFile;
+    }
 
     public function getCvPdfUrl(): ?string
     {
@@ -207,4 +222,8 @@ class FicheEmploye
         return $this;
     }
 
+    public function __toString(): string
+    {
+        return $this->nom . ' ' . $this->prenom;
+    }
 }

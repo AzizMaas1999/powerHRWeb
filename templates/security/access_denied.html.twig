@@ -1,0 +1,8 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<script>
+    alert('🚫 Access Denied: You do not have permission to access this page.');
+    window.location.href = document.referrer || '/'; // go back or to home
+</script>
+{% endblock %}

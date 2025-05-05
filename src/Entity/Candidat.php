@@ -7,9 +7,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use App\Repository\CandidatRepository;
 use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\HttpFoundation\File\File;
 
 #[ORM\Entity(repositoryClass: CandidatRepository::class)]
 #[ORM\Table(name: 'candidat')]
+#[Vich\Uploadable]
 class Candidat
 {
     #[ORM\Id]
@@ -101,16 +104,31 @@ class Candidat
         return $this;
     }
 
-    #[ORM\Column(name:'cvPdfUrl',type: 'string', nullable: false)]
-    #[Assert\NotBlank(message: "Le CV est requis.")]
+    #[Vich\UploadableField(mapping: 'candidat_cv', fileNameProperty: 'cvPdfUrl')]
+    private ?File $cvFile = null;
+
+    #[ORM\Column(name: 'cvPdfUrl', type: 'string', nullable: true)]
     private ?string $cvPdfUrl = null;
+
+    public function setCvFile(?File $file = null): void
+    {
+        $this->cvFile = $file;
+        if (null !== $file) {
+            $this->cvPdfUrl = $file->getClientOriginalName();
+        }
+    }
+
+    public function getCvFile(): ?File
+    {
+        return $this->cvFile;
+    }
 
     public function getCvPdfUrl(): ?string
     {
         return $this->cvPdfUrl;
     }
 
-    public function setCvPdfUrl(string $cvPdfUrl): self
+    public function setCvPdfUrl(?string $cvPdfUrl): self
     {
         $this->cvPdfUrl = $cvPdfUrl;
         return $this;

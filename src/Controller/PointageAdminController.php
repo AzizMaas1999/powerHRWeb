@@ -13,11 +13,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 #[IsGranted('ROLE_ADMIN')]
+
 #[Route('/pointageadmin')]
 final class PointageAdminController extends AbstractController
 {
+    
     #[Route(name: 'app_pointageadmin_index', methods: ['GET'])]
     public function index(PointageRepository $pointageRepository): Response
     {

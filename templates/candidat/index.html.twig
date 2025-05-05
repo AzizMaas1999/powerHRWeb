@@ -13,6 +13,28 @@
         </a>
     </div>
 
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control" placeholder="Rechercher un candidat..." value="{{ search }}">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fas fa-search"></i> Rechercher
+                        </button>
+                    </div>
+                </div>
+                {% if search %}
+                    <div class="col-md-4">
+                        <a href="{{ path('app_candidat_index') }}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Effacer la recherche
+                        </a>
+                    </div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+
     {% for message in app.flashes('success') %}
         <div class="alert alert-success">
             {{ message }}
@@ -42,7 +64,7 @@
                     <td>{{ candidat.entreprise ? candidat.entreprise.nom : 'Non assignée' }}</td>
                     <td>
                         {% if candidat.cvPdfUrl %}
-                            <a href="{{ asset('uploads/cv/' ~ candidat.cvPdfUrl) }}" target="_blank" class="btn btn-sm btn-outline-info">
+                            <a href="{{ asset('uploads/candidats/cv/' ~ candidat.cvPdfUrl) }}" target="_blank" class="btn btn-sm btn-outline-info">
                                 <i class="fas fa-file-pdf"></i> Voir CV
                             </a>
                         {% else %}
@@ -53,10 +75,6 @@
                         <div class="btn-group" role="group">
                             <a href="{{ path('app_candidat_show', {'id': candidat.id}) }}" class="btn btn-outline-primary btn-sm" title="Voir détails">
                                 <i class="fas fa-eye"></i>
-                            </a>
-                            <a href="{{ path('app_candidat_delete', {'id': candidat.id}) }}" class="btn btn-outline-danger btn-sm" 
-                               onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce candidat?')" title="Supprimer">
-                                <i class="fas fa-trash"></i>
                             </a>
                         </div>
                     </td>

@@ -1,3 +1,6 @@
+# Remove or comment out the entire mailer configuration:
 framework:
     mailer:
         dsn: '%env(MAILER_DSN)%'
+        envelope:
+            sender: '%env(MAILER_FROM)%'
