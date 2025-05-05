@@ -1,23 +1,56 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Password Reset Email Sent{% endblock %}
-
-{% block body %}
-<div class="container d-flex justify-content-center align-items-center min-vh-100">
-    <div class="card shadow-lg p-4" style="min-width: 400px; max-width: 100%;">
-        <div class="card-body">
-            <h2 class="text-center mb-4">Check your email</h2>
-            <div class="alert alert-info">
-                <p class="mb-0">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Password Reset Email Sent</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="{{ asset('UI/assets/vendors/mdi/css/materialdesignicons.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('UI/assets/vendors/css/vendor.bundle.base.css') }}">
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="{{ asset('UI/assets/css/style.css') }}">
+    <!-- End layout styles -->
+    <link rel="shortcut icon" href="{{ asset('UI/assets/images/favicon.png') }}" />
+  </head>
+  <body>
+    <div class="container-scroller">
+      <div class="container-fluid page-body-wrapper full-page-wrapper">
+        <div class="row w-100 m-0">
+          <div class="content-wrapper full-page-wrapper d-flex align-items-center auth login-bg">
+            <div class="card col-lg-4 mx-auto">
+              <div class="card-body px-5 py-5">
+                <h3 class="card-title text-left mb-3">Check your email</h3>
+                
+                <div class="alert alert-info">
+                  <p class="mb-0">
                     If an account matching your email exists, then an email was just sent that contains a link that you can use to reset your password.
                     This link will expire in {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+                  </p>
+                </div>
+                
+                <p class="text-center mt-3">
+                  If you don't receive an email please check your spam folder or 
+                  <a href="{{ path('app_forgot_password_request') }}">try again</a>.
                 </p>
+                
+                <div class="text-center mt-4">
+                  <a href="{{ path('app_login') }}" class="btn btn-secondary">Back to login</a>
+                </div>
+              </div>
             </div>
-            <p class="text-center mt-3">
-                If you don't receive an email please check your spam folder or 
-                <a href="{{ path('app_forgot_password_request') }}" class="text-primary">try again</a>.
-            </p>
+          </div>
         </div>
+      </div>
     </div>
-</div>
-{% endblock %}
+
+    <!-- plugins:js -->
+    <script src="{{ asset('UI/assets/vendors/js/vendor.bundle.base.js') }}"></script>
+    <script src="{{ asset('UI/assets/js/off-canvas.js') }}"></script>
+    <script src="{{ asset('UI/assets/js/hoverable-collapse.js') }}"></script>
+    <script src="{{ asset('UI/assets/js/misc.js') }}"></script>
+    <script src="{{ asset('UI/assets/js/settings.js') }}"></script>
+    <script src="{{ asset('UI/assets/js/todolist.js') }}"></script>
+  </body>
+</html>

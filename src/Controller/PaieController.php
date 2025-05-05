@@ -11,15 +11,18 @@ use App\Form\PaieType;
 use App\Repository\PaieRepository;
 use App\Repository\PointageRepository;
 use App\Repository\EmployeRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Part\DataPart;
+use Symfony\Component\Mime\Part\File;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('ROLE_CHARGE')]
+#[IsGranted('ROLE_CHARGES')]
 
 #[Route('/paie')]
 final class PaieController extends AbstractController

@@ -1,28 +1,58 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Reset your password{% endblock %}
-
-{% block body %}
-<div class="container d-flex justify-content-center align-items-center min-vh-100">
-    <div class="card shadow-lg p-4" style="min-width: 400px; max-width: 100%;">
-        <div class="card-body">
-            <h2 class="text-center mb-4">Reset your password</h2>
-            {{ form_start(resetForm) }}
-                <div class="mb-3">
-                    {{ form_label(resetForm.plainPassword.first, 'New password', {'label_attr': {'class': 'form-label'}}) }}
-                    {{ form_widget(resetForm.plainPassword.first, {'attr': {'class': 'form-control', 'placeholder': 'Enter new password'}}) }}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Reset your password</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="{{ asset('UI/assets/vendors/mdi/css/materialdesignicons.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('UI/assets/vendors/css/vendor.bundle.base.css') }}">
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="{{ asset('UI/assets/css/style.css') }}">
+    <!-- End layout styles -->
+    <link rel="shortcut icon" href="{{ asset('UI/assets/images/favicon.png') }}" />
+  </head>
+  <body>
+    <div class="container-scroller">
+      <div class="container-fluid page-body-wrapper full-page-wrapper">
+        <div class="row w-100 m-0">
+          <div class="content-wrapper full-page-wrapper d-flex align-items-center auth login-bg">
+            <div class="card col-lg-4 mx-auto">
+              <div class="card-body px-5 py-5">
+                <h3 class="card-title text-left mb-3">Reset your password</h3>
+                
+                {{ form_start(resetForm) }}
+                  <div class="form-group">
+                    {{ form_label(resetForm.plainPassword.first, 'New password') }}
+                    {{ form_widget(resetForm.plainPassword.first, {'attr': {'class': 'form-control p_input', 'placeholder': 'Enter new password'}}) }}
                     {{ form_errors(resetForm.plainPassword.first) }}
-                </div>
-                <div class="mb-3">
-                    {{ form_label(resetForm.plainPassword.second, 'Repeat password', {'label_attr': {'class': 'form-label'}}) }}
-                    {{ form_widget(resetForm.plainPassword.second, {'attr': {'class': 'form-control', 'placeholder': 'Repeat new password'}}) }}
+                  </div>
+                  
+                  <div class="form-group">
+                    {{ form_label(resetForm.plainPassword.second, 'Repeat password') }}
+                    {{ form_widget(resetForm.plainPassword.second, {'attr': {'class': 'form-control p_input', 'placeholder': 'Repeat new password'}}) }}
                     {{ form_errors(resetForm.plainPassword.second) }}
-                </div>
-                <div class="d-grid gap-2">
-                    <button class="btn btn-success" type="submit">Reset password</button>
-                </div>
-            {{ form_end(resetForm) }}
+                  </div>
+                  
+                  <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-block enter-btn">Reset password</button>
+                  </div>
+                {{ form_end(resetForm) }}
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
-</div>
-{% endblock %}
+
+    <!-- plugins:js -->
+    <script src="{{ asset('UI/assets/vendors/js/vendor.bundle.base.js') }}"></script>
+    <script src="{{ asset('UI/assets/js/off-canvas.js') }}"></script>
+    <script src="{{ asset('UI/assets/js/hoverable-collapse.js') }}"></script>
+    <script src="{{ asset('UI/assets/js/misc.js') }}"></script>
+    <script src="{{ asset('UI/assets/js/settings.js') }}"></script>
+    <script src="{{ asset('UI/assets/js/todolist.js') }}"></script>
+  </body>
+</html>
