@@ -1,7 +1,7 @@
 security:
     password_hashers:
         App\Entity\Employe:
-            algorithm: auto 
+            algorithm: argon2i 
 
     providers:
         app_user_provider:
