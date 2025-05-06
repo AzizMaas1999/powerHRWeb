@@ -149,4 +149,19 @@ class Candidat
         $this->entreprise = $entreprise;
         return $this;
     }
+    
+    #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\Choice(choices: ['En attente', 'Accepté', 'Refusé'], message: 'Le statut doit être En attente, Accepté ou Refusé.')]
+    private ?string $statut = 'En attente';
+    
+    public function getStatut(): ?string
+    {
+        return $this->statut;
+    }
+    
+    public function setStatut(?string $statut): self
+    {
+        $this->statut = $statut;
+        return $this;
+    }
 }

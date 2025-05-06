@@ -11,6 +11,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpClient\HttpClient;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\PngWriter;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('ROLE_OUVRIER')]
@@ -50,23 +53,6 @@ final class DemandeController extends AbstractController
             'totalJoursConges' => $totalJoursConges,
             'typeRecherche' => $typeRecherche,
         ]);
-    }
-    
-    
-    
-    
-    // src/Repository/DemandeRepository.php
-
-    public function findByTypeInsensitive(?string $type): array
-    {
-        $qb = $this->createQueryBuilder('d');
-    
-        if ($type) {
-            $qb->where('LOWER(d.type) LIKE :type')
-               ->setParameter('type', '%' . strtolower($type) . '%');
-        }
-    
-        return $qb->getQuery()->getResult();
     }
     
 

@@ -34,6 +34,15 @@ class CandidatRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findAllWithoutStatus(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c.id', 'c.nom', 'c.prenom', 'c.email', 'c.telephone', 'c.cvPdfUrl')
+            ->orderBy('c.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function save(Candidat $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);

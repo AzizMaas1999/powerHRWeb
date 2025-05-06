@@ -16,6 +16,18 @@ class DemandeRepository extends ServiceEntityRepository
         parent::__construct($registry, Demande::class);
     }
 
+    public function findByTypeInsensitive(?string $type): array
+    {
+        $qb = $this->createQueryBuilder('d');
+    
+        if ($type) {
+            $qb->where('LOWER(d.type) LIKE :type')
+               ->setParameter('type', '%' . strtolower($type) . '%');
+        }
+    
+        return $qb->getQuery()->getResult();
+    }
+
     //  
     //     * @return Demande[] Returns an array of Demande objects
     //     */
