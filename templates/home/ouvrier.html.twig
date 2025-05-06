@@ -10,7 +10,7 @@
         </span> Tableau de bord Ouvrier
     </h3>
     <div class="d-flex align-items-center">
-        <p class="text-muted mb-0">Dernière mise à jour: {{ "now"|date("d/m/Y H:i", 'Africa/Tunis') }}</p>
+        <p class="text-muted mb-0">Dernière mise à jour: {{ "now"|date("d/m/Y H:i") }}</p>
     </div>
 </div>
 
@@ -21,9 +21,9 @@
                 <img src="{{ asset('UI/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image">
                 <h4 class="font-weight-normal mb-3">Mes heures <i class="mdi mdi-clock mdi-24px float-right"></i>
                 </h4>
-                <h2 class="mb-5">42h</h2>
+                <h2 class="mb-5">{{ totalHeures|default('0') }}h</h2>
                 <h6 class="card-text">
-                    <a href="#" class="text-white">Voir mon pointage</a>
+                    <a href="{{ path('app_pointage_list') }}" class="text-white">Voir mon pointage</a>
                 </h6>
             </div>
         </div>
@@ -34,9 +34,9 @@
                 <img src="{{ asset('UI/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image">
                 <h4 class="font-weight-normal mb-3">Mes demandes <i class="mdi mdi-file-document mdi-24px float-right"></i>
                 </h4>
-                <h2 class="mb-5">2</h2>
+                <h2 class="mb-5">{{ demandesCount }}</h2>
                 <h6 class="card-text">
-                    <a href="#" class="text-white">Voir mes demandes</a>
+                    <a href="{{ path('app_demande_index') }}" class="text-white">Voir mes demandes</a>
                 </h6>
             </div>
         </div>
@@ -47,7 +47,7 @@
                 <img src="{{ asset('UI/assets/images/dashboard/circle.svg') }}" class="card-img-absolute" alt="circle-image">
                 <h4 class="font-weight-normal mb-3">À faire aujourd'hui <i class="mdi mdi-calendar-check mdi-24px float-right"></i>
                 </h4>
-                <h2 class="mb-5">3 tâches</h2>
+                <h2 class="mb-5">0 tâches</h2>
                 <h6 class="card-text">
                     <a href="#" class="text-white">Voir ma liste</a>
                 </h6>
@@ -68,12 +68,25 @@
                             <p class="mb-0 text-success font-weight-medium">Pointage</p>
                         </div>
                         <div class="d-flex justify-content-between">
-                            <button class="btn btn-gradient-success btn-sm" onclick="location.href='{{ path('app_pointageEntree') }}'">
-                                <i class="mdi mdi-login-variant"></i> Entrée
-                            </button>
-                            <button class="btn btn-gradient-danger btn-sm" onclick="location.href='{{ path('app_pointageSortie') }}'">
-                                <i class="mdi mdi-logout-variant"></i> Sortie
-                            </button>
+                            {% if not pointageEnCours %}
+                                <a href="{{ path('app_pointageEntree') }}" class="btn btn-gradient-success btn-sm">
+                                    <i class="mdi mdi-login-variant"></i> Entrée
+                                </a>
+                            {% else %}
+                                <button class="btn btn-gradient-success btn-sm" disabled>
+                                    <i class="mdi mdi-login-variant"></i> Entrée
+                                </button>
+                            {% endif %}
+                            
+                            {% if pointageEnCours %}
+                                <a href="{{ path('app_pointageSortie') }}" class="btn btn-gradient-danger btn-sm">
+                                    <i class="mdi mdi-logout-variant"></i> Sortie
+                                </a>
+                            {% else %}
+                                <button class="btn btn-gradient-danger btn-sm" disabled>
+                                    <i class="mdi mdi-logout-variant"></i> Sortie
+                                </button>
+                            {% endif %}
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
@@ -81,9 +94,9 @@
                             <div class="dot-indicator bg-primary mr-2"></div>
                             <p class="mb-0 text-primary font-weight-medium">Demandes</p>
                         </div>
-                        <button class="btn btn-gradient-primary btn-sm" onclick="location.href='{{ path('app_demande_new') }}'">
+                        <a href="{{ path('app_demande_new') }}" class="btn btn-gradient-primary btn-sm">
                             <i class="mdi mdi-file-plus"></i> Nouvelle demande
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -100,12 +113,9 @@
                     <div class="ml-3 mt-2">
                         <h5>{{ app.user.username }}</h5>
                         <p class="text-muted">Ouvrier</p>
-                        <p class="mt-2 text-success">
-                            <i class="mdi mdi-check-circle"></i> Actif
-                        </p>
                     </div>
                 </div>
-                <a href="#" class="btn btn-inverse-primary btn-sm mt-3 w-100">
+                <a href="{{ path('app_employe_edit', {'id': app.user.id}) }}" class="btn btn-inverse-primary btn-sm mt-3 w-100">
                     <i class="mdi mdi-account-edit"></i> Modifier mon profil
                 </a>
             </div>
@@ -125,39 +135,30 @@
                                 <th>Date</th>
                                 <th>Heure d'entrée</th>
                                 <th>Heure de sortie</th>
-                                <th>Total heures</th>
                                 <th>État</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>{{ "now"|date("d/m/Y") }}</td>
-                                <td>08:15</td>
-                                <td>--:--</td>
-                                <td>En cours</td>
-                                <td><label class="badge badge-gradient-success">Actif</label></td>
-                            </tr>
-                            <tr>
-                                <td>{{ "now"|date_modify("-1 day")|date("d/m/Y") }}</td>
-                                <td>08:00</td>
-                                <td>17:30</td>
-                                <td>9h30</td>
-                                <td><label class="badge badge-gradient-info">Validé</label></td>
-                            </tr>
-                            <tr>
-                                <td>{{ "now"|date_modify("-2 day")|date("d/m/Y") }}</td>
-                                <td>08:30</td>
-                                <td>17:45</td>
-                                <td>9h15</td>
-                                <td><label class="badge badge-gradient-info">Validé</label></td>
-                            </tr>
-                            <tr>
-                                <td>{{ "now"|date_modify("-3 day")|date("d/m/Y") }}</td>
-                                <td>08:05</td>
-                                <td>17:00</td>
-                                <td>8h55</td>
-                                <td><label class="badge badge-gradient-info">Validé</label></td>
-                            </tr>
+                            {% if pointages is empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">Aucun pointage trouvé</td>
+                                </tr>
+                            {% else %}
+                                {% for pointage in pointages %}
+                                <tr>
+                                    <td>{{ pointage.date|date("d/m/Y") }}</td>
+                                    <td>{{ pointage.heureEntree|date("H:i") }}</td>
+                                    <td>{% if pointage.heureSortie %}{{ pointage.heureSortie|date("H:i") }}{% else %}--:--{% endif %}</td>
+                                    <td>
+                                        {% if not pointage.heureSortie %}
+                                            <label class="badge badge-gradient-success">Actif</label>
+                                        {% else %}
+                                            <label class="badge badge-gradient-info">Validé</label>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% endif %}
                         </tbody>
                     </table>
                 </div>

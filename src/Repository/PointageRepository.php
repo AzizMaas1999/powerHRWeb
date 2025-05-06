@@ -82,6 +82,72 @@ class PointageRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Calculate total hours worked for an employee
+     * 
+     * @param int $employeId The employee ID
+     * @return float Total hours worked
+     */
+    public function calculateTotalHoursForUser(int $employeId): float
+    {
+        $pointages = $this->findBy(['employe' => $employeId]);
+        
+        $totalHours = 0;
+        foreach ($pointages as $pointage) {
+            if ($pointage->getHeureEntree() && $pointage->getHeureSortie()) {
+                $heureEntree = $pointage->getHeureEntree();
+                $heureSortie = $pointage->getHeureSortie();
+                
+                // Calculate hours difference
+                $diff = $heureEntree->diff($heureSortie);
+                $hours = $diff->h + ($diff->i / 60);
+                
+                $totalHours += $hours;
+            }
+        }
+        
+        return round($totalHours, 2);
+    }
+    
+    /**
+     * Find active pointage for a user (today with no exit time)
+     *
+     * @param int $employeId The employee ID
+     * @return Pointage|null The active pointage or null if none
+     */
+    public function findActivePointageForUser(int $employeId): ?Pointage
+    {
+        $today = new \DateTime('now');
+        $today->setTime(0, 0, 0);
+        
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.employe = :employeId')
+            ->andWhere('p.date = :today')
+            ->andWhere('p.heureSortie IS NULL')
+            ->setParameter('employeId', $employeId)
+            ->setParameter('today', $today)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+    
+    /**
+     * Find recent pointages for a user
+     *
+     * @param int $employeId The employee ID
+     * @param int $limit Maximum number of results to return
+     * @return Pointage[] Array of recent pointages
+     */
+    public function findRecentPointagesForUser(int $employeId, int $limit = 5): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.employe = :employeId')
+            ->setParameter('employeId', $employeId)
+            ->orderBy('p.date', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Pointage[] Returns an array of Pointage objects
     //     */

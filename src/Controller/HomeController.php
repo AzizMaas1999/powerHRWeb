@@ -18,7 +18,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use Doctrine\Persistence\ManagerRegistry; // <<< ajoute cette ligne en haut avec les autres "use"
+use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use DateTime;
 
 #[Route('/home')]
@@ -333,9 +334,33 @@ class HomeController extends AbstractController
     }
 
     #[Route('/ouvrier', name: 'ouvrier_home')]
-    public function ouvrier(): Response
+    public function ouvrier(
+        PointageRepository $pointageRepository,
+        DemandeRepository $demandeRepository
+    ): Response
     {
-        return $this->render('home/ouvrier.html.twig');
+        // Get the current logged-in user
+        $user = $this->getUser();
+        
+        // Use the repository method for calculating total hours
+        $totalHeures = $pointageRepository->calculateTotalHoursForUser($user->getId());
+        
+        // Get basic counts
+        $demandesCount = count($demandeRepository->findBy(['employe' => $user]));
+        
+        // Get recent pointages using the repository method
+        $pointages = $pointageRepository->findRecentPointagesForUser($user->getId(), 5);
+        
+        // Check for active pointage using the repository method
+        $pointageEnCours = $pointageRepository->findActivePointageForUser($user->getId());
+        
+        return $this->render('home/ouvrier.html.twig', [
+            'pointages' => $pointages,
+            'demandesCount' => $demandesCount,
+            'pointageEnCours' => $pointageEnCours,
+            'totalHeures' => $totalHeures,
+            'tachesToday' => [] // Placeholder
+        ]);
     }
 
     #[Route('/facturation', name: 'facturation_home')]
