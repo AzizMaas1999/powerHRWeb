@@ -18,7 +18,7 @@
             margin-bottom: 25px;
         }
         .detail-title {
-            color: rgba(255, 255, 255, 0.9);
+            color: #000000;
             font-size: 1.5rem;
             margin-bottom: 0;
         }
@@ -32,19 +32,21 @@
             background: rgba(255, 255, 255, 0.03);
             border-radius: 8px;
             transition: all 0.3s ease;
+            color: #000000;
         }
         .detail-item:hover {
             background: rgba(255, 255, 255, 0.05);
             transform: translateY(-2px);
+            color: #000000;
         }
         .detail-label {
-            color: rgba(255, 255, 255, 0.5);
+            color: #000000;
             font-size: 0.875rem;
             margin-bottom: 5px;
             display: block;
         }
         .detail-value {
-            color: rgba(255, 255, 255, 0.9);
+            color: #000000;
             font-size: 1rem;
         }
         .badge {
@@ -54,11 +56,11 @@
         }
         .badge.bg-success {
             background-color: rgba(25, 135, 84, 0.2) !important;
-            color: #28a745;
+            color: #000000;
         }
         .badge.bg-secondary {
             background-color: rgba(173, 181, 189, 0.2) !important;
-            color: #adb5bd;
+            color: #000000;
         }
         .actions-container {
             margin-top: 25px;
@@ -81,30 +83,46 @@
         }
         .btn-back {
             background: rgba(255, 255, 255, 0.05);
-            color: rgba(255, 255, 255, 0.8);
+            color: #000000;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .btn-back:hover {
             background: rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.9);
+            color: #000000;
         }
         .btn-edit {
             background: rgba(255, 193, 7, 0.1);
-            color: #ffc107;
+            color: #000000;
             border: 1px solid rgba(255, 193, 7, 0.2);
         }
         .btn-edit:hover {
             background: rgba(255, 193, 7, 0.2);
-            color: #ffc107;
+            color: #000000;
         }
         .btn-delete {
             background: rgba(220, 53, 69, 0.1);
-            color: #dc3545;
+            color: #000000;
             border: 1px solid rgba(220, 53, 69, 0.2);
         }
         .btn-delete:hover {
             background: rgba(220, 53, 69, 0.2);
-            color: #dc3545;
+            color: #000000;
+        }
+        
+        .modal-title, .modal-body, .btn-cancel, .btn-confirm-delete {
+            color: #000000;
+        }
+        
+        .btn-cancel:hover, .btn-confirm-delete:hover {
+            color: #000000;
+        }
+
+        .btn-sm.btn-outline-secondary, .btn-sm.btn-outline-warning, .btn-sm.btn-outline-danger {
+            color: #000000;
+        }
+        
+        .btn-sm.btn-outline-secondary:hover, .btn-sm.btn-outline-warning:hover, .btn-sm.btn-outline-danger:hover {
+            color: #000000;
         }
     </style>
 {% endblock %}

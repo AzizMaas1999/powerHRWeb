@@ -364,8 +364,65 @@ class HomeController extends AbstractController
     }
 
     #[Route('/facturation', name: 'facturation_home')]
-    public function facturation(): Response
+    public function facturation(\App\Repository\FactureRepository $factureRepository, \App\Repository\PaiementRepository $paiementRepository): Response
     {
-        return $this->render('home/facturation.html.twig');
+        // Calculate total revenue (chiffre d'affaires) - sum of all invoice totals
+        $factures = $factureRepository->findAll();
+        $chiffreAffaires = 0;
+        foreach ($factures as $facture) {
+            $chiffreAffaires += $facture->getTotal();
+        }
+        
+        // Count invoices with pending status
+        $facturesEnAttente = count($factureRepository->findBy(['typeFact' => 'En attente']));
+        
+        // Count recent payments to verify - using date field instead of dateCreation
+        $paiementsRecents = count($paiementRepository->findBy([], ['date' => 'DESC'], 5));
+        
+        // Get recent invoices
+        $facturesRecentes = $factureRepository->findBy([], ['date' => 'DESC'], 5);
+        
+        // Prepare monthly data for chart
+        $currentYear = (int)(new \DateTime())->format('Y');
+        $moisLabels = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sept', 'Oct', 'Nov', 'Déc'];
+        $donneesMensuelles = [];
+        
+        // Generate monthly revenue data
+        for ($month = 1; $month <= 12; $month++) {
+            $firstDay = new \DateTime("$currentYear-$month-01");
+            $lastDay = clone $firstDay;
+            $lastDay->modify('last day of this month');
+            
+            // Find invoices for this month
+            $monthlyInvoices = $factureRepository->createQueryBuilder('f')
+                ->andWhere('f.date >= :firstDay')
+                ->andWhere('f.date <= :lastDay')
+                ->setParameter('firstDay', $firstDay)
+                ->setParameter('lastDay', $lastDay)
+                ->getQuery()
+                ->getResult();
+                
+            // Calculate total for the month
+            $monthlyTotal = 0;
+            foreach ($monthlyInvoices as $invoice) {
+                $monthlyTotal += $invoice->getTotal();
+            }
+            
+            $donneesMensuelles[] = $monthlyTotal;
+        }
+        
+        // Calculate total amount for current month
+        $currentMonth = (int)(new \DateTime())->format('n');
+        $montantTotal = $donneesMensuelles[$currentMonth - 1];
+        
+        return $this->render('home/facturation.html.twig', [
+            'chiffreAffaires' => $chiffreAffaires,
+            'facturesEnAttente' => $facturesEnAttente,
+            'paiementsRecents' => $paiementsRecents,
+            'facturesRecentes' => $facturesRecentes,
+            'moisLabels' => json_encode($moisLabels),
+            'donneesMensuelles' => json_encode($donneesMensuelles),
+            'montantTotal' => $montantTotal
+        ]);
     }
 }

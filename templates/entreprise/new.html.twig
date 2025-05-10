@@ -16,7 +16,7 @@
             margin-bottom: 1.5rem;
         }
         .page-title {
-            color: rgba(255, 255, 255, 0.9);
+            color: #000000;
             font-size: 1.75rem;
             margin: 0;
         }
@@ -27,7 +27,7 @@
             box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
         }
         .form-title {
-            color: rgba(255, 255, 255, 0.9);
+            color: #000000;
             font-size: 1.5rem;
             margin-bottom: 25px;
             padding-bottom: 15px;
@@ -37,14 +37,14 @@
             margin-bottom: 20px;
         }
         .form-label {
-            color: rgba(255, 255, 255, 0.8);
+            color: #000000;
             margin-bottom: 8px;
             font-weight: 500;
         }
         .form-control {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.9);
+            color: #000000;
             border-radius: 6px;
             padding: 10px 15px;
         }
@@ -52,7 +52,7 @@
             background: rgba(255, 255, 255, 0.08);
             border-color: rgba(255, 255, 255, 0.2);
             box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
-            color: rgba(255, 255, 255, 0.9);
+            color: #000000;
         }
         .form-control.is-invalid {
             border-color: rgba(255, 77, 77, 0.5);
@@ -73,7 +73,7 @@
             border-color: #0d6efd;
         }
         .form-check-label {
-            color: rgba(255, 255, 255, 0.8);
+            color: #000000;
         }
         .actions-container {
             margin-top: 25px;
@@ -85,7 +85,7 @@
         }
         .invalid-feedback {
             display: none;
-            color: #ff4d4d;
+            color: #000000;
             font-size: 0.85rem;
             margin-top: 4px;
             margin-left: 2px;
@@ -107,7 +107,7 @@
             font-size: 14px;
         }
         .help-text {
-            color: rgba(255, 255, 255, 0.6);
+            color: #000000;
             font-size: 0.875rem;
             margin-top: 0.25rem;
         }
@@ -144,7 +144,7 @@
         .iti__country-list { 
             background: rgba(30,34,54,0.95); 
             border: 1px solid rgba(255,255,255,0.1); 
-            color: rgba(255,255,255,0.9); 
+            color: #000000; 
         }
         .iti__country:hover { background: rgba(255,255,255,0.1); }
         .iti__active { background: rgba(255,255,255,0.15); }
@@ -158,13 +158,18 @@
         .iti__divider { border-bottom-color: rgba(255,255,255,0.1); }
         .iti__search-input { 
             background: rgba(255,255,255,0.05); 
-            color: rgba(255,255,255,0.9); 
+            color: #000000; 
             border: 1px solid rgba(255,255,255,0.1); 
         }
-        .iti__search-input::placeholder { color: rgba(255,255,255,0.5); }
+        .iti__search-input::placeholder { color: #000000; }
         .iti__search-input:focus { 
             background: rgba(255,255,255,0.08); 
             border-color: rgba(255,255,255,0.2); 
+        }
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
         }
         .input-group {
             display: flex !important;
@@ -206,13 +211,13 @@
         .modal-title {
             font-size: 1.35rem;
             font-weight: 700;
-            color: #6cf6ff;
+            color: #000000;
         }
         .modal-body .form-control {
             background: rgba(255,255,255,0.09);
             border: 1.5px solid #6cf6ff44;
             border-radius: 12px;
-            color: #e6eaff;
+            color: #000000;
         }
         .modal-footer {
             border-top: 1px solid rgba(255,255,255,0.1);
@@ -220,8 +225,31 @@
         .btn-primary {
             background: linear-gradient(90deg, #6cf6ff 0%, #3fbbff 100%);
             border: none;
-            color: #232b3b;
+            color: #000000;
             font-weight: 600;
+        }
+        .btn-sm.btn-outline-secondary, .btn-sm.btn-outline-warning, .btn-sm.btn-outline-danger, .btn-sm.btn-outline-success, .btn-sm.btn-outline-primary {
+            color: #000000;
+        }
+        
+        .btn-sm.btn-outline-secondary:hover, .btn-sm.btn-outline-warning:hover, .btn-sm.btn-outline-danger:hover, .btn-sm.btn-outline-success:hover, .btn-sm.btn-outline-primary:hover {
+            color: #000000;
+        }
+        
+        .modal-title, .modal-body, .btn-secondary, .btn-primary {
+            color: #000000;
+        }
+        
+        label, .bi, a {
+            color: #000000;
+        }
+        
+        #send-status {
+            color: #000000 !important;
+        }
+        
+        #code-verification-feedback, #code-verification-success {
+            color: #000000;
         }
     </style>
 {% endblock %}
@@ -314,7 +342,7 @@
                             }) }}
                             <button type="button" id="send-verification-btn" class="btn btn-sm btn-outline-primary btn-action btn-verif-code">Envoyer le code</button>
                         </div>
-                        <div id="send-status" style="margin-top: 5px; color: #0d6efd;"></div>
+                        <div id="send-status" style="margin-top: 5px; color: #000000 !important;"></div>
                         <small class="help-text">Format: +XXX XXXXXXXXXX</small>
                         {% if form_errors(form.phone_number) %}
                             <div class="invalid-feedback" style="display: flex;">
@@ -354,8 +382,8 @@
                     <div class="form-group">
                         <label for="verification-code-input">Entrez le code reçu :</label>
                         <input type="text" class="form-control" id="verification-code-input" maxlength="8" autocomplete="one-time-code">
-                        <div id="code-verification-feedback"></div>
-                        <div id="code-verification-success">
+                        <div id="code-verification-feedback" style="color: #000000;"></div>
+                        <div id="code-verification-success" style="color: #000000;">
                             <i class="mdi mdi-check-circle-outline"></i> Code vérifié !
                         </div>
                     </div>

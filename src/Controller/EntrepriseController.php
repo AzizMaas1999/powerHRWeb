@@ -16,7 +16,7 @@ use ReCaptcha\ReCaptcha;
 use App\Service\PdfGeneratorService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted('ROLE_DIRECTEUR')]
 
 #[Route('/entreprise')]
 final class EntrepriseController extends AbstractController

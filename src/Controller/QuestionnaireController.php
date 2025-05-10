@@ -12,8 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('ROLE_CHARGE')]
-#[IsGranted('ROLE_DIRECTEUR')]
+
 #[Route('/questionnaire')]
 final class QuestionnaireController extends AbstractController
 {

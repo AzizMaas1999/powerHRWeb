@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('ROLE_CHARGE', message: 'Accès refusé')]
+#[IsGranted('ROLE_DIRECTEUR')]
 
 #[Route('/departement')]
 final class DepartementController extends AbstractController

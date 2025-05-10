@@ -22,7 +22,7 @@ use Symfony\Component\Mime\Part\File;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('ROLE_CHARGES')]
+
 
 #[Route('/paie')]
 final class PaieController extends AbstractController

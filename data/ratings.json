@@ -106,5 +106,17 @@
         "rating": 4,
         "comment": null,
         "date": "2025-04-29 14:14:27"
+    },
+    {
+        "clfrId": 18,
+        "rating": 5,
+        "comment": null,
+        "date": "2025-05-06 14:18:36"
+    },
+    {
+        "clfrId": 27,
+        "rating": 5,
+        "comment": null,
+        "date": "2025-05-06 16:19:49"
     }
 ]

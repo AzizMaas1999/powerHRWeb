@@ -8,6 +8,7 @@ framework:
     - '^powerhr\.me$'
     - '^www\.powerhr\.me$'
     - '^powerhr\.tn$'
+    - '172.18.16.153'
 
     # Enables session support. Note that the session will ONLY be started if you read or write from it.
     # Remove or comment this section to explicitly disable session support.

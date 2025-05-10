@@ -16,8 +16,7 @@ use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\PngWriter;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('ROLE_OUVRIER')]
-#[IsGranted('ROLE_CHARGE')]
+
 
 #[Route('/demande')]
 final class DemandeController extends AbstractController
@@ -246,7 +245,7 @@ public function holidays(): Response
 #[Route('/generate-qr', name: 'generate_qr_code')]
     public function generateQrCode(): Response
     {
-        $url = 'http://192.168.137.104:8000/demande/holidays'; // Changez l'URL selon vos besoins
+        $url = 'http://172.18.16.153/demande/holidays'; // Changez l'URL selon vos besoins
 
         // Créer un QR Code
         $qrCode = new QrCode($url);

@@ -16,7 +16,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Repository\QuestionnaireRepository;
 
 
-#[IsGranted('ROLE_OUVIER')]
+#[IsGranted('ROLE_OUVRIER')]
 #[Route('/repquestionnaire')]
 final class RepquestionnaireController extends AbstractController
 {

@@ -114,7 +114,8 @@ class Candidat
     {
         $this->cvFile = $file;
         if (null !== $file) {
-            $this->cvPdfUrl = $file->getClientOriginalName();
+            // Use getFilename() which exists on File class instead of getClientOriginalName()
+            $this->cvPdfUrl = $file->getFilename();
         }
     }
 
@@ -147,21 +148,6 @@ class Candidat
     public function setEntreprise(?Entreprise $entreprise): self
     {
         $this->entreprise = $entreprise;
-        return $this;
-    }
-    
-    #[ORM\Column(type: 'string', nullable: true)]
-    #[Assert\Choice(choices: ['En attente', 'Accepté', 'Refusé'], message: 'Le statut doit être En attente, Accepté ou Refusé.')]
-    private ?string $statut = 'En attente';
-    
-    public function getStatut(): ?string
-    {
-        return $this->statut;
-    }
-    
-    public function setStatut(?string $statut): self
-    {
-        $this->statut = $statut;
         return $this;
     }
 }

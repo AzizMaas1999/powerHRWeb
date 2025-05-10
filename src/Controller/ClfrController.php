@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Form\FormError;
 
-#[IsGranted('ROLE_CHARGE')]
+
 #[Route('/clfr')]
 final class ClfrController extends AbstractController
 {
