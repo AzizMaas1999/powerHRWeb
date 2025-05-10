@@ -64,5 +64,5 @@ jobs:
         with:
           app-name: 'phr'
           slot-name: 'Production'
-          package: .
+          package: ./public
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_B6FB31821C52413D9C6C1FBAFF2685F6 }}
